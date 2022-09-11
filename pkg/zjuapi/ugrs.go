@@ -5,9 +5,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/rs/zerolog/log"
 	"io"
 	"net/url"
+
+	"github.com/rs/zerolog/log"
 )
 
 const GrsLoginUrl = "http://grs.zju.edu.cn/ssohome"

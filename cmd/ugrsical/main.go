@@ -1,7 +1,7 @@
 package main
 
 import (
-	"grs-ical/internal/grsical"
+	"ugrs-ical/internal/grsical"
 )
 
 func main() {

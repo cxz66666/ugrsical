@@ -4,13 +4,15 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"errors"
-	"github.com/go-redis/redis/v8"
-	"github.com/gofiber/fiber/v2"
-	"github.com/rs/zerolog/log"
-	cmn "grs-ical/internal/common"
 	"io"
 	"os"
 	"text/template"
+
+	cmn "grs-ical/internal/common"
+
+	"github.com/go-redis/redis/v8"
+	"github.com/gofiber/fiber/v2"
+	"github.com/rs/zerolog/log"
 )
 
 type SetupData struct {
@@ -62,7 +64,7 @@ func ListenAndServe(address string) error {
 	}
 	ipHeader = os.Getenv("GRSICALSRV_IP_HEADER")
 	if ipHeader != "" {
-		log.Info().Msgf("grsicalsrv will get header from %s", ipHeader)
+		log.Info().Msgf("ugrsicalsrv will get header from %s", ipHeader)
 	}
 	redisAddr := os.Getenv("GRSICALSRV_REDIS_ADDR")
 	redisPass := os.Getenv("GRSICALSRV_REDIS_PASS")

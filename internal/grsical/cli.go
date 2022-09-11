@@ -4,13 +4,15 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"io"
+	"os"
+
+	common2 "grs-ical/internal/common"
+
 	"github.com/google/uuid"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
-	common2 "grs-ical/internal/common"
-	"io"
-	"os"
 )
 
 type pwFile struct {
@@ -27,8 +29,8 @@ var (
 	outputFile   string
 	forceWrite   bool
 	rootCmd      = &cobra.Command{
-		Use:           "grsical -u username -p password -c config [-t tweak] [-o output] [-f]",
-		Short:         "grsical is a tool for generating class schedules iCalendar file",
+		Use:           "ugrsical -u username -p password -c config [-t tweak] [-o output] [-f]",
+		Short:         "ugrsical is a tool for generating class schedules iCalendar file",
 		Long:          `A command-line utility for generating class schedule iCalender file from extracting data from ZJU Graduate School web pages.`,
 		SilenceErrors: true,
 		RunE:          CliMain,
@@ -42,10 +44,10 @@ func init() {
 	rootCmd.PersistentFlags().StringVarP(&userPassFile, "upfile", "i", "", "username and password json")
 	rootCmd.PersistentFlags().StringVarP(&configFile, "config", "c", "config.json", "config file")
 	rootCmd.PersistentFlags().StringVarP(&tweaksFile, "tweak", "t", "", "tweaks file")
-	rootCmd.PersistentFlags().StringVarP(&outputFile, "output", "o", "grsical.ics", "output file")
+	rootCmd.PersistentFlags().StringVarP(&outputFile, "output", "o", "ugrsical.ics", "output file")
 	rootCmd.PersistentFlags().BoolVarP(&forceWrite, "force", "f", false, "force write to target file")
 	rootCmd.Version = version
-	rootCmd.SetVersionTemplate("grsical build {{.Version}}\n")
+	rootCmd.SetVersionTemplate("ugrsical build {{.Version}}\n")
 }
 
 func CliMain(cmd *cobra.Command, args []string) error {

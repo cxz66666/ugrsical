@@ -1,4 +1,4 @@
-package zjuapi
+package zjuam
 
 import (
 	"bytes"
@@ -30,7 +30,7 @@ type pubkeyRaw struct {
 	E string `json:"exponent"`
 }
 
-func NewPubKey(modulus, exponent string) (PubKey, error) {
+func newPubKey(modulus, exponent string) (PubKey, error) {
 	p := PubKey{
 		N: &big.Int{},
 	}
@@ -46,7 +46,7 @@ func NewPubKey(modulus, exponent string) (PubKey, error) {
 	return p, nil
 }
 
-func (p *PubKey) Encrypt(payload string) string {
+func (p *PubKey) encrypt(payload string) string {
 	dst := make([]byte, hex.EncodedLen(len(payload)))
 	hex.Encode(dst, []byte(payload))
 	m := &big.Int{}
@@ -83,7 +83,7 @@ func extractCookies(header http.Header) string {
 	return ""
 }
 
-func (c *ZJUAPIClient) Login(ctx context.Context, payloadUrl, username, password string) error {
+func (c *ZjuamClient) Login(ctx context.Context, payloadUrl, username, password string) error {
 	// see https://github.com/determ1ne/ejector/blob/fbc10d91b5d450cfa9f94a6ef22916463c9107f1/Ejector/Services/ZjuService.cs#L44
 	// stage 1: get csrf key
 	lpRes, err := c.HttpClient.Get(payloadUrl)
@@ -124,13 +124,13 @@ func (c *ZJUAPIClient) Login(ctx context.Context, payloadUrl, username, password
 		log.Ctx(ctx).Error().Msg(e)
 		return errors.New(e)
 	}
-	pk, err := NewPubKey(pkRaw.N, pkRaw.E)
+	pk, err := newPubKey(pkRaw.N, pkRaw.E)
 	if err != nil {
 		e := fmt.Sprintf("can not create pubkey: %s", err)
 		log.Ctx(ctx).Error().Msg(e)
 		return errors.New(e)
 	}
-	encP := pk.Encrypt(password)
+	encP := pk.encrypt(password)
 
 	// stage 3: fire target
 	lRes, err := c.HttpClient.PostForm(loginUrl, url.Values{
