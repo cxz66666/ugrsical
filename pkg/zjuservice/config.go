@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-const defaultPath = "configs/config.json"
+const ConfigDefaultPath = "configs/config.json"
 
 var _schedule ZjuScheduleConfig
 
@@ -61,7 +61,7 @@ func (config *ZjuScheduleConfig) GetExamYearAndTerms() []ExamYearAndTerm {
 func LoadConfig(path string) error {
 	var r io.Reader
 	if len(path) == 0 {
-		path = defaultPath
+		path = ConfigDefaultPath
 	}
 	if strings.HasPrefix(path, "http") {
 		res, err := http.DefaultClient.Get(path)

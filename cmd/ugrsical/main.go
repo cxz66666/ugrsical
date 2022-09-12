@@ -1,9 +1,9 @@
 package main
 
 import (
-	"ugrs-ical/internal/grsical"
+	"ugrs-ical/internal/ugrsical"
 )
 
 func main() {
-	grsical.Execute()
+	ugrsical.Execute()
 }
