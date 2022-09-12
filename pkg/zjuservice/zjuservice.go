@@ -2,6 +2,7 @@ package zjuservice
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
@@ -59,7 +60,7 @@ func (zs *ZjuService) GetClassTimeTable(academicYear string, term ClassTerm, stu
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	req.Header.Add("Content-Length", strconv.Itoa(len(data.Encode())))
 
-	//TODO unmarshal
+	//TODO check
 	resp, err := zs.ZjuClient.Client().Do(req)
 	if err != nil {
 		log.Ctx(zs.ctx).Error().Err(err).Msg("POST to Class API failed")
@@ -68,7 +69,21 @@ func (zs *ZjuService) GetClassTimeTable(academicYear string, term ClassTerm, stu
 	content, err := io.ReadAll(resp.Body)
 	resp.Body.Close()
 	fmt.Println(content)
-	return nil
+
+	classTimeTable := ZjuResWrapperStr[ZjuWeeklyScheduleRes]{}
+	if err = json.Unmarshal(content, &classTimeTable); err != nil {
+		log.Ctx(zs.ctx).Error().Err(err).Msg("unmarshal failed")
+		return nil
+	}
+
+	res := make([]ZjuClass, 0)
+	for _, item := range classTimeTable.Data.ClassList {
+		tmp := item.ToZjuClass()
+		if tmp != nil {
+			res = append(res, *tmp)
+		}
+	}
+	return res
 }
 
 func (zs *ZjuService) GetExamInfo(academicYear string, term ExamTerm, stuId string) []ZjuExamOutline {
@@ -85,7 +100,7 @@ func (zs *ZjuService) GetExamInfo(academicYear string, term ExamTerm, stuId stri
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	req.Header.Add("Content-Length", strconv.Itoa(len(data.Encode())))
 
-	//TODO unmarshal
+	//TODO check
 	resp, err := zs.ZjuClient.Client().Do(req)
 	if err != nil {
 		log.Ctx(zs.ctx).Error().Err(err).Msg("POST to Class API failed")
@@ -94,7 +109,13 @@ func (zs *ZjuService) GetExamInfo(academicYear string, term ExamTerm, stuId stri
 	content, err := io.ReadAll(resp.Body)
 	resp.Body.Close()
 	fmt.Println(content)
-	return nil
+	examOutlines := ZjuResWrapperStr[ZjuExamOutlineRes]{}
+	if err = json.Unmarshal(content, &examOutlines); err != nil {
+		log.Ctx(zs.ctx).Error().Err(err).Msg("unmarshal failed")
+		return nil
+	}
+
+	return examOutlines.Data.ExamOutlineList
 }
 
 func (zs *ZjuService) GetTermConfigs() []TermConfig {
