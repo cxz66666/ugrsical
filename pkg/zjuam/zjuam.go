@@ -146,3 +146,7 @@ func (c *ZjuamClient) Login(ctx context.Context, payloadUrl, username, password 
 	// 不代表登录成功
 	return nil
 }
+
+func (c *ZjuamClient) Client() *http.Client {
+	return c.HttpClient
+}

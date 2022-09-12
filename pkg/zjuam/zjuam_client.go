@@ -8,6 +8,7 @@ import (
 
 type ZjuLogin interface {
 	Login(ctx context.Context, payloadUrl, username, password string) error
+	Client() *http.Client
 }
 
 type ZjuamClient struct {

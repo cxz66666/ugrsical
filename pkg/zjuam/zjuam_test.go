@@ -1,10 +1,11 @@
-package zjuapi
+package zjuam
 
 import (
-	"github.com/rs/zerolog"
-	"github.com/rs/zerolog/log"
 	"os"
 	"testing"
+
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 )
 
 func TestEncryption(t *testing.T) {
@@ -14,12 +15,12 @@ func TestEncryption(t *testing.T) {
 	exponent := "10001"
 	password := "aaaa0123"
 
-	pk, err := NewPubKey(modulus, exponent)
+	pk, err := newPubKey(modulus, exponent)
 	if err != nil {
 		log.Error().Msg(err.Error())
 		t.FailNow()
 	}
-	p := pk.Encrypt(password)
+	p := pk.encrypt(password)
 
 	if p != "3f5312e265def9ed1da2a5d3c5dcf5d6e0af31d1e8561af8d5c01326b66bb59fc1c85632fe9d8d70932d71a425b58f2e5e0c21bd9885d7feea383e6b21a974bf" {
 		t.Fail()
