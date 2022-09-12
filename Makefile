@@ -1,49 +1,49 @@
 LIPO := /usr/bin/x86_64-apple-darwin-lipo
 GIT_COMMIT_HASH := $(shell git rev-list -1 HEAD)
-
+LDFLAGS_COMMON := -s -w
 all: clean \
-	grsical-windows-amd64 grsical-linux-amd64 grsical-linux-arm64 grsical-darwin-amd64 grsical-darwin-arm64 \
-	grsicalsrv-windows-amd64 grsicalsrv-linux-amd64 grsicalsrv-linux-arm64 grsicalsrv-darwin-amd64 grsicalsrv-darwin-arm64 \
+	ugrsical-windows-amd64 ugrsical-linux-amd64 ugrsical-linux-arm64 ugrsical-darwin-amd64 ugrsical-darwin-arm64 \
+	ugrsicalsrv-windows-amd64 ugrsicalsrv-linux-amd64 ugrsicalsrv-linux-arm64 ugrsicalsrv-darwin-amd64 ugrsicalsrv-darwin-arm64 \
 	merge-macos-binary
 
-grsical-windows-amd64:
-	GOOS=windows GOARCH=amd64 go build -ldflags "-X grs-ical/internal/grsical/cli.version=$(GIT_COMMIT_HASH)" -o build/grsical-windows-amd64.exe grs-ical/cmd/grsical
+ugrsical-windows-amd64:
+	GOOS=windows GOARCH=amd64 go build -ldflags "$(LDFLAGS_COMMON) -X ugrs-ical/internal/ugrsical.version=$(GIT_COMMIT_HASH)" -o build/ugrsical-windows-amd64.exe ugrs-ical/cmd/ugrsical
 
-grsical-linux-amd64:
-	GOOS=linux GOARCH=amd64 go build -ldflags "-X grs-ical/internal/grsical/cli.version=$(GIT_COMMIT_HASH)" -o build/grsical-linux-amd64 grs-ical/cmd/grsical
+ugrsical-linux-amd64:
+	GOOS=linux GOARCH=amd64 go build -ldflags "$(LDFLAGS_COMMON) -X ugrs-ical/internal/ugrsical.version=$(GIT_COMMIT_HASH)" -o build/ugrsical-linux-amd64 ugrs-ical/cmd/ugrsical
 
-grsical-linux-arm64:
-	GOOS=linux GOARCH=arm64 go build -ldflags "-X grs-ical/internal/grsical/cli.version=$(GIT_COMMIT_HASH)" -o build/grsical-linux-arm64 grs-ical/cmd/grsical
+ugrsical-linux-arm64:
+	GOOS=linux GOARCH=arm64 go build -ldflags "$(LDFLAGS_COMMON) -X ugrs-ical/internal/ugrsical.version=$(GIT_COMMIT_HASH)" -o build/ugrsical-linux-arm64 ugrs-ical/cmd/ugrsical
 
-grsical-darwin-amd64:
-	GOOS=darwin GOARCH=amd64 go build -ldflags "-X grs-ical/internal/grsical/cli.version=$(GIT_COMMIT_HASH)" -o build/grsical-darwin-amd64 grs-ical/cmd/grsical
+ugrsical-darwin-amd64:
+	GOOS=darwin GOARCH=amd64 go build -ldflags "$(LDFLAGS_COMMON) -X ugrs-ical/internal/ugrsical.version=$(GIT_COMMIT_HASH)" -o build/ugrsical-darwin-amd64 ugrs-ical/cmd/ugrsical
 
-grsical-darwin-arm64:
-	GOOS=darwin GOARCH=arm64 go build -ldflags "-X grs-ical/internal/grsical/cli.version=$(GIT_COMMIT_HASH)" -o build/grsical-darwin-arm64 grs-ical/cmd/grsical
+ugrsical-darwin-arm64:
+	GOOS=darwin GOARCH=arm64 go build -ldflags "$(LDFLAGS_COMMON) -X ugrs-ical/internal/ugrsical.version=$(GIT_COMMIT_HASH)" -o build/ugrsical-darwin-arm64 ugrs-ical/cmd/ugrsical
 
-grsicalsrv-windows-amd64:
-	GOOS=windows GOARCH=amd64 go build -ldflags "-X grs-ical/internal/grsicalsrv/cli.version=$(GIT_COMMIT_HASH)" -o build/grsicalsrv-windows-amd64.exe grs-ical/cmd/grsicalsrv
+ugrsicalsrv-windows-amd64:
+	GOOS=windows GOARCH=amd64 go build -ldflags "$(LDFLAGS_COMMON)" -o build/ugrsicalsrv-windows-amd64.exe ugrs-ical/cmd/ugrsicalsrv
 
-grsicalsrv-linux-amd64:
-	GOOS=linux GOARCH=amd64 go build -ldflags "-X grs-ical/internal/grsicalsrv/cli.version=$(GIT_COMMIT_HASH)" -o build/grsicalsrv-linux-amd64 grs-ical/cmd/grsicalsrv
+ugrsicalsrv-linux-amd64:
+	GOOS=linux GOARCH=amd64 go build -ldflags "$(LDFLAGS_COMMON)" -o build/ugrsicalsrv-linux-amd64 ugrs-ical/cmd/ugrsicalsrv
 
-grsicalsrv-linux-arm64:
-	GOOS=linux GOARCH=arm64 go build -ldflags "-X grs-ical/internal/grsicalsrv/cli.version=$(GIT_COMMIT_HASH)" -o build/grsicalsrv-linux-arm64 grs-ical/cmd/grsicalsrv
+ugrsicalsrv-linux-arm64:
+	GOOS=linux GOARCH=arm64 go build -ldflags "$(LDFLAGS_COMMON)" -o build/ugrsicalsrv-linux-arm64 ugrs-ical/cmd/ugrsicalsrv
 
-grsicalsrv-darwin-amd64:
-	GOOS=darwin GOARCH=amd64 go build -ldflags "-X grs-ical/internal/grsicalsrv/cli.version=$(GIT_COMMIT_HASH)" -o build/grsicalsrv-darwin-amd64 grs-ical/cmd/grsicalsrv
+ugrsicalsrv-darwin-amd64:
+	GOOS=darwin GOARCH=amd64 go build -ldflags "$(LDFLAGS_COMMON)" -o build/ugrsicalsrv-darwin-amd64 ugrs-ical/cmd/ugrsicalsrv
 
-grsicalsrv-darwin-arm64:
-	GOOS=darwin GOARCH=arm64 go build -ldflags "-X grs-ical/internal/grsicalsrv/cli.version=$(GIT_COMMIT_HASH)" -o build/grsicalsrv-darwin-arm64 grs-ical/cmd/grsicalsrv
+ugrsicalsrv-darwin-arm64:
+	GOOS=darwin GOARCH=arm64 go build -ldflags "$(LDFLAGS_COMMON)" -o build/ugrsicalsrv-darwin-arm64 ugrs-ical/cmd/ugrsicalsrv
 
 merge-macos-binary:
-	$(LIPO) -create build/grsical-darwin-amd64 build/grsical-darwin-arm64 -o build/grsical-darwin-universal
-	$(LIPO) -create build/grsicalsrv-darwin-amd64 build/grsicalsrv-darwin-arm64 -o build/grsicalsrv-darwin-universal
+	$(LIPO) -create build/ugrsical-darwin-amd64 build/ugrsical-darwin-arm64 -o build/ugrsical-darwin-universal
+	$(LIPO) -create build/ugrsicalsrv-darwin-amd64 build/ugrsicalsrv-darwin-arm64 -o build/ugrsicalsrv-darwin-universal
 
 clean:
 	-rm -f build/*
 
 .PHONY: all clean \
-	grsical-windows-amd64 grsical-linux-amd64 grsical-linux-arm64 grsical-darwin-amd64 grsical-darwin-arm64 \
-	grsicalsrv-windows-amd64 grsicalsrv-linux-amd64 grsicalsrv-linux-arm64 grsicalsrv-darwin-amd64 grsicalsrv-darwin-arm64 \
+	ugrsical-windows-amd64 ugrsical-linux-amd64 ugrsical-linux-arm64 ugrsical-darwin-amd64 ugrsical-darwin-arm64 \
+	ugrsicalsrv-windows-amd64 ugrsicalsrv-linux-amd64 ugrsicalsrv-linux-arm64 ugrsicalsrv-darwin-amd64 ugrsicalsrv-darwin-arm64 \
 	merge-macos-binary

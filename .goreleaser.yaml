@@ -1,0 +1,76 @@
+# This is an example .goreleaser.yml file with some sensible defaults.
+# Make sure to check the documentation at https://goreleaser.com
+before:
+  hooks:
+    # You may remove this if you don't use go modules.
+    - go mod tidy
+dist: ./build
+builds:
+  - id: "ugrsical"
+    env:
+      - CGO_ENABLED=0
+    main: ./cmd/ugrsical
+    binary: ugrsical
+
+    ldflags:
+      - -s -w -X ugrs-ical/internal/ugrsical.version={{.Commit}}
+    goos:
+      - linux
+      - windows
+      - darwin
+
+  - id: "ugrsicalsrv"
+    env:
+      - CGO_ENABLED=0
+    main: ./cmd/ugrsicalsrv
+    binary: ugrsicalsrv
+
+    ldflags:
+      - -s -w
+#      - -X ugrs-ical/internal/ugrsicalsrv/cli.version={{.Commit}}
+    goos:
+      - linux
+      - windows
+      - darwin
+archives:
+  -
+    id: ugrsical-arch
+    builds:
+      - ugrsical
+    replacements:
+      darwin: Darwin
+      linux: Linux
+      windows: Windows
+      386: i386
+      amd64: x86_64
+    name_template: "ugrsical_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    files:
+      - LICENSE
+      - README.md
+      - configs/*
+
+  -
+    id: ugrsicalsrv-arch
+    builds:
+      - ugrsicalsrv
+    replacements:
+      darwin: Darwin
+      linux: Linux
+      windows: Windows
+      386: i386
+      amd64: x86_64
+    name_template: "ugrsicalsrv_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    files:
+      - LICENSE
+      - README.md
+      - configs/*
+checksum:
+  name_template: 'checksums.txt'
+snapshot:
+  name_template: "{{ incpatch .Version }}-next"
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
