@@ -1,6 +1,9 @@
 package date
 
-import "time"
+import (
+	"strconv"
+	"time"
+)
 
 // TODO check
 const layout = "2006-01-02  15:04:05"
@@ -11,5 +14,15 @@ func DayToDateTime(from int) time.Time {
 }
 
 func ExamToDateTime(str string) (time.Time, time.Time) {
-	return time.Time{}, time.Time{}
+	if len(str) < 23 {
+		return time.Time{}, time.Time{}
+	}
+	year, _ := strconv.ParseInt(str[0:4], 10, 64)
+	month, _ := strconv.ParseInt(str[5:7], 10, 64)
+	day, _ := strconv.ParseInt(str[8:10], 10, 64)
+	hour, _ := strconv.ParseInt(str[12:14], 10, 64)
+	minute, _ := strconv.ParseInt(str[15:17], 10, 64)
+	endHour, _ := strconv.ParseInt(str[18:20], 10, 64)
+	endMinute, _ := strconv.ParseInt(str[21:23], 10, 64)
+	return time.Date(int(year), time.Month(month), int(day), int(hour), int(minute), 0, 0, time.Local), time.Date(int(year), time.Month(month), int(day), int(endHour), int(endMinute), 0, 0, time.Local)
 }

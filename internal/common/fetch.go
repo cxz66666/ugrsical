@@ -2,11 +2,13 @@ package common
 
 import (
 	"context"
-	"github.com/rs/zerolog/log"
-	"grs-ical/pkg/ical"
-	"grs-ical/pkg/timetable"
-	"grs-ical/pkg/zjuapi"
+	"errors"
 	"time"
+
+	"ugrs-ical/pkg/ical"
+	"ugrs-ical/pkg/zjuservice"
+
+	"github.com/rs/zerolog/log"
 )
 
 func FetchToMemory(ctx context.Context, username, password string, config Config, tweaks TweakConfig) (string, error) {
@@ -51,6 +53,38 @@ func FetchToMemory(ctx context.Context, username, password string, config Config
 	}
 
 	log.Ctx(ctx).Info().Msgf("generating iCalendar file")
-	iCal := ical.VCalendar{VEvents: &ve}
+	iCal := ical.VCalendar{VEvents: ve}
 	return iCal.GetICS(""), nil
+}
+func firstMatchTerm(configs []zjuservice.TermConfig, target zjuservice.ClassYearAndTerm) int {
+	for index, item := range configs {
+		if item.Term == target.Term && item.Year == target.Year {
+			return index
+		}
+	}
+	return -1
+}
+
+func GetClassCalendar(ctx context.Context, username, password string) error {
+	var zs zjuservice.IZjuService
+	zs = zjuservice.NewZjuService(ctx)
+
+	if err := zs.Login(username, password); err != nil {
+		return err
+	}
+
+	termConfigs := zs.GetTermConfigs()
+	tweaks := zs.GetTweaks()
+
+	vCal := ical.VCalendar{}
+
+	for _, item := range zs.GetClassTerms() {
+		index := firstMatchTerm(termConfigs, item)
+		if index == -1 {
+			return errors.New("配置文件错误，未找到指定学期的具体配置")
+		}
+		classOutline := zs.GetClassTimeTable(item.Year, item.Term, username)
+
+		vCal.VEvents = append(vCal.VEvents)
+	}
 }

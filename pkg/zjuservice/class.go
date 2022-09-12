@@ -5,6 +5,8 @@ import (
 	"sort"
 	"strings"
 	"time"
+
+	"ugrs-ical/pkg/ical"
 )
 
 type WeekArrangement int
@@ -135,4 +137,88 @@ func (cp *ClassPeriod) ToStartDateTime(day time.Time) time.Time {
 
 func (cp *ClassPeriod) ToEndDateTime(day time.Time) time.Time {
 	return cp.ToStartDateTime(day).Add(time.Minute * 45)
+}
+
+func GetClassOfDay(classes []ZjuClass, day int) []ZjuClass {
+	var res []ZjuClass
+	for _, item := range classes {
+		if item.DayNumber == day {
+			res = append(res, item)
+		}
+	}
+	return res
+}
+
+func isEvenWeek(mondayOfTermBegin, target time.Time) bool {
+	return ((target.Day()-mondayOfTermBegin.Day())/7)%2 == 1
+}
+
+func ClassToVEvents(classes []ZjuClass, termConfig TermConfig, tweaks []Tweak) []ical.VEvent {
+	dataLength := termConfig.End.Day() - termConfig.Begin.Day() + 2
+	shadowDates := make(map[time.Time]time.Time, dataLength)
+	for currentDate := termConfig.Begin; currentDate.Before(termConfig.End) || currentDate.Equal(termConfig.End); currentDate = currentDate.Add(time.Hour * 24) {
+		shadowDates[currentDate] = currentDate
+	}
+	modDescriptions := make(map[time.Time]string, dataLength)
+	for _, tweak := range tweaks {
+		if tweak.To.Before(termConfig.Begin) || tweak.To.After(termConfig.End) {
+			continue
+		}
+		switch tweak.TweakType {
+		case Clear:
+			for d := tweak.From; d.Before(tweak.To) || d.Equal(tweak.To); d = d.Add(time.Hour * 24) {
+				delete(shadowDates, d)
+			}
+		case Copy:
+			shadowDates[tweak.To] = tweak.From
+			modDescriptions[tweak.To] = tweak.Description
+		case Exchange:
+			shadowDates[tweak.To] = tweak.From
+			shadowDates[tweak.From] = tweak.To
+			modDescriptions[tweak.To] = tweak.Description
+			modDescriptions[tweak.From] = tweak.Description
+		}
+	}
+	classOfDay := make(map[time.Weekday][]ZjuClass, 7)
+	classOfDay[time.Monday] = GetClassOfDay(classes, 1)
+	classOfDay[time.Tuesday] = GetClassOfDay(classes, 2)
+	classOfDay[time.Wednesday] = GetClassOfDay(classes, 3)
+	classOfDay[time.Thursday] = GetClassOfDay(classes, 4)
+	classOfDay[time.Friday] = GetClassOfDay(classes, 5)
+	classOfDay[time.Saturday] = GetClassOfDay(classes, 6)
+	classOfDay[time.Sunday] = GetClassOfDay(classes, 7)
+
+	termBeginDayOfWeek := int(termConfig.Begin.Weekday())
+	if termBeginDayOfWeek == 0 {
+		termBeginDayOfWeek = 7
+	}
+	mondayOfFirstWeek := termConfig.Begin.Add(time.Hour * time.Duration(-24*(termBeginDayOfWeek-1))).
+		Add(time.Hour * time.Duration(-24*7*(termConfig.FirstWeekNo-1)))
+
+	events := make([]ical.VEvent, 3*dataLength)
+	for actualDate, dateOfClass := range shadowDates {
+		classesOfCurrentDate := classOfDay[dateOfClass.Weekday()]
+		isCurrentDateEvenWeek := isEvenWeek(mondayOfFirstWeek, dateOfClass)
+		for _, item := range classesOfCurrentDate {
+			if (isCurrentDateEvenWeek && item.WeekArrangement == OddOnly) ||
+				(!isCurrentDateEvenWeek && item.WeekArrangement == EvenOnly) {
+				continue
+			}
+			description := ""
+
+			if mod, exist := modDescriptions[actualDate]; !exist {
+				description = fmt.Sprintf("教师: %s\\n课程代码: %s\\n教学时间安排: %s", item.TeacherName, item.ClassCode, item.ArrangementDescription())
+			} else {
+				description = fmt.Sprintf("%s\\n教师: %s\\n课程代码: %s\\n教学时间安排: %s", mod, item.TeacherName, item.ClassCode, item.ArrangementDescription())
+			}
+			events = append(events, ical.VEvent{
+				Summary:     item.ClassName,
+				StartTime:   item.GetStartDateTime(actualDate),
+				EndTime:     item.GetEndDateTime(actualDate),
+				Location:    item.ClassLocation,
+				Description: description,
+			})
+		}
+	}
+	return events
 }

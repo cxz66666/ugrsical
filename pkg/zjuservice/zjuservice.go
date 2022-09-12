@@ -10,11 +10,15 @@ import (
 	"strings"
 
 	"ugrs-ical/pkg/zjuam"
+
+	"github.com/google/uuid"
+	"github.com/rs/zerolog/log"
 )
 
 const (
-	kAppServiceLoginUrl         = "https://zjuam.zju.edu.cn/cas/login?service=http%3A%2F%2Fappservice.zju.edu.cn%2Findex"
-	kAppServiceGetWeekClassInfo = "http://appservice.zju.edu.cn/zju-smartcampus/zdydjw/api/kbdy_cxXsZKbxx"
+	kAppServiceLoginUrl           = "https://zjuam.zju.edu.cn/cas/login?service=http%3A%2F%2Fappservice.zju.edu.cn%2Findex"
+	kAppServiceGetWeekClassInfo   = "http://appservice.zju.edu.cn/zju-smartcampus/zdydjw/api/kbdy_cxXsZKbxx"
+	kAppServiceGetExamOutlineInfo = "http://appservice.zju.edu.cn/zju-smartcampus/zdydjw/api/kkqk_cxXsksxx"
 )
 
 type IZjuService interface {
@@ -30,6 +34,7 @@ type IZjuService interface {
 
 type ZjuService struct {
 	ZjuClient zjuam.ZjuLogin
+	ctx       context.Context
 }
 
 func (zs *ZjuService) Login(username, password string) error {
@@ -47,13 +52,13 @@ func (zs *ZjuService) GetClassTimeTable(academicYear string, term ClassTerm, stu
 	data.Set("xh", stuId)
 	encodedData := data.Encode()
 	req, err := http.NewRequest("POST", kAppServiceGetWeekClassInfo, strings.NewReader(encodedData))
-	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
-	req.Header.Add("Content-Length", strconv.Itoa(len(data.Encode())))
-
 	if err != nil {
 		//TODO log
 		return nil
 	}
+	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+	req.Header.Add("Content-Length", strconv.Itoa(len(data.Encode())))
+
 	resp, err := zs.ZjuClient.Client().Do(req)
 	if err != nil {
 		//TODO log
@@ -66,37 +71,64 @@ func (zs *ZjuService) GetClassTimeTable(academicYear string, term ClassTerm, stu
 }
 
 func (zs *ZjuService) GetExamInfo(academicYear string, term ExamTerm, stuId string) []ZjuExamOutline {
-	//TODO implement me
-	panic("implement me")
+	data := url.Values{}
+	data.Set("xn", academicYear)
+	data.Set("xq", ExamTermToQueryString(term))
+	data.Set("xh", stuId)
+	encodedData := data.Encode()
+	req, err := http.NewRequest("POST", kAppServiceGetExamOutlineInfo, strings.NewReader(encodedData))
+	if err != nil {
+		//TODO log
+		return nil
+	}
+	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+	req.Header.Add("Content-Length", strconv.Itoa(len(data.Encode())))
+
+	resp, err := zs.ZjuClient.Client().Do(req)
+	if err != nil {
+		//TODO log
+		return nil
+	}
+	content, err := io.ReadAll(resp.Body)
+	resp.Body.Close()
+	fmt.Println(content)
+	return nil
 }
 
 func (zs *ZjuService) GetTermConfigs() []TermConfig {
-	//TODO implement me
-	panic("implement me")
+	var res []TermConfig
+	for _, item := range _schedule.TermConfigs {
+		res = append(res, item.ToTermConfig())
+	}
+	return res
 }
 
 func (zs *ZjuService) GetTweaks() []Tweak {
-	//TODO implement me
-	panic("implement me")
+	var res []Tweak
+	for _, item := range _schedule.Tweaks {
+		res = append(res, item.ToTweak())
+	}
+	return res
 }
 
 func (zs *ZjuService) GetClassTerms() []ClassYearAndTerm {
-	//TODO implement me
-	panic("implement me")
+	return _schedule.GetClassYearAndTerms()
 }
 
 func (zs *ZjuService) GetExamTerms() []ExamYearAndTerm {
-	//TODO implement me
-	panic("implement me")
+	return _schedule.GetExamYearAndTerms()
 }
 
 func (zs *ZjuService) UpdateConfig() bool {
-	//TODO implement me
-	panic("implement me")
+	//TODO
+	//如此设计我们是否需要update？
+	//或者后台开个协程每分钟和fs同步？
+	return true
 }
 
-func NewZjuService() ZjuService {
-	return ZjuService{
+func NewZjuService(ctx context.Context) *ZjuService {
+	return &ZjuService{
 		ZjuClient: zjuam.NewClient(),
+		ctx:       log.With().Str("reqid", uuid.NewString()).Logger().WithContext(ctx),
 	}
 }

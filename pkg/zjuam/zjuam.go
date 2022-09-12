@@ -10,6 +10,7 @@ import (
 	"io"
 	"math/big"
 	"net/http"
+	"net/http/cookiejar"
 	"net/url"
 	"strconv"
 	"strings"
@@ -148,5 +149,9 @@ func (c *ZjuamClient) Login(ctx context.Context, payloadUrl, username, password 
 }
 
 func (c *ZjuamClient) Client() *http.Client {
+	if c.HttpClient == nil {
+		jar, _ := cookiejar.New(nil)
+		c.HttpClient = &http.Client{Jar: jar}
+	}
 	return c.HttpClient
 }

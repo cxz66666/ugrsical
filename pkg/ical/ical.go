@@ -55,16 +55,16 @@ func (v *VEvent) String() string {
 }
 
 type VCalendar struct {
-	VEvents *[]VEvent
+	VEvents []VEvent
 }
 
 func (v *VCalendar) GetICS(icalName string) string {
 	var b strings.Builder
 	if icalName == "" {
-		icalName = "GRSICAL 课程表"
+		icalName = "UGRSICAL 课程表"
 	}
-	b.WriteString(fmt.Sprintf("BEGIN:VCALENDAR\r\nX-WR-CALNAME:%s\r\nX-APPLE-CALENDAR-COLOR:#2BBFF0\r\nPRODID:-//Azuk Workshop//Ejector 0.2//EN\r\nVERSION:2.0\r\nMETHOD:PUBLISH\r\nBEGIN:VTIMEZONE\r\nTZID:Asia/Shanghai\r\nBEGIN:STANDARD\r\nDTSTART:16010101T000000\r\nTZOFFSETFROM:+0800\r\nTZOFFSETTO:+0800\r\nEND:STANDARD\r\nEND:VTIMEZONE\r\n", icalName))
-	for _, v := range *v.VEvents {
+	b.WriteString(fmt.Sprintf("BEGIN:VCALENDAR\r\nX-WR-CALNAME:%s\r\nX-APPLE-CALENDAR-COLOR:#2BBFF0\r\nPRODID:-//ZJUEVA Workshop//Ejector 0.2//EN\r\nVERSION:2.0\r\nMETHOD:PUBLISH\r\nBEGIN:VTIMEZONE\r\nTZID:Asia/Shanghai\r\nBEGIN:STANDARD\r\nDTSTART:16010101T000000\r\nTZOFFSETFROM:+0800\r\nTZOFFSETTO:+0800\r\nEND:STANDARD\r\nEND:VTIMEZONE\r\n", icalName))
+	for _, v := range v.VEvents {
 		b.WriteString(v.String())
 	}
 	b.WriteString("END:VCALENDAR\r\n")
