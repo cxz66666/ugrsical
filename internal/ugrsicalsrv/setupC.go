@@ -1,12 +1,13 @@
-package grsicalsrv
+package ugrsicalsrv
 
 import (
 	"bytes"
 	"crypto/rand"
 	"encoding/base64"
 	"fmt"
-	"github.com/gofiber/fiber/v2"
 	"io"
+
+	"github.com/gofiber/fiber/v2"
 )
 
 func encrypt(b []byte) ([]byte, error) {
@@ -41,7 +42,7 @@ func SetupPage(ctx *fiber.Ctx) error {
 	en := base64.URLEncoding.EncodeToString(b)
 
 	d := sd
-	d.Link = fmt.Sprintf("%s/ical?p=%s", Host, en)
+	d.Link = fmt.Sprintf("%s/ical?p=%s", _serverConfig.Host, en)
 	ctx.Set("Content-Type", "text/html")
 	buffer := bytes.NewBuffer([]byte(""))
 	err = setupTpl.Execute(buffer, d)

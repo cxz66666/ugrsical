@@ -52,3 +52,37 @@ func ExamTermToQueryString(t ExamTerm) string {
 		return ""
 	}
 }
+
+// ClassTermStrToStr converts a string like "1" to "冬学期"
+func ClassTermStrToStr(str string) string {
+	switch str {
+	case "0":
+		return "秋学期"
+	case "1":
+		return "冬学期"
+	case "2":
+		return "短学期A"
+	case "3":
+		return "小学期"
+	case "4":
+		return "春学期"
+	case "5":
+		return "夏学期"
+	case "6":
+		return "短学期B"
+	default:
+		return "未知学期"
+	}
+}
+
+// ExamStrToStr converts a string like "1" to "春夏学期"
+func ExamStrToStr(str string) string {
+	switch str {
+	case "0":
+		return "秋冬学期"
+	case "1":
+		return "春夏学期"
+	default:
+		return "未知学期"
+	}
+}

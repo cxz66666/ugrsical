@@ -85,3 +85,7 @@ func LoadConfig(path string) error {
 	err = json.Unmarshal(cfd, &_schedule)
 	return err
 }
+
+func GetConfig() *ZjuScheduleConfig {
+	return &_schedule
+}

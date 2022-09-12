@@ -1,13 +1,15 @@
-package grsicalsrv
+package ugrsicalsrv
 
 import (
 	"context"
 	"encoding/base64"
 	"errors"
+
+	common2 "ugrs-ical/internal/common"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
 	"github.com/rs/zerolog/log"
-	common2 "grs-ical/internal/common"
 )
 
 func decrypt(b []byte) ([]byte, error) {
@@ -46,11 +48,11 @@ func FetchCal(ctx *fiber.Ctx) error {
 	}
 
 	c := log.With().Str("u", string(un)).Str("r", uuid.NewString()).Logger().WithContext(context.Background())
-	r, err := common2.FetchToMemory(c, string(un), string(pw), cfg, tweak)
+	vCal, err := common2.GetBothCalendar(c, string(un), string(pw))
 	if err != nil {
 		return ctx.SendString(err.Error())
 	}
 
 	ctx.Set("Content-Type", "text/calendar")
-	return ctx.SendString(r)
+	return ctx.SendString(vCal.GetICS(""))
 }

@@ -1,10 +1,11 @@
-package grsicalsrv
+package ugrsicalsrv
 
 import (
 	"fmt"
+	"time"
+
 	"github.com/go-redis/redis/v8"
 	"github.com/gofiber/fiber/v2"
-	"time"
 )
 
 const (
@@ -16,7 +17,7 @@ const (
 
 func getIP(ctx *fiber.Ctx) string {
 	ip := ctx.IP()
-	if h, ok := ctx.GetReqHeaders()[ipHeader]; ipHeader != "" && ok {
+	if h, ok := ctx.GetReqHeaders()[_serverConfig.IpHeader]; _serverConfig.IpHeader != "" && ok {
 		ip = h
 	}
 	return ip

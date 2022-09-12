@@ -53,15 +53,16 @@ func (zs *ZjuService) GetClassTimeTable(academicYear string, term ClassTerm, stu
 	encodedData := data.Encode()
 	req, err := http.NewRequest("POST", kAppServiceGetWeekClassInfo, strings.NewReader(encodedData))
 	if err != nil {
-		//TODO log
+		log.Ctx(zs.ctx).Error().Err(err).Msg("new request failed")
 		return nil
 	}
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	req.Header.Add("Content-Length", strconv.Itoa(len(data.Encode())))
 
+	//TODO unmarshal
 	resp, err := zs.ZjuClient.Client().Do(req)
 	if err != nil {
-		//TODO log
+		log.Ctx(zs.ctx).Error().Err(err).Msg("POST to Class API failed")
 		return nil
 	}
 	content, err := io.ReadAll(resp.Body)
@@ -78,15 +79,16 @@ func (zs *ZjuService) GetExamInfo(academicYear string, term ExamTerm, stuId stri
 	encodedData := data.Encode()
 	req, err := http.NewRequest("POST", kAppServiceGetExamOutlineInfo, strings.NewReader(encodedData))
 	if err != nil {
-		//TODO log
+		log.Ctx(zs.ctx).Error().Err(err).Msg("new request failed")
 		return nil
 	}
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	req.Header.Add("Content-Length", strconv.Itoa(len(data.Encode())))
 
+	//TODO unmarshal
 	resp, err := zs.ZjuClient.Client().Do(req)
 	if err != nil {
-		//TODO log
+		log.Ctx(zs.ctx).Error().Err(err).Msg("POST to Class API failed")
 		return nil
 	}
 	content, err := io.ReadAll(resp.Body)
