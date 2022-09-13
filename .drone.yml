@@ -1,0 +1,42 @@
+kind: pipeline
+type: docker
+name: build
+platform:
+  os: linux
+  arch: amd64
+steps:
+  - name: build
+    image: docker
+    commands:
+      - docker build -t ugrsicalsrv .
+    volumes:
+      - name: cache
+        path: /var/run/docker.sock
+trigger:
+  branch:
+    - master
+  event:
+    - push
+    - rollback
+volumes:
+  - name: cache
+    host:
+      path: /var/run/docker.sock
+---
+kind: pipeline
+type: exec
+name: deploy
+platform:
+  os: linux
+  arch: amd64
+clone:
+  disable: true
+steps:
+  - name: deploy
+    commands:
+      - cd /app/ugrsicalsrv
+      - docker-compose up -d
+      - docker image prune -f
+
+depends_on:
+  - build

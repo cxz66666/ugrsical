@@ -1,0 +1,14 @@
+# you need put this file in your drone exec machine, and edit .drone.yml which command is `cd /app/ugrsicalsrv`,
+# so you need `mkdir /app/ugrsicalsrv` in this machine, and put this file in this directory.
+# don't forget to `mkdir configs` in this dir, and put your server.json and config.json in here, which will bind mount to docker container.
+version: '3'
+services:
+  app:
+    image: ugrsicalsrv:latest
+    restart: always
+      #environment:
+    ports:
+      - 5678:5678
+    volumes:
+      - ./configs/server.json:/app/configs/server.json
+      - ./configs/config.json:/app/configs/config.json
