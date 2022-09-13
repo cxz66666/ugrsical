@@ -1,6 +1,30 @@
 {
   "lastUpdated": 20220913,
   "tweaks": [
+    {
+      "TweakType": 2,
+      "Description": "[国庆节] 放假调休，课程对调",
+      "From": 20221006,
+      "To": 20221008
+    },
+    {
+      "TweakType": 2,
+      "Description": "[国庆节] 放假调休，课程对调",
+      "From": 20221007,
+      "To": 20221009
+    },
+    {
+      "TweakType": 0,
+      "Description": "[秋季运动会] 补休",
+      "From": 20221021,
+      "To": 20221021
+    },
+    {
+      "TweakType": 1,
+      "Description": "[秋季运动会] 补上10月21日（周五）课程",
+      "From": 20221021,
+      "To": 20221015
+    }
   ],
   "termConfigs": [
     {

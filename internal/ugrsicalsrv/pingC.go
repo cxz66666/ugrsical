@@ -1,7 +1,11 @@
 package ugrsicalsrv
 
-import "github.com/gofiber/fiber/v2"
+import (
+	"net/http"
 
-func PingEp(ctx *fiber.Ctx) error {
-	return ctx.SendString("pong")
+	"github.com/gin-gonic/gin"
+)
+
+func PingEp(ctx *gin.Context) {
+	ctx.String(http.StatusOK, "pong")
 }

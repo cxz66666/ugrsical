@@ -6,8 +6,9 @@ import (
 	"encoding/base64"
 	"fmt"
 	"io"
+	"net/http"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gin-gonic/gin"
 )
 
 func encrypt(b []byte) ([]byte, error) {
@@ -19,11 +20,12 @@ func encrypt(b []byte) ([]byte, error) {
 	return d, nil
 }
 
-func SetupPage(ctx *fiber.Ctx) error {
-	u := ctx.FormValue("username")
-	p := ctx.FormValue("password")
+func SetupPage(ctx *gin.Context) {
+	u, _ := ctx.GetPostForm("username")
+	p, _ := ctx.GetPostForm("password")
 	if u == "" || p == "" {
-		return ctx.SendString("用户名或密码未输入")
+		ctx.String(http.StatusOK, "用户名或密码未输入")
+		return
 	}
 	uP := bytes.Repeat([]byte("#"), 12)
 	l := 12
@@ -37,17 +39,20 @@ func SetupPage(ctx *fiber.Ctx) error {
 	b := append(uP, []byte(p)...)
 	b, err := encrypt(b)
 	if err != nil {
-		return err
+		ctx.String(http.StatusOK, err.Error())
+		return
 	}
 	en := base64.URLEncoding.EncodeToString(b)
 
 	d := sd
 	d.Link = fmt.Sprintf("%s/ical?p=%s", _serverConfig.Host, en)
-	ctx.Set("Content-Type", "text/html")
+	ctx.Header("Content-Type", "text/html")
 	buffer := bytes.NewBuffer([]byte(""))
 	err = setupTpl.Execute(buffer, d)
 	if err != nil {
-		return err
+		ctx.String(http.StatusOK, err.Error())
+		return
 	}
-	return ctx.SendString(buffer.String())
+	ctx.String(http.StatusOK, buffer.String())
+	return
 }

@@ -1,7 +1,7 @@
 {
   "enckey": "D*F-JaNdRgUkXp2s5v8y/B?E(H+KbPeS",
-  "host": "localhost",
-  "port": 3000,
+  "host": "localhost:5678",
+  "port": 5678,
   "config": "configs/config.json",
   "ip_header": "",
   "redis_addr": "",

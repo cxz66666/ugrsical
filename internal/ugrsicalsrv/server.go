@@ -14,8 +14,8 @@ import (
 
 	"ugrs-ical/pkg/zjuservice"
 
+	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis/v8"
-	"github.com/gofiber/fiber/v2"
 	"github.com/rs/zerolog/log"
 )
 
@@ -157,15 +157,26 @@ func ListenAndServe() error {
 	}
 	sd.Exams = exams
 
-	app := fiber.New()
+	app := gin.New()
+	app.Use(gin.Logger())
+	app.Use(gin.Recovery())
+
 	setRoutes(app)
-	return app.Listen(fmt.Sprintf(":%d", _serverConfig.Port))
+
+	log.Ctx(context.Background()).Info().Msgf("[server] running on %d", _serverConfig.Port)
+
+	return app.Run(fmt.Sprintf(":%d", _serverConfig.Port))
+
 }
 
-func setRoutes(app *fiber.App) {
-	app.Use(RateLimiterM)
-	app.Static("/", "./web/app")
-	app.Post("/", SetupPage)
-	app.Get("/ical", FetchCal)
-	app.Get("/ping", PingEp)
+func setRoutes(app *gin.Engine) {
+	app.Use(RateLimiterM())
+	app.GET("/", func(c *gin.Context) {
+		c.Redirect(302, "/static")
+	})
+	app.GET("/ical", FetchCal)
+	app.GET("/ping", PingEp)
+	app.POST("/static", SetupPage)
+	app.Static("/static", "./web/app")
+
 }

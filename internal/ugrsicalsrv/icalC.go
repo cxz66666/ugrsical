@@ -4,10 +4,12 @@ import (
 	"context"
 	"encoding/base64"
 	"errors"
+	"fmt"
+	"net/http"
 
 	common2 "ugrs-ical/internal/common"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/rs/zerolog/log"
 )
@@ -25,18 +27,22 @@ func decrypt(b []byte) ([]byte, error) {
 	return p, nil
 }
 
-func FetchCal(ctx *fiber.Ctx) error {
+func FetchCal(ctx *gin.Context) {
 	p := ctx.Query("p")
+	fmt.Println(p)
 	if p == "" {
-		return ctx.SendString("invalid p")
+		ctx.String(http.StatusOK, "invalid p")
+		return
 	}
 	b, err := base64.URLEncoding.DecodeString(p)
 	if err != nil {
-		return ctx.SendString("invalid p2")
+		ctx.String(http.StatusOK, "invalid p2")
+		return
 	}
 	unpw, err := decrypt(b)
 	if err != nil {
-		return ctx.SendString("invalid p3")
+		ctx.String(http.StatusOK, "invalid p2")
+		return
 	}
 	un := unpw[:12]
 	pw := unpw[12:]
@@ -50,9 +56,11 @@ func FetchCal(ctx *fiber.Ctx) error {
 	c := log.With().Str("u", string(un)).Str("r", uuid.NewString()).Logger().WithContext(context.Background())
 	vCal, err := common2.GetBothCalendar(c, string(un), string(pw))
 	if err != nil {
-		return ctx.SendString(err.Error())
+		ctx.String(http.StatusOK, err.Error())
+		return
 	}
 
-	ctx.Set("Content-Type", "text/calendar")
-	return ctx.SendString(vCal.GetICS(""))
+	ctx.Header("Content-Type", "text/calendar")
+	ctx.Data(http.StatusOK, "text/calendar", []byte(vCal.GetICS("")))
+	return
 }

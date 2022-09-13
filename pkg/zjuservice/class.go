@@ -89,41 +89,41 @@ func NewClassPeriod(periodNumber int) ClassPeriod {
 		Hour = 8
 		Minute = 50
 	case 3:
-		Hour = 9
-		Minute = 50
+		Hour = 10
+		Minute = 0
 	case 4:
 		Hour = 10
-		Minute = 40
+		Minute = 50
 	case 5:
 		Hour = 11
-		Minute = 30
+		Minute = 40
 	case 6:
 		Hour = 13
-		Minute = 15
+		Minute = 25
 	case 7:
 		Hour = 14
-		Minute = 5
+		Minute = 15
 	case 8:
-		Hour = 14
-		Minute = 55
-	case 9:
 		Hour = 15
-		Minute = 55
-	case 10:
+		Minute = 05
+	case 9:
 		Hour = 16
-		Minute = 45
+		Minute = 15
+	case 10:
+		Hour = 17
+		Minute = 05
 	case 11:
 		Hour = 18
-		Minute = 30
+		Minute = 50
 	case 12:
 		Hour = 19
-		Minute = 20
+		Minute = 40
 	case 13:
 		Hour = 20
-		Minute = 10
+		Minute = 30
 	default:
 		Hour = 21
-		Minute = 0
+		Minute = 20
 	}
 	return ClassPeriod{
 		hour:   Hour,

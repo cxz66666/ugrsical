@@ -141,10 +141,20 @@ func (c *ZjuamClient) Login(ctx context.Context, payloadUrl, username, password 
 		"execution": {string(csrf)},
 		"_eventId":  {"submit"},
 	})
-	//_, _ = io.ReadAll(lRes.Body)
+	content, err := io.ReadAll(lRes.Body)
 	lRes.Body.Close()
-
-	// 不代表登录成功
+	if err != nil {
+		e := fmt.Sprintf("can not read login response: %s", err)
+		log.Ctx(ctx).Error().Msg(e)
+		return errors.New(e)
+	}
+	if lRes.StatusCode != http.StatusOK {
+		return errors.New("http返回值错误")
+	}
+	if strings.Contains(string(content), "用户名或密码错误") {
+		return errors.New("用户名或密码错误")
+	}
+	// 不代表登录成功(大概率成功)
 	return nil
 }
 

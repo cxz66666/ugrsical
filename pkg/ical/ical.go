@@ -49,7 +49,9 @@ func (v *VEvent) String() string {
 		b.WriteString(fmt.Sprintf("LOCATION: %s\r\n", v.Location))
 	}
 	b.WriteString(fmt.Sprintf("SEQUENCE:0\r\nSUMMARY;LANGUAGE=zh-cn:%s\r\nTRANSP:OPAQUE\r\nUID:%s\r\n", v.Summary, v.GetHash()))
-	b.WriteString("BEGIN:VALARM\r\nTRIGGER:-PT15M\r\nACTION:DISPLAY\r\nDESCRIPTION:提醒\r\nEND:VALARM\r\nEND:VEVENT\r\n")
+	// Don't display !!!!
+	b.WriteString("END:VEVENT\r\n")
+	//b.WriteString("BEGIN:VALARM\r\nTRIGGER:-PT15M\r\nACTION:DISPLAY\r\nDESCRIPTION:提醒\r\nEND:VALARM\r\nEND:VEVENT\r\n")
 
 	return b.String()
 }

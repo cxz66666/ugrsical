@@ -67,6 +67,9 @@ archives:
       - web/*
 checksum:
   name_template: 'checksums.txt'
+release:
+  draft: true
+
 snapshot:
   name_template: "{{ incpatch .Version }}-next"
 changelog:
