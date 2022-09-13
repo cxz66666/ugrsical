@@ -3,7 +3,6 @@ package zjuservice
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 	"net/url"
@@ -68,7 +67,6 @@ func (zs *ZjuService) GetClassTimeTable(academicYear string, term ClassTerm, stu
 	}
 	content, err := io.ReadAll(resp.Body)
 	resp.Body.Close()
-	fmt.Println(content)
 
 	classTimeTable := ZjuResWrapperStr[ZjuWeeklyScheduleRes]{}
 	if err = json.Unmarshal(content, &classTimeTable); err != nil {
@@ -108,7 +106,7 @@ func (zs *ZjuService) GetExamInfo(academicYear string, term ExamTerm, stuId stri
 	}
 	content, err := io.ReadAll(resp.Body)
 	resp.Body.Close()
-	fmt.Println(content)
+
 	examOutlines := ZjuResWrapperStr[ZjuExamOutlineRes]{}
 	if err = json.Unmarshal(content, &examOutlines); err != nil {
 		log.Ctx(zs.ctx).Error().Err(err).Msg("unmarshal failed")

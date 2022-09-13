@@ -31,7 +31,7 @@ var (
 	outputFile   string
 	forceWrite   bool
 	rootCmd      = &cobra.Command{
-		Use:           "ugrsical -u username -p password -c config [-o output] [-f]",
+		Use:           "ugrsical -u username -p password [-c config] [-t 0] [-o output] [-f]",
 		Short:         "ugrsical is a tool for generating class schedules iCalendar file",
 		Long:          `A command-line utility for generating class schedule iCalender file from extracting data from ZJU DingDing API.`,
 		SilenceErrors: true,
@@ -70,6 +70,7 @@ func CliMain(cmd *cobra.Command, args []string) error {
 		userName = up.Username
 		password = up.Password
 	}
+
 	if userName == "" || password == "" {
 		return errors.New("no username or password set, exiting")
 	}

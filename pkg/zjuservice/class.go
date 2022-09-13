@@ -154,7 +154,8 @@ func isEvenWeek(mondayOfTermBegin, target time.Time) bool {
 }
 
 func ClassToVEvents(classes []ZjuClass, termConfig TermConfig, tweaks []Tweak) []ical.VEvent {
-	dataLength := termConfig.End.Day() - termConfig.Begin.Day() + 2
+
+	dataLength := int(termConfig.End.Sub(termConfig.Begin).Hours()/24) + 2
 	shadowDates := make(map[time.Time]time.Time, dataLength)
 	for currentDate := termConfig.Begin; currentDate.Before(termConfig.End) || currentDate.Equal(termConfig.End); currentDate = currentDate.Add(time.Hour * 24) {
 		shadowDates[currentDate] = currentDate
@@ -195,7 +196,7 @@ func ClassToVEvents(classes []ZjuClass, termConfig TermConfig, tweaks []Tweak) [
 	mondayOfFirstWeek := termConfig.Begin.Add(time.Hour * time.Duration(-24*(termBeginDayOfWeek-1))).
 		Add(time.Hour * time.Duration(-24*7*(termConfig.FirstWeekNo-1)))
 
-	events := make([]ical.VEvent, 3*dataLength)
+	events := make([]ical.VEvent, 0, 3*dataLength)
 	for actualDate, dateOfClass := range shadowDates {
 		classesOfCurrentDate := classOfDay[dateOfClass.Weekday()]
 		isCurrentDateEvenWeek := isEvenWeek(mondayOfFirstWeek, dateOfClass)

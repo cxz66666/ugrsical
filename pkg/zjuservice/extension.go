@@ -42,6 +42,17 @@ func ClassTermToDescriptionString(t ClassTerm) string {
 	}
 }
 
+func ExamTermToDescriptionString(t ExamTerm) string {
+	switch t {
+	case AutumnWinter:
+		return "秋冬"
+	case SpringSummer:
+		return "春夏"
+	default:
+		return ""
+	}
+}
+
 func ExamTermToQueryString(t ExamTerm) string {
 	switch t {
 	case AutumnWinter:

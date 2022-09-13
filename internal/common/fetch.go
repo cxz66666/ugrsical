@@ -38,11 +38,11 @@ func GetClassCalendar(ctx context.Context, username, password string) (ical.VCal
 			return ical.VCalendar{}, errors.New("配置文件错误，未找到指定学期的具体配置")
 		}
 		classOutline := zs.GetClassTimeTable(item.Year, item.Term, username)
-		log.Ctx(ctx).Info().Msgf("generating class vevents %d-%d", item.Year, item.Term)
+		log.Ctx(ctx).Info().Msgf("generating class vevents %s-%s", item.Year, zjuservice.ClassTermToDescriptionString(item.Term))
 		// classes to events
 		list := zjuservice.ClassToVEvents(classOutline, termConfigs[index], tweaks)
 		vCal.VEvents = append(vCal.VEvents, list...)
-		log.Ctx(ctx).Info().Msgf("generated class vevents %d-%d", item.Year, item.Term)
+		log.Ctx(ctx).Info().Msgf("generated class vevents %s-%s", item.Year, zjuservice.ClassTermToDescriptionString(item.Term))
 	}
 	log.Ctx(ctx).Info().Msgf("get class vCal success ")
 
@@ -62,12 +62,12 @@ func GetExamCalendar(ctx context.Context, username, password string) (ical.VCale
 
 	for _, item := range zs.GetExamTerms() {
 		examOutline := zs.GetExamInfo(item.Year, item.Term, username)
-		log.Ctx(ctx).Info().Msgf("generating exam vevents %d-%d", item.Year, item.Term)
+		log.Ctx(ctx).Info().Msgf("generating exam vevents %s-%s", item.Year, zjuservice.ExamTermToDescriptionString(item.Term))
 		// exam to events
 		for _, exam := range examOutline {
 			vCal.VEvents = append(vCal.VEvents, exam.ToVEventList()...)
 		}
-		log.Ctx(ctx).Info().Msgf("generated exam vevents %d-%d", item.Year, item.Term)
+		log.Ctx(ctx).Info().Msgf("generated exam vevents %s-%s", item.Year, zjuservice.ExamTermToDescriptionString(item.Term))
 	}
 	log.Ctx(ctx).Info().Msgf("get exam vCal success")
 
@@ -94,22 +94,22 @@ func GetBothCalendar(ctx context.Context, username, password string) (ical.VCale
 			return ical.VCalendar{}, errors.New("配置文件错误，未找到指定学期的具体配置")
 		}
 		classOutline := zs.GetClassTimeTable(item.Year, item.Term, username)
-		log.Ctx(ctx).Info().Msgf("generating class vevents %d-%d", item.Year, item.Term)
+		log.Ctx(ctx).Info().Msgf("generating class vevents %s-%s", item.Year, zjuservice.ClassTermToDescriptionString(item.Term))
 		// classes to events
 		list := zjuservice.ClassToVEvents(classOutline, termConfigs[index], tweaks)
 		vCal.VEvents = append(vCal.VEvents, list...)
-		log.Ctx(ctx).Info().Msgf("generated class vevents %d-%d", item.Year, item.Term)
+		log.Ctx(ctx).Info().Msgf("generated class vevents %s-%s", item.Year, zjuservice.ClassTermToDescriptionString(item.Term))
 	}
 	log.Ctx(ctx).Info().Msgf("get class vCal success ")
 
 	for _, item := range zs.GetExamTerms() {
 		examOutline := zs.GetExamInfo(item.Year, item.Term, username)
-		log.Ctx(ctx).Info().Msgf("generating exam vevents %d-%d", item.Year, item.Term)
+		log.Ctx(ctx).Info().Msgf("generating exam vevents %s-%s", item.Year, zjuservice.ExamTermToDescriptionString(item.Term))
 		// exam to events
 		for _, exam := range examOutline {
 			vCal.VEvents = append(vCal.VEvents, exam.ToVEventList()...)
 		}
-		log.Ctx(ctx).Info().Msgf("generated exam vevents %d-%d", item.Year, item.Term)
+		log.Ctx(ctx).Info().Msgf("generated exam vevents %s-%s", item.Year, zjuservice.ExamTermToDescriptionString(item.Term))
 	}
 	log.Ctx(ctx).Info().Msgf("get exam vCal success")
 

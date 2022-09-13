@@ -64,6 +64,7 @@ archives:
       - LICENSE
       - README.md
       - configs/*
+      - web/*
 checksum:
   name_template: 'checksums.txt'
 snapshot:

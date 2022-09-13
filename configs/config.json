@@ -1,83 +1,29 @@
 {
-  "lastUpdated": 2021030201,
+  "lastUpdated": 20220913,
   "tweaks": [
-    {
-      "TweakType": 0,
-      "Description": "[清明节] 放假，不统一安排补课",
-      "From": 20210404,
-      "To": 20210404
-    },
-    {
-      "TweakType": 0,
-      "Description": "[清明节] 补休，放假停课",
-      "From": 20210405,
-      "To": 20210405
-    },
-    {
-      "TweakType": 1,
-      "Description": "[清明节] 补上4月5日（周一）课程",
-      "From": 20210405,
-      "To": 20210426
-    },
-    {
-      "TweakType": 0,
-      "Description": "[劳动节] 放假",
-      "From": 20210501,
-      "To": 20210504
-    },
-    {
-      "TweakType": 1,
-      "Description": "[劳动节] 上5月8日（周六）课程",
-      "From": 20210508,
-      "To": 20210505
-    },
-    {
-      "TweakType": 1,
-      "Description": "[劳动节] 上5月5日（周三）课程",
-      "From": 20210505,
-      "To": 20210508
-    },
-    {
-      "TweakType": 1,
-      "Description": "[劳动节] 补上5月3日（周一）课程",
-      "From": 20210503,
-      "To": 20210628
-    },
-    {
-      "TweakType": 1,
-      "Description": "[劳动节] 补上5月4日（周二）课程",
-      "From": 20210504,
-      "To": 20210629
-    },
-    {
-      "TweakType": 0,
-      "Description": "[端午节] 放假停课，不统一安排补课",
-      "From": 20210614,
-      "To": 20210614
-    }
   ],
   "termConfigs": [
     {
-      "Year": "2020-2021",
-      "Term": 4,
-      "Begin": 20210301,
-      "End": 20210426,
+      "Year": "2022-2023",
+      "Term": 0,
+      "Begin": 20220912,
+      "End": 20221106,
       "FirstWeekNo": 1
     },
     {
-      "Year": "2020-2021",
-      "Term": 5,
-      "Begin": 20210503,
-      "End": 20210629,
+      "Year": "2022-2023",
+      "Term": 1,
+      "Begin": 20221107,
+      "End": 20230111,
       "FirstWeekNo": 1
     }
   ],
   "classTerms": [
-    "2020-2021:4",
-    "2020-2021:5"
+    "2022-2023:0",
+    "2022-2023:1"
   ],
   "examTerms": [
-    "2020-2021:1"
+    "2022-2023:0"
   ]
 }
 

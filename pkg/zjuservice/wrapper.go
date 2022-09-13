@@ -8,7 +8,7 @@ import (
 
 type ZjuResWrapperStr[T ZjuWeeklyScheduleRes | ZjuExamOutlineRes] struct {
 	Data      T      `json:"data"`
-	ErrorCode int    `json:"error_code"`
+	ErrorCode string `json:"error_code"`
 	Message   string `json:"message"`
 }
 
@@ -54,7 +54,7 @@ func (zwsc ZjuWeeklyScheduleClass) ToZjuClass() *ZjuClass {
 	if len(res.TermArrangements) == 0 {
 		return nil
 	}
-	year, err := strconv.ParseInt(zwsc.ClassId, 10, 64)
+	year, err := strconv.ParseInt(zwsc.ClassId[1:5], 10, 64)
 	if err != nil {
 		return nil
 	}
