@@ -6,15 +6,16 @@ Parse ZJU ugrs class timetable and generate iCalender file for you. If you are g
 
 ### How to use 
 
- we provide two binary file, ugrsical and ugrsicalsrv
+ we provide two binary file, ugrsical and ugrsicalsrv, both of them are same function, but one is running on your machine but the other is running on server and expose web page.
 
-#### use ugrsical(locally)
+#### use ugrsical(local)
 
 - download from release page 
 - don't need to edit configs
 - use ` ./ugrsical -u [userId] -p [password]` to generate
+- also can use `./ugrsical --help` to find advanced usage
 
-#### use ugrsicalsrv(as server)
+#### use ugrsicalsrv(server)
 
 - download from release page
 
@@ -36,3 +37,52 @@ Parse ZJU ugrs class timetable and generate iCalender file for you. If you are g
   ~~~
 
 - use `./ugrsicalsrv` and open `host::port` to use!
+
+### More configs
+ 
+- we provide three config file under /configs: `upfile.json`, `config.json`, `server.json`
+- `upfile.json` is used for ugrsical to get username and password from file
+- `config.json` is used for ugrsical and ugrsicalsrv to get generated config, which is highly recommended not to modify, but if you are not satisfied with the generated config, you can modify it with follow rules:
+  ~~~js
+  {
+  "lastUpdated": 20220913, //just a flag
+  "tweaks": [   //some holidays for zju course schedule changed
+    {
+      "TweakType": 2, //0:clear,1:copy,2:exchange
+      "Description": "[国庆节] 放假调休，课程对调", //description
+      "From": 20221006, //format YYYYMMDD
+      "To": 20221008 
+    },
+  ],
+  "termConfigs": [ // detailed term informations
+    {
+      "Year": "2022-2023",
+      "Term": 0, // see pkg/zjuservice/class.go for details
+      "Begin": 20220912,
+      "End": 20221106,
+      "FirstWeekNo": 1
+    },
+    {
+      "Year": "2022-2023",
+      "Term": 1,
+      "Begin": 20221107,
+      "End": 20230111,
+      "FirstWeekNo": 1
+    }
+  ],
+  "classTerms": [ //want query class terms, must be in termConfigs
+    "2022-2023:0",//see pkg/zjuservice/class.go for details
+    "2022-2023:1"
+  ],
+  "examTerms": [ // want query exam terms, must be in termConfigs
+    "2022-2023:0"  //0 is fall and winter term, 1 is spring and summer term
+  ]
+  }
+  ~~~
+  
+- server.json is used for ugrsicalsrv to get server config, which is must modified for yourown server
+- anyway, please don't move config file to another path(which is hard code!)
+
+
+### Disclaimer
+该项目仅供学习交流使用，作者不对产生结果正确性与时效性做实时保证，使用者需自行承担因程序逻辑错误或课程时间变动导致的后果。
