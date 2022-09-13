@@ -37,7 +37,10 @@ func GetClassCalendar(ctx context.Context, username, password string) (ical.VCal
 		if index == -1 {
 			return ical.VCalendar{}, errors.New("配置文件错误，未找到指定学期的具体配置")
 		}
-		classOutline := zs.GetClassTimeTable(item.Year, item.Term, username)
+		classOutline, err := zs.GetClassTimeTable(item.Year, item.Term, username)
+		if err != nil {
+			return ical.VCalendar{}, err
+		}
 		log.Ctx(ctx).Info().Msgf("generating class vevents %s-%s", item.Year, zjuservice.ClassTermToDescriptionString(item.Term))
 		// classes to events
 		list := zjuservice.ClassToVEvents(classOutline, termConfigs[index], tweaks)
@@ -61,7 +64,10 @@ func GetExamCalendar(ctx context.Context, username, password string) (ical.VCale
 	vCal := ical.VCalendar{}
 
 	for _, item := range zs.GetExamTerms() {
-		examOutline := zs.GetExamInfo(item.Year, item.Term, username)
+		examOutline, err := zs.GetExamInfo(item.Year, item.Term, username)
+		if err != nil {
+			return ical.VCalendar{}, err
+		}
 		log.Ctx(ctx).Info().Msgf("generating exam vevents %s-%s", item.Year, zjuservice.ExamTermToDescriptionString(item.Term))
 		// exam to events
 		for _, exam := range examOutline {
@@ -93,7 +99,10 @@ func GetBothCalendar(ctx context.Context, username, password string) (ical.VCale
 		if index == -1 {
 			return ical.VCalendar{}, errors.New("配置文件错误，未找到指定学期的具体配置")
 		}
-		classOutline := zs.GetClassTimeTable(item.Year, item.Term, username)
+		classOutline, err := zs.GetClassTimeTable(item.Year, item.Term, username)
+		if err != nil {
+			return ical.VCalendar{}, err
+		}
 		log.Ctx(ctx).Info().Msgf("generating class vevents %s-%s", item.Year, zjuservice.ClassTermToDescriptionString(item.Term))
 		// classes to events
 		list := zjuservice.ClassToVEvents(classOutline, termConfigs[index], tweaks)
@@ -103,7 +112,10 @@ func GetBothCalendar(ctx context.Context, username, password string) (ical.VCale
 	log.Ctx(ctx).Info().Msgf("get class vCal success ")
 
 	for _, item := range zs.GetExamTerms() {
-		examOutline := zs.GetExamInfo(item.Year, item.Term, username)
+		examOutline, err := zs.GetExamInfo(item.Year, item.Term, username)
+		if err != nil {
+			return ical.VCalendar{}, err
+		}
 		log.Ctx(ctx).Info().Msgf("generating exam vevents %s-%s", item.Year, zjuservice.ExamTermToDescriptionString(item.Term))
 		// exam to events
 		for _, exam := range examOutline {

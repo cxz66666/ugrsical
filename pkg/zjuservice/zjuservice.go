@@ -3,6 +3,7 @@ package zjuservice
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"io"
 	"net/http"
 	"net/url"
@@ -23,8 +24,8 @@ const (
 
 type IZjuService interface {
 	Login(username, password string) error
-	GetClassTimeTable(academicYear string, term ClassTerm, stuId string) []ZjuClass
-	GetExamInfo(academicYear string, term ExamTerm, stuId string) []ZjuExamOutline
+	GetClassTimeTable(academicYear string, term ClassTerm, stuId string) ([]ZjuClass, error)
+	GetExamInfo(academicYear string, term ExamTerm, stuId string) ([]ZjuExamOutline, error)
 	GetTermConfigs() []TermConfig
 	GetTweaks() []Tweak
 	GetClassTerms() []ClassYearAndTerm
@@ -45,7 +46,7 @@ func (zs *ZjuService) Login(username, password string) error {
 	return zs.ZjuClient.Login(context.Background(), kAppServiceLoginUrl, username, password)
 }
 
-func (zs *ZjuService) GetClassTimeTable(academicYear string, term ClassTerm, stuId string) []ZjuClass {
+func (zs *ZjuService) GetClassTimeTable(academicYear string, term ClassTerm, stuId string) ([]ZjuClass, error) {
 	data := url.Values{}
 	data.Set("xn", academicYear)
 	data.Set("xq", ClassTermToQueryString(term))
@@ -54,7 +55,7 @@ func (zs *ZjuService) GetClassTimeTable(academicYear string, term ClassTerm, stu
 	req, err := http.NewRequest("POST", kAppServiceGetWeekClassInfo, strings.NewReader(encodedData))
 	if err != nil {
 		log.Ctx(zs.ctx).Error().Err(err).Msg("new request failed")
-		return nil
+		return nil, errors.New("new request failed")
 	}
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	req.Header.Add("Content-Length", strconv.Itoa(len(data.Encode())))
@@ -63,15 +64,15 @@ func (zs *ZjuService) GetClassTimeTable(academicYear string, term ClassTerm, stu
 	resp, err := zs.ZjuClient.Client().Do(req)
 	if err != nil {
 		log.Ctx(zs.ctx).Error().Err(err).Msg("POST to Class API failed")
-		return nil
+		return nil, errors.New("POST to Class API failed")
 	}
 	content, err := io.ReadAll(resp.Body)
 	resp.Body.Close()
 
 	classTimeTable := ZjuResWrapperStr[ZjuWeeklyScheduleRes]{}
 	if err = json.Unmarshal(content, &classTimeTable); err != nil {
-		log.Ctx(zs.ctx).Error().Err(err).Msg("unmarshal failed")
-		return nil
+		log.Ctx(zs.ctx).Error().Err(err).Msg("unmarshal failed, maybe ZJU DingDing API 503")
+		return nil, errors.New("unmarshal failed, maybe ZJU DingDing API 503")
 	}
 
 	res := make([]ZjuClass, 0)
@@ -81,10 +82,10 @@ func (zs *ZjuService) GetClassTimeTable(academicYear string, term ClassTerm, stu
 			res = append(res, *tmp)
 		}
 	}
-	return res
+	return res, nil
 }
 
-func (zs *ZjuService) GetExamInfo(academicYear string, term ExamTerm, stuId string) []ZjuExamOutline {
+func (zs *ZjuService) GetExamInfo(academicYear string, term ExamTerm, stuId string) ([]ZjuExamOutline, error) {
 	data := url.Values{}
 	data.Set("xn", academicYear)
 	data.Set("xq", ExamTermToQueryString(term))
@@ -93,7 +94,7 @@ func (zs *ZjuService) GetExamInfo(academicYear string, term ExamTerm, stuId stri
 	req, err := http.NewRequest("POST", kAppServiceGetExamOutlineInfo, strings.NewReader(encodedData))
 	if err != nil {
 		log.Ctx(zs.ctx).Error().Err(err).Msg("new request failed")
-		return nil
+		return nil, errors.New("new request failed")
 	}
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	req.Header.Add("Content-Length", strconv.Itoa(len(data.Encode())))
@@ -102,18 +103,18 @@ func (zs *ZjuService) GetExamInfo(academicYear string, term ExamTerm, stuId stri
 	resp, err := zs.ZjuClient.Client().Do(req)
 	if err != nil {
 		log.Ctx(zs.ctx).Error().Err(err).Msg("POST to Class API failed")
-		return nil
+		return nil, errors.New("POST to Class API failed")
 	}
 	content, err := io.ReadAll(resp.Body)
 	resp.Body.Close()
 
 	examOutlines := ZjuResWrapperStr[ZjuExamOutlineRes]{}
 	if err = json.Unmarshal(content, &examOutlines); err != nil {
-		log.Ctx(zs.ctx).Error().Err(err).Msg("unmarshal failed")
-		return nil
+		log.Ctx(zs.ctx).Error().Err(err).Msg("unmarshal failed, maybe ZJU DingDing API 503")
+		return nil, errors.New("unmarshal failed, maybe ZJU DingDing API 503")
 	}
 
-	return examOutlines.Data.ExamOutlineList
+	return examOutlines.Data.ExamOutlineList, nil
 }
 
 func (zs *ZjuService) GetTermConfigs() []TermConfig {
