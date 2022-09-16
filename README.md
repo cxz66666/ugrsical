@@ -83,6 +83,14 @@ Parse ZJU ugrs class timetable and generate iCalender file for you. If you are g
 - server.json is used for ugrsicalsrv to get server config, which is must modified for yourown server
 - anyway, please don't move config file to another path(which is hard code!)
 
+### Q&A
+
+- **Q: I generate a ics file by ugrsical, but can't import it on my iphone?**
+- A: ical file can be directly import on Mac, Windows, Linux and Android, but can't be opened on iphone directly, you need send it to your email(or others email) and open it on `mail` APP`, or you can use our online playground!
+- **Q: I can't generate ics file by ugrsical, even I can't run it!**
+- A: please check your download file from release page, you need download the binary file which is suitable for your machine, if you are fresh man and not sure, please download the `X86_64` version, and if you are using `arm`, please download the `Arm64` version, if you are using M1/M2 mac, please download the `Darwin_arm64` version.
+- **Q: I am worried about the security of online services, what should I do if my account number and password are stolen**
+- **A: The author pledges his reputation not to conduct private collections, you also can build your own server by manual**
 
 ### Disclaimer
 该项目仅供学习交流使用，作者不对产生结果正确性与时效性做实时保证，使用者需自行承担因程序逻辑错误或课程时间变动导致的后果。
