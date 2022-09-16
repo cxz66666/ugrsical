@@ -1,5 +1,5 @@
 .wrapper {
-    display: block;
+    /* display: block; */
     overflow: hidden;
     position: relative;
     width: 100%;
@@ -68,6 +68,8 @@
 .header {
     padding-top: 5rem;
     background-color: #f4f5f6;
+    height: 97vh;
+    overflow: auto;
 }
 
 .header .container {
@@ -88,4 +90,15 @@ input[type="text"],input[type="password"] {
 
 .bold {
     font-weight: bold;
+}
+@media screen and (max-width: 768px) {
+    a > h1{
+        font-size: 200px;
+    }
+    .description{
+        font-size: 20px;
+    }
+    label{
+        font-size: 20px;
+    }
 }
