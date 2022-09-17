@@ -8,6 +8,16 @@
     <link rel="stylesheet" href="/static/milligram.min.css">
     <link rel="stylesheet" href="/static/site.css">
 </head>
+
+<script type="text/javascript" src="/static/checkua.js"></script>
+<script type="text/javascript">
+    window.onload=function(){
+        if(!check_ua()) {
+            window.location.href = "/static/index.html";
+        }
+    }
+</script>
+
 <body>
 <main class="wrapper">
     <nav class="navigation">
