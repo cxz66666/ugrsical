@@ -32,6 +32,7 @@ Parse ZJU ugrs class timetable and generate iCalender file for you. If you are g
     "ip_header": "", //if you use nginx as reverse proxy, you can set field ip-header to track real ip
     "redis_addr": "",//can be empty(default)
     "redis_pass": "" //can be empty(default)
+    "cache_ttl": 0  //can be empty(default 48h), unit is hour
   }
   
   ~~~

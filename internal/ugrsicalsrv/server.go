@@ -11,6 +11,7 @@ import (
 	"os"
 	"strings"
 	"text/template"
+	"time"
 
 	"ugrs-ical/pkg/zjuservice"
 
@@ -41,6 +42,7 @@ type ServerConfig struct {
 	IpHeader  string `json:"ip_header"`
 	RedisAddr string `json:"redis_addr"`
 	RedisPass string `json:"redis_pass"`
+	CacheTTL  int    `json:"cache_ttl"`
 }
 
 var setupTpl *template.Template
@@ -51,6 +53,7 @@ var sd = SetupData{
 }
 var gcm cipher.AEAD
 var rc *redis.Client
+var cacheTTL time.Duration
 
 func loadServerConfig() error {
 	var r io.Reader
@@ -95,7 +98,7 @@ func ListenAndServe() error {
 		log.Info().Msgf("ugrsicalsrv will get header from %s", _serverConfig.IpHeader)
 	}
 
-	if _serverConfig.RedisAddr == "" || _serverConfig.RedisPass == "" {
+	if _serverConfig.RedisAddr == "" {
 		log.Warn().Msg("redis not set, rate limit won't work")
 	} else {
 		rc = redis.NewClient(&redis.Options{
@@ -110,6 +113,16 @@ func ListenAndServe() error {
 		}
 		log.Info().Msgf("redis ping: %s", pong)
 	}
+
+	if _serverConfig.CacheTTL == 0 {
+		cacheTTL = DurationIcalCache
+	} else if _serverConfig.CacheTTL < 0 {
+		return errors.New("cache ttl must be positive")
+	} else {
+		cacheTTL = time.Duration(_serverConfig.CacheTTL) * time.Second
+	}
+	log.Info().Msgf("cache ttl: %f", cacheTTL.Hours())
+
 	// read template
 	f, err := os.Open("./web/template/setup.html")
 	if err != nil {

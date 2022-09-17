@@ -86,6 +86,7 @@ func GetBothCalendar(ctx context.Context, username, password string) (ical.VCale
 	zs = zjuservice.NewZjuService(ctx)
 
 	if err := zs.Login(username, password); err != nil {
+		log.Ctx(ctx).Error().Err(err).Msg("login failed")
 		return ical.VCalendar{}, err
 	}
 
@@ -101,6 +102,7 @@ func GetBothCalendar(ctx context.Context, username, password string) (ical.VCale
 		}
 		classOutline, err := zs.GetClassTimeTable(item.Year, item.Term, username)
 		if err != nil {
+			log.Ctx(ctx).Error().Err(err).Msgf("get class vevents failed %s-%s", item.Year, zjuservice.ClassTermToDescriptionString(item.Term))
 			return ical.VCalendar{}, err
 		}
 		log.Ctx(ctx).Info().Msgf("generating class vevents %s-%s", item.Year, zjuservice.ClassTermToDescriptionString(item.Term))
@@ -114,6 +116,7 @@ func GetBothCalendar(ctx context.Context, username, password string) (ical.VCale
 	for _, item := range zs.GetExamTerms() {
 		examOutline, err := zs.GetExamInfo(item.Year, item.Term, username)
 		if err != nil {
+			log.Ctx(ctx).Error().Err(err).Msgf("get exam vevents %s-%s failed", item.Year, zjuservice.ExamTermToDescriptionString(item.Term))
 			return ical.VCalendar{}, err
 		}
 		log.Ctx(ctx).Info().Msgf("generating exam vevents %s-%s", item.Year, zjuservice.ExamTermToDescriptionString(item.Term))
