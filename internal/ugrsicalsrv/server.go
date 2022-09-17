@@ -119,7 +119,7 @@ func ListenAndServe() error {
 	} else if _serverConfig.CacheTTL < 0 {
 		return errors.New("cache ttl must be positive")
 	} else {
-		cacheTTL = time.Duration(_serverConfig.CacheTTL) * time.Second
+		cacheTTL = time.Duration(_serverConfig.CacheTTL) * time.Hour
 	}
 	log.Info().Msgf("cache ttl: %f", cacheTTL.Hours())
 
