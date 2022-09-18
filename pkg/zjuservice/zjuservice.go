@@ -71,8 +71,8 @@ func (zs *ZjuService) GetClassTimeTable(academicYear string, term ClassTerm, stu
 
 	classTimeTable := ZjuResWrapperStr[ZjuWeeklyScheduleRes]{}
 	if err = json.Unmarshal(content, &classTimeTable); err != nil {
-		log.Ctx(zs.ctx).Error().Err(err).Msg("unmarshal failed, maybe ZJU DingDing API 503")
-		return nil, errors.New("unmarshal failed, maybe ZJU DingDing API 503")
+		log.Ctx(zs.ctx).Error().Err(err).Msg("unmarshal failed, 请检查用户名密码是否正确，否则为浙大钉钉服务端问题")
+		return nil, errors.New("unmarshal failed, 请检查用户名密码是否正确，否则为浙大钉钉服务端问题")
 	}
 
 	res := make([]ZjuClass, 0)
@@ -110,8 +110,8 @@ func (zs *ZjuService) GetExamInfo(academicYear string, term ExamTerm, stuId stri
 
 	examOutlines := ZjuResWrapperStr[ZjuExamOutlineRes]{}
 	if err = json.Unmarshal(content, &examOutlines); err != nil {
-		log.Ctx(zs.ctx).Error().Err(err).Msg("unmarshal failed, maybe ZJU DingDing API 503")
-		return nil, errors.New("unmarshal failed, maybe ZJU DingDing API 503")
+		log.Ctx(zs.ctx).Error().Err(err).Msg("unmarshal failed, 请检查用户名密码是否正确，否则为浙大钉钉服务端问题")
+		return nil, errors.New("unmarshal failed, 请检查用户名密码是否正确，否则为浙大钉钉服务端问题")
 	}
 
 	return examOutlines.Data.ExamOutlineList, nil

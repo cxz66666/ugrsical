@@ -149,7 +149,7 @@ func (c *ZjuamClient) Login(ctx context.Context, payloadUrl, username, password 
 		return errors.New(e)
 	}
 	if lRes.StatusCode != http.StatusOK {
-		return errors.New("http返回值错误")
+		return errors.New("http返回值错误，请检查用户名密码是否正确")
 	}
 	if strings.Contains(string(content), "用户名或密码错误") {
 		return errors.New("用户名或密码错误")
