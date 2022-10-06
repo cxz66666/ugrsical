@@ -10,9 +10,9 @@ import (
 )
 
 const (
-	nLimit = 10
+	nLimit = 20
 	nTime  = 1
-	pLimit = 10
+	pLimit = 20
 	pTime  = 6
 )
 
