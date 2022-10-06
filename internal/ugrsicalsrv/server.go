@@ -32,6 +32,7 @@ type SetupData struct {
 	Classes []YearAndSemester
 	Exams   []YearAndSemester
 	Link    string
+	SubLink string
 }
 
 type ServerConfig struct {
@@ -50,6 +51,7 @@ var setupTpl *template.Template
 var sd = SetupData{
 	Classes: []YearAndSemester{},
 	Link:    "",
+	SubLink: "",
 }
 var gcm cipher.AEAD
 var rc *redis.Client
@@ -188,6 +190,7 @@ func setRoutes(app *gin.Engine) {
 		c.Redirect(302, "/static")
 	})
 	app.GET("/ical", FetchCal)
+	app.GET("/sub", SubCal)
 	app.GET("/ping", PingEp)
 	app.POST("/static", SetupPage)
 	app.Static("/static", "./web/app")
