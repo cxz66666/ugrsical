@@ -141,6 +141,11 @@ func (c *ZjuamClient) Login(ctx context.Context, payloadUrl, username, password 
 		"execution": {string(csrf)},
 		"_eventId":  {"submit"},
 	})
+	if lRes == nil || err != nil {
+		e := fmt.Sprintf("无法向zjuam提交表单: %s", err)
+		log.Ctx(ctx).Error().Msg(e)
+		return errors.New("无法向zjuam提交表单，怀疑是限制内网访问，请过段时间再来~")
+	}
 	content, err := io.ReadAll(lRes.Body)
 	lRes.Body.Close()
 	if err != nil {
