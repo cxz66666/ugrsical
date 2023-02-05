@@ -1,0 +1,65 @@
+{
+  "lastUpdated": 20220913,
+  "tweaks": [
+    {
+      "TweakType": 2,
+      "Description": "[国庆节] 放假调休，课程对调",
+      "From": 20221006,
+      "To": 20221008
+    },
+    {
+      "TweakType": 0,
+      "Description": "[国庆节] 放假调休，没课辣",
+      "From": 20221001,
+      "To": 20221005
+    },
+    {
+      "TweakType": 2,
+      "Description": "[国庆节] 放假调休，课程对调",
+      "From": 20221007,
+      "To": 20221009
+    },
+    {
+      "TweakType": 0,
+      "Description": "[秋季运动会] 补休",
+      "From": 20221125,
+      "To": 20221125
+    },
+    {
+      "TweakType": 1,
+      "Description": "[秋季运动会] 补上11月25日（周五）课程",
+      "From": 20221125,
+      "To": 20221203
+    },
+    {
+      "TweakType": 0,
+      "Description": "[考试周] 全校停课考试",
+      "From": 20230102,
+      "To": 20230111
+    }
+  ],
+  "termConfigs": [
+    {
+      "Year": "2022-2023",
+      "Term": 0,
+      "Begin": 20220912,
+      "End": 20221106,
+      "FirstWeekNo": 1
+    },
+    {
+      "Year": "2022-2023",
+      "Term": 1,
+      "Begin": 20221107,
+      "End": 20230111,
+      "FirstWeekNo": 1
+    }
+  ],
+  "classTerms": [
+    "2022-2023:0",
+    "2022-2023:1"
+  ],
+  "examTerms": [
+    "2022-2023:0"
+  ]
+}
+
