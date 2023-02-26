@@ -1,61 +1,61 @@
 # ugrsical
+English README [click here](README_en.md)
 
-Parse ZJU ugrs class timetable and generate iCalender file for you. If you are grs student, please use [this](https://github.com/determ1ne/grsical) repo.
+将zju本科生课程表转换为iCal日历格式，方便的导入到Windows/macOS/Linux/Android/Harmony OS/iOS/iPadOS/watchOS/Wear OS 上。
+
+如果您是**研究生**/**选了研究生的课程的本科生**，请使用[这个](https://github.com/determ1ne/grsical)
 
  
 
-### How to use 
+### 开始使用 
 
- we provide two binary file, ugrsical and ugrsicalsrv, both of them are same function, but one is running on your machine but the other is running on server and expose web page.
+我们提供了两种可执行文件，`ugrsical`和`ugrsicalsrv`，两者功能相同，但是`ugrsical`是在本地运行，而`ugrsicalsrv`是在服务器上运行并提供web前端页面。
 
-#### use ugrsical(local)
+#### 使用 ugrsical(local)
 
-- download from release page 
-- don't need to edit configs
-- use ` ./ugrsical -u [userId] -p [password]` to generate
-- also can use `./ugrsical --help` to find advanced usage
+- 从release页面下载 
+- 一般不需要修改配置文件
+- 使用 `./ugrsical -u [userId] -p [password]` 来生成
+- 也可以使用 `./ugrsical --help` 来查看更多用法
 
-#### use ugrsicalsrv(server)
+#### 使用 ugrsicalsrv(server)
 
-- download from release page
-
-- edit configs/server.json
-
-  here is the fields description
-
+- 从release页面下载
+- 修改配置文件`configs/server.json`
+    这里是字段的说明
   ~~~js
   {
-    "enckey": "D*F-JaNdRgUkXp2s5v8y/B?E(H+KbPeS",//aes key(must be 128bits or 192bits or 256bits)"
-    "host": "localhost", //host path(localhost or your server domain)
-    "port": 3000, //must be number
-    "config": "configs/config.json", //path to config.json, can be empty(default)
-    "ip_header": "", //if you use nginx as reverse proxy, you can set field ip-header to track real ip
-    "redis_addr": "",//can be empty(default)
-    "redis_pass": "" //can be empty(default)
-    "cache_ttl": 0  //can be empty(default 48h), unit is hour
+    "enckey": "D*F-JaNdRgUkXp2s5v8y/B?E(H+KbPeS",//aes密钥(必须是128/192/256位bit)
+    "host": "ical.zjueva.net", //你的服务器域名，会被用于生成ics文件的订阅链接
+    "port": 3000, //前端的web端口，必须是数字
+    "config": "configs/config.json", //配置文件路径，可以为空（默认是这个值）
+    "ip_header": "", //如果你的服务器是反向代理，需要填写这个字段，否则可以为空（默认是这个值）
+    "redis_addr": "",// redis地址，用来缓存文件和限制ip，可以为空（默认不使用redis）
+    "redis_pass": "" // redis密码，可以为空（默认无密码或不使用redis）
+    "cache_ttl": 0  //  缓存时间，单位小时，可以为空（默认是0，即不缓存）
   }
   
   ~~~
 
-- use `./ugrsicalsrv` and open `host::port` to use!
+- 使用 `./ugrsicalsrv`，打开`host::port`就能看到前端页面了!
 
-### More configs
+### 配置文件（进阶）
  
-- we provide three config file under /configs: `upfile.json`, `config.json`, `server.json`
-- `upfile.json` is used for ugrsical to get username and password from file
-- `config.json` is used for ugrsical and ugrsicalsrv to get generated config, which is highly recommended not to modify, but if you are not satisfied with the generated config, you can modify it with follow rules:
+- 我们在configs文件夹下提供了三个配置文件: `upfile.json`, `config.json`, `server.json`
+- `upfile.json` 用来配置用户名和密码，当然你可以手动输入
+- `config.json` 用来定义生成日历的内容，推荐不要进行修改，但如果你想生成其他日历内容，请按照如下规则修改:
   ~~~js
   {
-  "lastUpdated": 20220913, //just a flag
-  "tweaks": [   //some holidays for zju course schedule changed
+  "lastUpdated": 20220913, //标识上一次修改日期，无实际意义
+  "tweaks": [   // zju 调休规则
     {
-      "TweakType": 2, //0:clear,1:copy,2:exchange
-      "Description": "[国庆节] 放假调休，课程对调", //description
-      "From": 20221006, //format YYYYMMDD
+      "TweakType": 2, //0:无条件清除From 到 To 日期的课程,1:复制From日期的课程 到 To日期,2:将From日期和To日期的课程对换
+      "Description": "[国庆节] 放假调休，课程对调", //显示的描述
+      "From": 20221006, //格式 YYYYMMDD
       "To": 20221008 
     },
   ],
-  "termConfigs": [ // detailed term informations
+  "termConfigs": [ // 学期配置
     {
       "Year": "2022-2023",
       "Term": 0, // see pkg/zjuservice/class.go for details
@@ -71,27 +71,55 @@ Parse ZJU ugrs class timetable and generate iCalender file for you. If you are g
       "FirstWeekNo": 1
     }
   ],
-  "classTerms": [ //want query class terms, must be in termConfigs
+  "classTerms": [ // 希望查询的课程学期，必须在termConfigs中
     "2022-2023:0",//see pkg/zjuservice/class.go for details
     "2022-2023:1"
   ],
-  "examTerms": [ // want query exam terms, must be in termConfigs
-    "2022-2023:0"  //0 is fall and winter term, 1 is spring and summer term
+  "examTerms": [ // 希望查询的考试学期，必须在termConfigs中
+    "2022-2023:0"  //0是秋冬学期，1是春夏学期
   ]
   }
   ~~~
   
-- server.json is used for ugrsicalsrv to get server config, which is must modified for yourown server
-- anyway, please don't move config file to another path(which is hard code!)
+- server.json 用来配置服务器端，如果你想使用服务端，必须参考上面的配置说明
+- 无论如何，请不要将配置文件移动到其他路径（路径是硬编码的！）
 
-### Q&A
 
-- **Q: I generate a ics file by ugrsical, but can't import it on my iphone?**
-- A: ical file can be directly import on Mac, Windows, Linux and Android, but can't be opened on iphone directly, you need send it to your email(or others email) and open it on `mail` APP`, or you can use our online playground!
-- **Q: I can't generate ics file by ugrsical, even I can't run it!**
-- A: please check your download file from release page, you need download the binary file which is suitable for your machine, if you are fresh man and not sure, please download the `X86_64` version, and if you are using `arm`, please download the `Arm64` version, if you are using M1/M2 mac, please download the `Darwin_arm64` version.
-- **Q: I am worried about the security of online services, what should I do if my account number and password are stolen**
-- **A: The author pledges his reputation not to conduct private collections, you also can build your own server by manual**
 
-### Disclaimer
-该项目仅供学习交流使用，作者不对产生结果正确性与时效性做实时保证，使用者需自行承担因程序逻辑错误或课程时间变动导致的后果。
+### 常见问题
+1. 使用wx，qq等自带的浏览器打开会导致无法订阅与文件下载
+
+2. iOS系统无法直接打开日历文件（在线版可以直接打开），需要发送文件到邮件APP中才能打开
+
+3. iOS日历提示“验证失败”或“不安全的链接”，请在设置-蜂窝网络里检查是否禁止日历APP联网了
+
+4. iOS上自动填充强密码会卡住，（当然需要使用自选密码），请在设置-密码-自动填充密码中关闭该功能
+
+5. 部分系统无法直接使用订阅链接，具体表现为点击订阅链接后没反应（包括不限于：华为鸿蒙，windows，氢OS），请使用导入文件方法
+
+6. 华为手机因导航键遮挡“导入”按钮，请在 设置-系统和更新-系统导航方式-屏内三键导航处-更多设置，打开“导航键可隐藏”后，即可正常导入文件
+
+7. 小组件不显示上课教室，因为小组件宽度高度问题没法显示教室是正常的，请使用更大的小组件（
+
+8. 调休可以正常显示，因为开发团队根据校历预支了调休（之前存在若干遗漏调休）
+
+9. 考试周居然还有课？之前逻辑存在遗漏，请参照第11条方法进行更新
+
+10. 国庆居然还上课？之前逻辑存在遗漏，已经更新，请参照第11条方法更新
+
+11. 如何接收后续日历更新：如果使用订阅方法，等待服务端48h缓存失效后即可自动同步最新的版本。如果使用导入文件方法，请在日历APP中删除之前导入的日历文件，重新导入即可
+
+12. 还在选课阶段的课程/未确认的课程不会正常显示
+
+13. 如何删除之前导入的日历/订阅？这个功能每个日历APP做的都不一样，请具体问题具体分析，打开日历APP-设置多摸索摸索，小编也不知道.jpg
+
+14. 研究生版有bug？研究生版本由于没有现成的接口，因此需要更大力气适配，还请各位担待
+
+15. iOS点了下载/订阅按钮没反应？玄学问题，试试换个网/换个浏览器
+
+
+### 一些声明
+**该项目仅供学习交流使用，作者不对产生结果正确性与时效性做实时保证，使用者需自行承担因程序逻辑错误或课程时间变动导致的后果。** 
+- 网页端请求全部走https，服务端保证不进行任何有关用户隐私的蓄意记录/收集行为 
+- 记录匿名日志供排查用户问题使用，日志定期删除 
+- 为了减少请求教务网的次数，减少被ban ip的概率，日历文件将被匿名缓存48h 
