@@ -150,7 +150,8 @@ func GetClassOfDay(classes []ZjuClass, day int) []ZjuClass {
 }
 
 func isEvenWeek(mondayOfTermBegin, target time.Time) bool {
-	return ((target.Day()-mondayOfTermBegin.Day())/7)%2 == 1
+	days := (uint)((target.Sub(mondayOfTermBegin).Hours()) / 24)
+	return (days/7)%2 == 1
 }
 
 func ClassToVEvents(classes []ZjuClass, termConfig TermConfig, tweaks []Tweak) []ical.VEvent {
