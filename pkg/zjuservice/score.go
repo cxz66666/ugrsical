@@ -180,10 +180,10 @@ func ScoresToVEvent(scores []ZjuClassScore, summary string, index int) (ical.VEv
 		}
 	}
 	yesterday := time.Now().AddDate(0, 0, -1)
-	beginTime := time.Minute * 5 * time.Duration(index)
+	beginTime := time.Minute * 15 * time.Duration(index)
 	return ical.VEvent{
 		Summary:     summary,
 		Description: b.String(),
-		StartTime:   time.Date(yesterday.Year(), yesterday.Month(), yesterday.Day(), 22, 0, 0, 0, time.Local).Add(beginTime),
-		EndTime:     time.Date(yesterday.Year(), yesterday.Month(), yesterday.Day(), 22, 0, 0, 0, time.Local).Add(beginTime).Add(time.Minute * 5)}, nil
+		StartTime:   time.Date(yesterday.Year(), yesterday.Month(), yesterday.Day(), 21, 30, 0, 0, time.Local).Add(beginTime),
+		EndTime:     time.Date(yesterday.Year(), yesterday.Month(), yesterday.Day(), 21, 30, 0, 0, time.Local).Add(beginTime).Add(time.Minute * 15)}, nil
 }
