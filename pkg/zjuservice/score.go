@@ -3,6 +3,7 @@ package zjuservice
 import (
 	"errors"
 	"fmt"
+	"math"
 	"strconv"
 	"strings"
 	"time"
@@ -113,6 +114,27 @@ func GetTotalCredit(scores []ZjuClassScore) float64 {
 		sumCredits += credit
 	}
 	return sumCredits
+}
+
+func ScoresCleanUp(scores []ZjuClassScore) []ZjuClassScore {
+	bestScores := make(map[string]float64)
+	for _, score := range scores {
+		if score.Score == "弃修" {
+			continue
+		}
+		if val, exist := bestScores[score.ClassName]; !exist {
+			bestScores[score.ClassName] = score.GetScore()
+		} else {
+			bestScores[score.ClassName] = math.Max(val, score.GetScore())
+		}
+	}
+	var newScores []ZjuClassScore
+	for _, score := range scores {
+		if val, exist := bestScores[score.ClassName]; exist && val == score.GetScore() {
+			newScores = append(newScores, score)
+		}
+	}
+	return newScores
 }
 
 func ScoresToVEventList(scores []ZjuClassScore) ([]ical.VEvent, error) {
