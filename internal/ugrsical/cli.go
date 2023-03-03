@@ -45,7 +45,7 @@ func init() {
 	rootCmd.PersistentFlags().StringVarP(&password, "password", "p", "", "ZJUAM password")
 	rootCmd.PersistentFlags().StringVarP(&userPassFile, "upfile", "i", "", "username and password json")
 	rootCmd.PersistentFlags().StringVarP(&configFile, "config", "c", zjuservice.ConfigDefaultPath, "config file")
-	rootCmd.PersistentFlags().IntVarP(&icalType, "type", "t", 0, "0(default) for both class and exam, 1 for only class, 2 for only exam")
+	rootCmd.PersistentFlags().IntVarP(&icalType, "type", "t", 0, "0(default) for both class and exam, 1 for only class, 2 for only exam, 3 for only scores")
 	rootCmd.PersistentFlags().StringVarP(&outputFile, "output", "o", "ugrsical.ics", "output file")
 	rootCmd.PersistentFlags().BoolVarP(&forceWrite, "force", "f", false, "force write to target file")
 	rootCmd.Version = version
@@ -91,25 +91,35 @@ func CliMain(cmd *cobra.Command, args []string) error {
 		return err
 	}
 	var vCal ical.VCalendar
+	var icalName string
 	switch icalType {
 	case 0:
 		vCal, err = common2.GetBothCalendar(ctx, userName, password)
 		if err != nil {
 			return err
 		}
+		icalName = ""
 	case 1:
 		vCal, err = common2.GetClassCalendar(ctx, userName, password)
 		if err != nil {
 			return err
 		}
+		icalName = "UGRSICAL 课程表"
 	case 2:
 		vCal, err = common2.GetExamCalendar(ctx, userName, password)
 		if err != nil {
 			return err
 		}
+		icalName = "UGRSICAL 考试表"
+	case 3:
+		vCal, err = common2.GetScoreCalendar(ctx, userName, password)
+		if err != nil {
+			return err
+		}
+		icalName = "UGRSICAL GPA表"
 	}
 
-	_, err = f.WriteString(vCal.GetICS(""))
+	_, err = f.WriteString(vCal.GetICS(icalName))
 	if err != nil {
 		return err
 	}
