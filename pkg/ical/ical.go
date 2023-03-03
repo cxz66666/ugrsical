@@ -39,7 +39,11 @@ func (v *VEvent) String() string {
 
 	b.WriteString(fmt.Sprintf("BEGIN:VEVENT\r\nCLASS:PUBLIC\r\nCREATED:%s\r\n", utcStr))
 	if v.Description != "" {
-		b.WriteString(fmt.Sprintf("DESCRIPTION:%s\r\n", v.Description))
+		if strings.Contains(v.Description, "=0D=0A") {
+			b.WriteString(fmt.Sprintf("DESCRIPTION;ENCODING=QUOTED-PRINTABLE:%s\r\n", v.Description))
+		} else {
+			b.WriteString(fmt.Sprintf("DESCRIPTION:%s\r\n", v.Description))
+		}
 	}
 	b.WriteString(fmt.Sprintf("DTSTAMP:%s\r\n", utcStr))
 	b.WriteString(fmt.Sprintf("DTSTART;TZID=Asia/Shanghai:%s\r\n", stStr))

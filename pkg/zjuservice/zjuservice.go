@@ -20,12 +20,14 @@ const (
 	kAppServiceLoginUrl           = "https://zjuam.zju.edu.cn/cas/login?service=http%3A%2F%2Fappservice.zju.edu.cn%2Findex"
 	kAppServiceGetWeekClassInfo   = "http://appservice.zju.edu.cn/zju-smartcampus/zdydjw/api/kbdy_cxXsZKbxx"
 	kAppServiceGetExamOutlineInfo = "http://appservice.zju.edu.cn/zju-smartcampus/zdydjw/api/kkqk_cxXsksxx"
+	kAppServiceGetClassScore      = "http://appservice.zju.edu.cn/zju-smartcampus/zdydjw/api/kkqk_cxXscjxx"
 )
 
 type IZjuService interface {
 	Login(username, password string) error
 	GetClassTimeTable(academicYear string, term ClassTerm, stuId string) ([]ZjuClass, error)
 	GetExamInfo(academicYear string, term ExamTerm, stuId string) ([]ZjuExamOutline, error)
+	GetScoreInfo(stuId string) ([]ZjuClassScore, error)
 	GetTermConfigs() []TermConfig
 	GetTweaks() []Tweak
 	GetClassTerms() []ClassYearAndTerm
@@ -115,6 +117,41 @@ func (zs *ZjuService) GetExamInfo(academicYear string, term ExamTerm, stuId stri
 	}
 
 	return examOutlines.Data.ExamOutlineList, nil
+}
+
+func (zs *ZjuService) GetScoreInfo(stuId string) ([]ZjuClassScore, error) {
+	data := url.Values{}
+	data.Set("lx", "0")
+	data.Set("xh", stuId)
+	data.Set("xn", "")
+	data.Set("xq", "")
+	data.Set("cjd", "")
+
+	encodedData := data.Encode()
+	req, err := http.NewRequest("POST", kAppServiceGetClassScore, strings.NewReader(encodedData))
+	if err != nil {
+		log.Ctx(zs.ctx).Error().Err(err).Msg("new request failed")
+		return nil, errors.New("new request failed")
+	}
+	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+	req.Header.Add("Content-Length", strconv.Itoa(len(data.Encode())))
+
+	//TODO check
+	resp, err := zs.ZjuClient.Client().Do(req)
+	if err != nil {
+		log.Ctx(zs.ctx).Error().Err(err).Msg("POST to Class API failed")
+		return nil, errors.New("POST to Class API failed")
+	}
+	content, err := io.ReadAll(resp.Body)
+	resp.Body.Close()
+
+	classScores := ZjuResWrapperStr[ZjuClassScoreRes]{}
+	if err = json.Unmarshal(content, &classScores); err != nil {
+		log.Ctx(zs.ctx).Error().Err(err).Msg("unmarshal failed, 请检查用户名密码是否正确，否则为浙大钉钉服务端问题")
+		return nil, errors.New("unmarshal failed, 请检查用户名密码是否正确，否则为浙大钉钉服务端问题")
+	}
+
+	return classScores.Data.ClassScoreList, nil
 }
 
 func (zs *ZjuService) GetTermConfigs() []TermConfig {

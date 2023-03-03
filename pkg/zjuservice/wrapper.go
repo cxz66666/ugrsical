@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-type ZjuResWrapperStr[T ZjuWeeklyScheduleRes | ZjuExamOutlineRes] struct {
+type ZjuResWrapperStr[T ZjuWeeklyScheduleRes | ZjuExamOutlineRes | ZjuClassScoreRes] struct {
 	Data      T      `json:"data"`
 	ErrorCode string `json:"error_code"`
 	Message   string `json:"message"`
@@ -19,6 +19,11 @@ type ZjuWeeklyScheduleRes struct {
 type ZjuExamOutlineRes struct {
 	ExamOutlineList []ZjuExamOutline `json:"list"`
 	Zt              string           `json:"zt"`
+}
+
+type ZjuClassScoreRes struct {
+	ClassScoreList []ZjuClassScore `json:"list"`
+	Zt             string          `json:"zt"`
 }
 
 type ZjuWeeklyScheduleClass struct {

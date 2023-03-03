@@ -29,10 +29,11 @@ type YearAndSemester struct {
 	Semester string `json:"semester"`
 }
 type SetupData struct {
-	Classes []YearAndSemester
-	Exams   []YearAndSemester
-	Link    string
-	SubLink string
+	Classes      []YearAndSemester
+	Exams        []YearAndSemester
+	Link         string
+	SubLink      string
+	ScoreSubLink string
 }
 
 type ServerConfig struct {
@@ -49,9 +50,10 @@ type ServerConfig struct {
 var setupTpl *template.Template
 
 var sd = SetupData{
-	Classes: []YearAndSemester{},
-	Link:    "",
-	SubLink: "",
+	Classes:      []YearAndSemester{},
+	Link:         "",
+	SubLink:      "",
+	ScoreSubLink: "",
 }
 var gcm cipher.AEAD
 var rc *redis.Client
@@ -191,6 +193,8 @@ func setRoutes(app *gin.Engine) {
 	})
 	app.GET("/ical", FetchCal)
 	app.GET("/sub", SubCal)
+	app.GET("/subScore", SubScore)
+	app.GET("/score", FetchScore)
 	app.GET("/ping", PingEp)
 	app.POST("/static", SetupPage)
 	app.Static("/static", "./web/app")

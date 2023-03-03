@@ -132,3 +132,28 @@ func GetBothCalendar(ctx context.Context, username, password string) (ical.VCale
 	return vCal, nil
 
 }
+
+func GetScoreCalendar(ctx context.Context, username, password string) (ical.VCalendar, error) {
+	var zs zjuservice.IZjuService
+	zs = zjuservice.NewZjuService(ctx)
+
+	if err := zs.Login(username, password); err != nil {
+		return ical.VCalendar{}, err
+	}
+
+	vCal := ical.VCalendar{}
+	scores, err := zs.GetScoreInfo(username)
+	if err != nil {
+		return ical.VCalendar{}, err
+	}
+	log.Ctx(ctx).Info().Msgf("generating score vevents")
+	// score to events
+	vevent, err := zjuservice.ScoresToVEventList(scores)
+	if err != nil {
+		return ical.VCalendar{}, err
+	}
+	vCal.VEvents = append(vCal.VEvents, vevent...)
+	log.Ctx(ctx).Info().Msgf("get score vCal success")
+
+	return vCal, nil
+}

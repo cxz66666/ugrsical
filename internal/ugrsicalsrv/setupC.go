@@ -47,6 +47,7 @@ func SetupPage(ctx *gin.Context) {
 	d := sd
 	d.Link = fmt.Sprintf("%s/ical?p=%s", _serverConfig.Host, en)
 	d.SubLink = fmt.Sprintf("%s/sub?p=%s", _serverConfig.Host, en)
+	d.ScoreSubLink = fmt.Sprintf("%s/subScore?p=%s", _serverConfig.Host, en)
 
 	ctx.Header("Content-Type", "text/html")
 	buffer := bytes.NewBuffer([]byte(""))
