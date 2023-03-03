@@ -43,7 +43,7 @@ func (zjuexo *ZjuExamOutline) ToVEventList() []ical.VEvent {
 			description = fmt.Sprintf("座位号：%s", zjuexo.FinalExamSeatNum)
 		}
 		vEvents = append(vEvents, ical.VEvent{
-			Summary:     fmt.Sprintf("%s 期末考试", zjuexo.ClassName),
+			Summary:     fmt.Sprintf("[务必核对!]%s 期末考试", zjuexo.ClassName),
 			Location:    location,
 			Description: description,
 			StartTime:   finalEventStart,
