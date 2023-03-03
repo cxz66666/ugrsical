@@ -10,6 +10,7 @@ import (
 	"time"
 
 	common2 "ugrs-ical/internal/common"
+	"ugrs-ical/pkg/ical"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis/v8"
@@ -55,6 +56,9 @@ func FetchCal(ctx *gin.Context) {
 		ctx.String(http.StatusOK, "invalid p")
 		return
 	}
+
+	exam := ctx.Query("exam")
+
 	b, err := base64.URLEncoding.DecodeString(p)
 	if err != nil {
 		ctx.String(http.StatusOK, "invalid p2")
@@ -76,32 +80,37 @@ func FetchCal(ctx *gin.Context) {
 
 	c := log.With().Str("u", string(un)).Str("r", uuid.NewString()).Logger().WithContext(context.Background())
 	if rc != nil {
-		data, err := rc.Get(c, genIcalKey(string(un), string(pw))).Bytes()
+		data, err := rc.Get(c, genIcalKey(string(un), string(pw)+exam)).Bytes()
 		if err == redis.Nil {
-			log.Ctx(c).Info().Msgf("don't find cache with id %s, will login and fetch", genIcalKey(string(un), string(pw)))
+			log.Ctx(c).Info().Msgf("don't find cache with id %s, will login and fetch", genIcalKey(string(un), string(pw)+exam))
 		} else if err != nil {
-			log.Ctx(c).Error().Err(err).Msgf("fetch cache with id %s failed", genIcalKey(string(un), string(pw)))
+			log.Ctx(c).Error().Err(err).Msgf("fetch cache with id %s failed", genIcalKey(string(un), string(pw)+exam))
 			ctx.String(http.StatusOK, "redis 内部错误，请查看日志")
 			return
 		} else {
 			//get cache
-			log.Ctx(c).Info().Msgf("find cache with id %s, return data", genIcalKey(string(un), string(pw)))
+			log.Ctx(c).Info().Msgf("find cache with id %s, return data", genIcalKey(string(un), string(pw)+exam))
 			ctx.Header("Content-Type", "text/calendar")
 			ctx.Data(http.StatusOK, "text/calendar", data)
 			return
 		}
 	}
-	vCal, err := common2.GetBothCalendar(c, string(un), string(pw))
+	var vCal ical.VCalendar
+	if exam == "0" {
+		vCal, err = common2.GetClassCalendar(c, string(un), string(pw))
+	} else {
+		vCal, err = common2.GetBothCalendar(c, string(un), string(pw))
+	}
 	if err != nil {
 		ctx.String(http.StatusOK, err.Error())
 		return
 	}
 	if rc != nil {
-		err = rc.Set(c, genIcalKey(string(un), string(pw)), []byte(vCal.GetICS("")), cacheTTL).Err()
+		err = rc.Set(c, genIcalKey(string(un), string(pw)+exam), []byte(vCal.GetICS("")), cacheTTL).Err()
 		if err != nil {
-			log.Ctx(c).Error().Err(err).Msgf("set cache with id %s failed", genIcalKey(string(un), string(pw)))
+			log.Ctx(c).Error().Err(err).Msgf("set cache with id %s failed", genIcalKey(string(un), string(pw)+exam))
 		} else {
-			log.Ctx(c).Info().Msgf("set cache with id %s success", genIcalKey(string(un), string(pw)))
+			log.Ctx(c).Info().Msgf("set cache with id %s success", genIcalKey(string(un), string(pw)+exam))
 		}
 	}
 	ctx.Header("Content-Type", "text/calendar")
