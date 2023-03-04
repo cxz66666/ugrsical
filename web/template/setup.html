@@ -41,12 +41,23 @@
             {{- end }}
             </p>
             <hr/>
-            <a class="button" href="https://{{ .SubLink }}">日历订阅链接 (Webcal)</a>
+            <a class="button" href="https://{{ .SubLink }}" onclick="handleClick('Webcal')">日历订阅链接 (Webcal)</a>
             <a class="button button-outline" href="https://{{ .Link }}">日历下载链接 (HTTPS)</a>
+            <p style="margin-top: 20px;opacity: 0;transition: all 0.5s" id="Webcalhelp" >
+                WebCal无响应? 试试手动
+                <a style="font-style: italic;text-decoration: underline;cursor: pointer" onclick="copyText('Webcal')">复制订阅链接</a>
+                到日历应用
+            </p>
+            <div style="display: none" id="Webcalinfo">webcal://{{.Link}}</div>
             <p class="description" style="margin-top: 50px">或许您想尝试我们新提供的GPA和课程成绩展示功能。</p>
             <p class="description">成绩订阅链接会根据您的系统定时更新。您可以在当前时间前一天的日程中看到展示按学期展示的成绩</p>
-            <a class="button" href="https://{{ .ScoreSubLink }}">成绩订阅链接 (Webcal)</a>
-
+            <a class="button" href="https://{{ .ScoreSubLink }}" onclick="handleClick('GPA')">成绩订阅链接 (Webcal)</a>
+            <p style="margin-top: 20px;opacity: 0;transition: all 0.5s" id="GPAhelp" >
+                WebCal无响应? 试试手动
+                <a style="font-style: italic;text-decoration: underline;cursor: pointer" onclick="copyText('GPA')">复制订阅链接</a>
+                到日历应用
+            </p>
+            <div style="display: none" id="GPAinfo">webcal://{{.ScoreSubLink}}</div>
         </section>
         <section class="container">
         </section>
@@ -54,4 +65,40 @@
     </header>
 </main>
 </body>
+<script>
+    function  handleClick(e){
+        setTimeout(()=>showHelp(e),3000) //show help 3000ms after click the WebCal Button
+    }
+    function showHelp(e){
+        switch (e){
+            case "Webcal":
+                let Webcalhelp = document.getElementById("Webcalhelp")
+                Webcalhelp.style.opacity="1"
+                break;
+            case "GPA":
+                let GPAhelp = document.getElementById("GPAhelp")
+                GPAhelp.style.opacity="1";
+                break;
+            return;
+        }
+    }
+    async function copyText(e){
+        let url =""
+        switch (e){
+            case "Webcal":
+                url = document.getElementById("Webcalinfo").innerText
+                break;
+            case "GPA":
+                url = document.getElementById("GPAinfo").innerText
+                //替换url中的subScore为score
+                url = url.replace("subScore","score")
+                break;
+            return;
+        }
+
+        await navigator.clipboard.writeText(url)
+        prompt("已复制 如复制失败可手动再复制！",url)
+    }
+
+</script>
 </html>
