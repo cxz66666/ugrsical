@@ -32,6 +32,7 @@ type IZjuService interface {
 	GetTweaks() []Tweak
 	GetClassTerms() []ClassYearAndTerm
 	GetExamTerms() []ExamYearAndTerm
+	GetCtxConfig() *ZjuScheduleConfig
 	UpdateConfig() bool
 }
 
@@ -156,7 +157,7 @@ func (zs *ZjuService) GetScoreInfo(stuId string) ([]ZjuClassScore, error) {
 
 func (zs *ZjuService) GetTermConfigs() []TermConfig {
 	var res []TermConfig
-	for _, item := range _schedule.TermConfigs {
+	for _, item := range zs.GetCtxConfig().TermConfigs {
 		res = append(res, item.ToTermConfig())
 	}
 	return res
@@ -164,18 +165,28 @@ func (zs *ZjuService) GetTermConfigs() []TermConfig {
 
 func (zs *ZjuService) GetTweaks() []Tweak {
 	var res []Tweak
-	for _, item := range _schedule.Tweaks {
+	for _, item := range zs.GetCtxConfig().Tweaks {
 		res = append(res, item.ToTweak())
 	}
 	return res
 }
 
 func (zs *ZjuService) GetClassTerms() []ClassYearAndTerm {
-	return _schedule.GetClassYearAndTerms()
+	return zs.GetCtxConfig().GetClassYearAndTerms()
 }
 
 func (zs *ZjuService) GetExamTerms() []ExamYearAndTerm {
-	return _schedule.GetExamYearAndTerms()
+	return zs.GetCtxConfig().GetExamYearAndTerms()
+}
+
+func (zs *ZjuService) GetCtxConfig() *ZjuScheduleConfig {
+	if config := zs.ctx.Value(ScheduleCtxKey); config != nil {
+		return config.(*ZjuScheduleConfig)
+	} else {
+		ScheduleRwMutex.RLock()
+		defer ScheduleRwMutex.RUnlock()
+		return &_schedule
+	}
 }
 
 func (zs *ZjuService) UpdateConfig() bool {

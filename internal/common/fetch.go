@@ -21,6 +21,8 @@ func firstMatchTerm(configs []zjuservice.TermConfig, target zjuservice.ClassYear
 
 func GetClassCalendar(ctx context.Context, username, password string) (ical.VCalendar, error) {
 	var zs zjuservice.IZjuService
+
+	ctx = context.WithValue(ctx, zjuservice.ScheduleCtxKey, zjuservice.GetConfig())
 	zs = zjuservice.NewZjuService(ctx)
 
 	if err := zs.Login(username, password); err != nil {
@@ -55,6 +57,8 @@ func GetClassCalendar(ctx context.Context, username, password string) (ical.VCal
 
 func GetExamCalendar(ctx context.Context, username, password string) (ical.VCalendar, error) {
 	var zs zjuservice.IZjuService
+
+	ctx = context.WithValue(ctx, zjuservice.ScheduleCtxKey, zjuservice.GetConfig())
 	zs = zjuservice.NewZjuService(ctx)
 
 	if err := zs.Login(username, password); err != nil {
@@ -83,6 +87,8 @@ func GetExamCalendar(ctx context.Context, username, password string) (ical.VCale
 
 func GetBothCalendar(ctx context.Context, username, password string) (ical.VCalendar, error) {
 	var zs zjuservice.IZjuService
+
+	ctx = context.WithValue(ctx, zjuservice.ScheduleCtxKey, zjuservice.GetConfig())
 	zs = zjuservice.NewZjuService(ctx)
 
 	if err := zs.Login(username, password); err != nil {

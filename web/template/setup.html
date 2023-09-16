@@ -28,8 +28,8 @@
     <header class="header">
         <section class="container">
             <h1 class="title">UGRSICAL</h1>
-            <p class="description">点击以下按钮完成日历设置。如您的用户名密码输入正确，则以下链接会输出日历文件。</p>
-            <p class="description">日历订阅链接会根据您的系统定时更新。如果您的系统不支持订阅链接，可以使用日历下载链接。</p>
+            <p class="description">点击按钮生成日历。如您的学号密码输入正确，则以下链接会输出日历文件。</p>
+            <p class="description"><b>日历订阅链接</b>会根据您的系统定时更新（推荐）。如果您的系统不支持订阅链接，可使用<b>日历下载链接</b>。</p>
             <p class="description bold">当前生成课程周期：
                     {{ range .Classes }}
                     <p>{{.Year}}学年{{.Semester}}</p>
@@ -43,7 +43,10 @@
             <hr/>
             <a class="button" href="https://{{ .SubLink }}" onclick="handleClick('Webcal')">日历订阅链接 (Webcal)</a>
             <a class="button button-outline" href="https://{{ .Link }}">日历下载链接 (HTTPS)</a>
-            <p style="margin-top: 20px;opacity: 0;transition: all 0.5s" id="Webcalhelp" >
+            <p style="margin-bottom: 0">当前使用版本 {{.LastUpdated}}</p>
+            <p>上次成功同步配置时间 {{.LastUpdatedTime}}</p>
+
+            <p style="margin-top: 5px;opacity: 0;transition: all 0.5s" id="Webcalhelp" >
                 WebCal无响应? 试试手动
                 <a style="font-style: italic;text-decoration: underline;cursor: pointer" onclick="copyText('Webcal')">复制订阅链接</a>
                 到日历应用

@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"ugrs-ical/pkg/zjuservice"
 
 	"github.com/gin-gonic/gin"
 )
@@ -45,6 +46,10 @@ func SetupPage(ctx *gin.Context) {
 	en := base64.URLEncoding.EncodeToString(b)
 
 	d := sd
+	d.Classes = zjuservice.GetConfig().GetClassYearAndSemester()
+	d.Exams = zjuservice.GetConfig().GetExamYearAndSemester()
+	d.LastUpdated = zjuservice.GetConfig().GetLastUpdated()
+	d.LastUpdatedTime = zjuservice.GetConfig().GetLastUpdatedTime()
 	d.Link = fmt.Sprintf("%s/ical?p=%s", _serverConfig.Host, en)
 	d.SubLink = fmt.Sprintf("%s/sub?p=%s", _serverConfig.Host, en)
 	d.ScoreSubLink = fmt.Sprintf("%s/subScore?p=%s", _serverConfig.Host, en)

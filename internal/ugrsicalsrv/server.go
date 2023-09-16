@@ -9,7 +9,6 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"strings"
 	"text/template"
 	"time"
 
@@ -24,16 +23,14 @@ const defaultServerConfigPath = "configs/server.json"
 
 var _serverConfig ServerConfig
 
-type YearAndSemester struct {
-	Year     string `json:"year"`
-	Semester string `json:"semester"`
-}
 type SetupData struct {
-	Classes      []YearAndSemester
-	Exams        []YearAndSemester
-	Link         string
-	SubLink      string
-	ScoreSubLink string
+	Classes         []zjuservice.YearAndSemester
+	Exams           []zjuservice.YearAndSemester
+	LastUpdated     int
+	LastUpdatedTime string
+	Link            string
+	SubLink         string
+	ScoreSubLink    string
 }
 
 type ServerConfig struct {
@@ -50,7 +47,8 @@ type ServerConfig struct {
 var setupTpl *template.Template
 
 var sd = SetupData{
-	Classes:      []YearAndSemester{},
+	Classes:      []zjuservice.YearAndSemester{},
+	Exams:        []zjuservice.YearAndSemester{},
 	Link:         "",
 	SubLink:      "",
 	ScoreSubLink: "",
@@ -145,43 +143,20 @@ func ListenAndServe() error {
 		return err
 	}
 
-	cfg := zjuservice.GetConfig()
-	if err != nil {
-		return err
+	if zjuservice.UseOnlineConfig {
+		go zjuservice.UpdateConfig(time.Hour * 1)
 	}
+
 	//TODO check config
 	//当前生成的学期
-	classes := make([]YearAndSemester, 0)
-	for _, item := range cfg.ClassTerms {
-		splits := strings.Split(item, ":")
-		classes = append(classes, YearAndSemester{
-			Year: splits[0],
-			// convert like "1" to "冬学期"
-			Semester: zjuservice.ClassTermStrToStr(splits[1]),
-		})
-	}
-	sd.Classes = classes
-
-	//当前生成的考试
-	exams := make([]YearAndSemester, 0)
-	for _, item := range cfg.ExamTerms {
-		splits := strings.Split(item, ":")
-		exams = append(exams, YearAndSemester{
-			Year: splits[0],
-			// convert like "1" to "春夏学期"
-			Semester: zjuservice.ExamStrToStr(splits[1]),
-		})
-	}
-	sd.Exams = exams
-
+	gin.SetMode(gin.ReleaseMode)
 	app := gin.New()
 	app.Use(gin.Logger())
 	app.Use(gin.Recovery())
 
 	setRoutes(app)
 
-	log.Ctx(context.Background()).Info().Msgf("[server] running on %d", _serverConfig.Port)
-
+	log.Info().Msgf("[server] running on %d", _serverConfig.Port)
 	return app.Run(fmt.Sprintf(":%d", _serverConfig.Port))
 
 }
