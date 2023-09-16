@@ -13,7 +13,9 @@ services:
     volumes:
       - ./configs/server.json:/app/configs/server.json
       - ./configs/config.json:/app/configs/config.json
-
+    depends_on:
+      redis:
+        condition: service_healthy
   redis:
     image: redis:6.2.6
     restart: always

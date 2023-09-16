@@ -1,4 +1,4 @@
-FROM golang:1.19-bullseye
+FROM golang:1.21-bullseye
 EXPOSE 5678
 WORKDIR /workspace
 RUN sed -i s/deb.debian.org/mirrors.aliyun.com/g /etc/apt/sources.list \
