@@ -37,12 +37,6 @@ archives:
     id: ugrsical-arch
     builds:
       - ugrsical
-    replacements:
-      darwin: Darwin
-      linux: Linux
-      windows: Windows
-      386: i386
-      amd64: x86_64
     name_template: "ugrsical_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
     files:
       - LICENSE
@@ -53,12 +47,6 @@ archives:
     id: ugrsicalsrv-arch
     builds:
       - ugrsicalsrv
-    replacements:
-      darwin: Darwin
-      linux: Linux
-      windows: Windows
-      386: i386
-      amd64: x86_64
     name_template: "ugrsicalsrv_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
     files:
       - LICENSE
