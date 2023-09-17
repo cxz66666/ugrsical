@@ -74,8 +74,8 @@ func (zs *ZjuService) GetClassTimeTable(academicYear string, term ClassTerm, stu
 
 	classTimeTable := ZjuResWrapperStr[ZjuWeeklyScheduleRes]{}
 	if err = json.Unmarshal(content, &classTimeTable); err != nil {
-		log.Ctx(zs.ctx).Error().Err(err).Msg("unmarshal failed, 请检查用户名密码是否正确，否则为浙大钉钉服务端问题")
-		return nil, errors.New("unmarshal failed, 请检查用户名密码是否正确，否则为浙大钉钉服务端问题")
+		log.Ctx(zs.ctx).Error().Err(err).Msgf("unmarshal failed %s", stuId)
+		return nil, errors.New("无法获取课表, 大概率为浙大钉钉服务端问题，请打开浙大钉中的个人课表功能排查，若浙大钉课表无法打开/没有内容，则确认是浙大钉问题，请稍后重试，否则可能是学号密码错误")
 	}
 
 	res := make([]ZjuClass, 0)
@@ -113,8 +113,8 @@ func (zs *ZjuService) GetExamInfo(academicYear string, term ExamTerm, stuId stri
 
 	examOutlines := ZjuResWrapperStr[ZjuExamOutlineRes]{}
 	if err = json.Unmarshal(content, &examOutlines); err != nil {
-		log.Ctx(zs.ctx).Error().Err(err).Msg("unmarshal failed, 请检查用户名密码是否正确，否则为浙大钉钉服务端问题")
-		return nil, errors.New("unmarshal failed, 请检查用户名密码是否正确，否则为浙大钉钉服务端问题")
+		log.Ctx(zs.ctx).Error().Err(err).Msgf("unmarshal failed %s", stuId)
+		return nil, errors.New("无法获取课表, 大概率为浙大钉钉服务端问题，请打开浙大钉中的个人课表功能排查，若浙大钉课表无法打开/没有内容，则确认是浙大钉问题，请稍后重试，否则可能是学号密码错误")
 	}
 
 	return examOutlines.Data.ExamOutlineList, nil
@@ -148,8 +148,8 @@ func (zs *ZjuService) GetScoreInfo(stuId string) ([]ZjuClassScore, error) {
 
 	classScores := ZjuResWrapperStr[ZjuClassScoreRes]{}
 	if err = json.Unmarshal(content, &classScores); err != nil {
-		log.Ctx(zs.ctx).Error().Err(err).Msg("unmarshal failed, 请检查用户名密码是否正确，否则为浙大钉钉服务端问题")
-		return nil, errors.New("unmarshal failed, 请检查用户名密码是否正确，否则为浙大钉钉服务端问题")
+		log.Ctx(zs.ctx).Error().Err(err).Msgf("unmarshal failed %s", stuId)
+		return nil, errors.New("无法获取课表, 大概率为浙大钉钉服务端问题，请打开浙大钉中的个人课表功能排查，若浙大钉课表无法打开/没有内容，则确认是浙大钉问题，请稍后重试，否则可能是学号密码错误")
 	}
 
 	return classScores.Data.ClassScoreList, nil
