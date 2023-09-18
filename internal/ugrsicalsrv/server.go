@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"sync"
 	"text/template"
 	"time"
 
@@ -24,13 +25,15 @@ const defaultServerConfigPath = "configs/server.json"
 var _serverConfig ServerConfig
 
 type SetupData struct {
-	Classes         []zjuservice.YearAndSemester
-	Exams           []zjuservice.YearAndSemester
-	LastUpdated     int
-	LastUpdatedTime string
-	Link            string
-	SubLink         string
-	ScoreSubLink    string
+	Classes          []zjuservice.YearAndSemester
+	Exams            []zjuservice.YearAndSemester
+	LastUpdated      int
+	LastUpdatedTime  string
+	LastSuccessIcal  string
+	LastSuccessScore string
+	Link             string
+	SubLink          string
+	ScoreSubLink     string
 }
 
 type ServerConfig struct {
@@ -47,12 +50,16 @@ type ServerConfig struct {
 var setupTpl *template.Template
 
 var sd = SetupData{
-	Classes:      []zjuservice.YearAndSemester{},
-	Exams:        []zjuservice.YearAndSemester{},
-	Link:         "",
-	SubLink:      "",
-	ScoreSubLink: "",
+	Classes:          []zjuservice.YearAndSemester{},
+	Exams:            []zjuservice.YearAndSemester{},
+	Link:             "",
+	SubLink:          "",
+	ScoreSubLink:     "",
+	LastSuccessIcal:  "暂无",
+	LastSuccessScore: "暂无",
 }
+var sdMutex sync.RWMutex
+
 var gcm cipher.AEAD
 var rc *redis.Client
 var cacheTTL time.Duration

@@ -82,14 +82,14 @@ func FetchCal(ctx *gin.Context) {
 	if rc != nil {
 		data, err := rc.Get(c, genIcalKey(string(un), string(pw)+exam)).Bytes()
 		if err == redis.Nil {
-			log.Ctx(c).Info().Msgf("don't find cache with id %s, will login and fetch", genIcalKey(string(un), string(pw)+exam))
+			log.Ctx(c).Info().Msgf("don't find ical cache")
 		} else if err != nil {
-			log.Ctx(c).Error().Err(err).Msgf("fetch cache with id %s failed", genIcalKey(string(un), string(pw)+exam))
+			log.Ctx(c).Error().Err(err).Msgf("fetch cache failed")
 			ctx.String(http.StatusOK, "redis 内部错误，请查看日志")
 			return
 		} else {
 			//get cache
-			log.Ctx(c).Info().Msgf("find cache with id %s, return data", genIcalKey(string(un), string(pw)+exam))
+			log.Ctx(c).Info().Msgf("find ical cache")
 			ctx.Header("Content-Type", "text/calendar")
 			ctx.Data(http.StatusOK, "text/calendar", data)
 			return
@@ -105,12 +105,17 @@ func FetchCal(ctx *gin.Context) {
 		ctx.String(http.StatusOK, err.Error())
 		return
 	}
+
+	sdMutex.Lock()
+	sd.LastSuccessIcal = time.Now().Format("2006.01.02 15:04:05")
+	sdMutex.Unlock()
+
 	if rc != nil {
 		err = rc.Set(c, genIcalKey(string(un), string(pw)+exam), []byte(vCal.GetICS("")), cacheTTL).Err()
 		if err != nil {
-			log.Ctx(c).Error().Err(err).Msgf("set cache with id %s failed", genIcalKey(string(un), string(pw)+exam))
+			log.Ctx(c).Error().Err(err).Msgf("set ical cache failed, url = %s", "/ical?p="+p)
 		} else {
-			log.Ctx(c).Info().Msgf("set cache with id %s success", genIcalKey(string(un), string(pw)+exam))
+			log.Ctx(c).Info().Msgf("set ical cache success, url = %s", "/ical?p="+p)
 		}
 	}
 	ctx.Header("Content-Type", "text/calendar")

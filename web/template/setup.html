@@ -43,9 +43,14 @@
             <hr/>
             <a class="button" href="https://{{ .SubLink }}" onclick="handleClick('Webcal')">日历订阅链接 (Webcal)</a>
             <a class="button button-outline" href="https://{{ .Link }}">日历下载链接 (HTTPS)</a>
-            <p style="margin-bottom: 0">当前使用版本 {{.LastUpdated}}</p>
-            <p>上次成功同步配置时间 {{.LastUpdatedTime}}</p>
-
+            <p style="margin-bottom: 0">
+                上次成功获取课程时间 {{.LastSuccessIcal}} <br>
+                上次成功获取成绩时间 {{.LastSuccessScore}} <br> <br>
+                当前使用版本 {{.LastUpdated}} <br>
+                上次成功同步配置时间 {{.LastUpdatedTime}}
+            </p>
+            <p>
+            </p>
             <p style="margin-top: 5px;opacity: 0;transition: all 0.5s" id="Webcalhelp" >
                 WebCal无响应? 试试手动
                 <a style="font-style: italic;text-decoration: underline;cursor: pointer" onclick="copyText('Webcal')">复制订阅链接</a>

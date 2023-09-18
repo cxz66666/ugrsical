@@ -5,6 +5,7 @@ import (
 	"encoding/base64"
 	"fmt"
 	"net/http"
+	"time"
 
 	common2 "ugrs-ical/internal/common"
 
@@ -43,14 +44,14 @@ func SubCal(ctx *gin.Context) {
 	if rc != nil {
 		val, err := rc.Exists(c, genIcalKey(string(un), string(pw))).Result()
 		if val == 0 {
-			log.Ctx(c).Info().Msgf("don't find cache with id %s, will login and fetch", genIcalKey(string(un), string(pw)))
+			log.Ctx(c).Info().Msgf("don't find ical cache")
 		} else if err != nil {
-			log.Ctx(c).Error().Err(err).Msgf("fetch cache with id %s failed", genIcalKey(string(un), string(pw)))
+			log.Ctx(c).Error().Err(err).Msgf("fetch cache failed")
 			ctx.String(http.StatusOK, "redis 内部错误，请查看日志")
 			return
 		} else {
 			//get cache
-			log.Ctx(c).Info().Msgf("find cache with id %s, redirect sub url", genIcalKey(string(un), string(pw)))
+			log.Ctx(c).Info().Msgf("find ical cache, redirect sub url")
 			ctx.Redirect(http.StatusFound, subUrl)
 			return
 		}
@@ -61,12 +62,17 @@ func SubCal(ctx *gin.Context) {
 		ctx.String(http.StatusOK, err.Error())
 		return
 	}
+
+	sdMutex.Lock()
+	sd.LastSuccessIcal = time.Now().Format("2006.01.02 15:04:05")
+	sdMutex.Unlock()
+
 	if rc != nil {
 		err = rc.Set(c, genIcalKey(string(un), string(pw)), []byte(vCal.GetICS("")), cacheTTL).Err()
 		if err != nil {
-			log.Ctx(c).Error().Err(err).Msgf("set cache with id %s failed", genIcalKey(string(un), string(pw)))
+			log.Ctx(c).Error().Err(err).Msgf("set ical cache failed, url = %s", "/ical?p="+p)
 		} else {
-			log.Ctx(c).Info().Msgf("set cache with id %s success", genIcalKey(string(un), string(pw)))
+			log.Ctx(c).Info().Msgf("set ical cache success, url = %s", "/ical?p="+p)
 		}
 	}
 	ctx.Redirect(http.StatusFound, subUrl)
@@ -103,14 +109,14 @@ func SubScore(ctx *gin.Context) {
 	if rc != nil {
 		val, err := rc.Exists(c, genScoreKey(string(un), string(pw))).Result()
 		if val == 0 {
-			log.Ctx(c).Info().Msgf("don't find cache with id %s, will login and fetch", genScoreKey(string(un), string(pw)))
+			log.Ctx(c).Info().Msgf("don't find score cache")
 		} else if err != nil {
-			log.Ctx(c).Error().Err(err).Msgf("fetch cache with id %s failed", genScoreKey(string(un), string(pw)))
+			log.Ctx(c).Error().Err(err).Msgf("fetch cache failed")
 			ctx.String(http.StatusOK, "redis 内部错误，请查看日志")
 			return
 		} else {
 			//get cache
-			log.Ctx(c).Info().Msgf("find cache with id %s, redirect sub url", genScoreKey(string(un), string(pw)))
+			log.Ctx(c).Info().Msgf("find score cache, redirect sub url")
 			ctx.Redirect(http.StatusFound, subUrl)
 			return
 		}
@@ -121,12 +127,17 @@ func SubScore(ctx *gin.Context) {
 		ctx.String(http.StatusOK, err.Error())
 		return
 	}
+
+	sdMutex.Lock()
+	sd.LastSuccessScore = time.Now().Format("2006.01.02 15:04:05")
+	sdMutex.Unlock()
+
 	if rc != nil {
 		err = rc.Set(c, genScoreKey(string(un), string(pw)), []byte(vCal.GetICS("UGRSICAL GPA表")), DurationScoreCache).Err()
 		if err != nil {
-			log.Ctx(c).Error().Err(err).Msgf("set cache with id %s failed", genScoreKey(string(un), string(pw)))
+			log.Ctx(c).Error().Err(err).Msgf("set score cache failed, url = %s", "/score?p="+p)
 		} else {
-			log.Ctx(c).Info().Msgf("set cache with id %s success", genScoreKey(string(un), string(pw)))
+			log.Ctx(c).Info().Msgf("set score cache success, url = %s", "/score?p="+p)
 		}
 	}
 	ctx.Redirect(http.StatusFound, subUrl)

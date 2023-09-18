@@ -45,7 +45,9 @@ func SetupPage(ctx *gin.Context) {
 	}
 	en := base64.URLEncoding.EncodeToString(b)
 
+	sdMutex.RLock()
 	d := sd
+	sdMutex.RUnlock()
 	d.Classes = zjuservice.GetConfig().GetClassYearAndSemester()
 	d.Exams = zjuservice.GetConfig().GetExamYearAndSemester()
 	d.LastUpdated = zjuservice.GetConfig().GetLastUpdated()

@@ -64,14 +64,14 @@ func FetchScore(ctx *gin.Context) {
 	if rc != nil {
 		data, err := rc.Get(c, genScoreKey(string(un), string(pw))).Bytes()
 		if err == redis.Nil {
-			log.Ctx(c).Info().Msgf("don't find cache with id %s, will login and fetch", genScoreKey(string(un), string(pw)))
+			log.Ctx(c).Info().Msgf("don't find score cache")
 		} else if err != nil {
-			log.Ctx(c).Error().Err(err).Msgf("fetch cache with id %s failed", genScoreKey(string(un), string(pw)))
+			log.Ctx(c).Error().Err(err).Msgf("fetch cache failed")
 			ctx.String(http.StatusOK, "redis 内部错误，请查看日志")
 			return
 		} else {
 			//get cache
-			log.Ctx(c).Info().Msgf("find cache with id %s, return data", genScoreKey(string(un), string(pw)))
+			log.Ctx(c).Info().Msgf("find score cache")
 			ctx.Header("Content-Type", "text/calendar")
 			ctx.Data(http.StatusOK, "text/calendar", data)
 			return
@@ -83,12 +83,17 @@ func FetchScore(ctx *gin.Context) {
 		ctx.String(http.StatusOK, err.Error())
 		return
 	}
+
+	sdMutex.Lock()
+	sd.LastSuccessScore = time.Now().Format("2006.01.02 15:04:05")
+	sdMutex.Unlock()
+
 	if rc != nil {
 		err = rc.Set(c, genScoreKey(string(un), string(pw)), []byte(vCal.GetICS("UGRSICAL GPA表")), DurationScoreCache).Err()
 		if err != nil {
-			log.Ctx(c).Error().Err(err).Msgf("set cache with id %s failed", genScoreKey(string(un), string(pw)))
+			log.Ctx(c).Error().Err(err).Msgf("set score cache failed, url = %s", "/score?p="+p)
 		} else {
-			log.Ctx(c).Info().Msgf("set cache with id %s success", genScoreKey(string(un), string(pw)))
+			log.Ctx(c).Info().Msgf("set score cache success, url = %s", "/score?p="+p)
 		}
 	}
 	ctx.Header("Content-Type", "text/calendar")
