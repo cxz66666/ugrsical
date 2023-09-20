@@ -152,7 +152,7 @@ func GetScoreCalendar(ctx context.Context, username, password string) (ical.VCal
 	if err != nil {
 		return ical.VCalendar{}, err
 	}
-	// cleanup 1. remove “弃修”  2. use best score for same className
+	// cleanup 1. remove “弃修” and "缓考" and "缺考" 2. use best score for same className
 	scores = zjuservice.ScoresCleanUp(scores)
 
 	log.Ctx(ctx).Info().Msgf("generating score vevents")

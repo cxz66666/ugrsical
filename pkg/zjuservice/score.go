@@ -28,8 +28,11 @@ var scoreMap = map[string]float64{
 	"D":      60,
 	"F":      0,
 	"优":     90,
+	"优秀":   90,
 	"良":     80,
+	"良好":   80,
 	"中":     70,
+	"中等":   70,
 	"及格":   60,
 	"不及格": 0,
 	"合格":   75,
@@ -119,7 +122,7 @@ func GetTotalCredit(scores []ZjuClassScore) float64 {
 func ScoresCleanUp(scores []ZjuClassScore) []ZjuClassScore {
 	bestScores := make(map[string]float64)
 	for _, score := range scores {
-		if score.Score == "弃修" {
+		if score.Score == "弃修" || score.Score == "缓考" || score.Score == "缺考" {
 			continue
 		}
 		if val, exist := bestScores[score.ClassName]; !exist {
