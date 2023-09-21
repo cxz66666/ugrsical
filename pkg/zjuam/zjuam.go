@@ -134,7 +134,7 @@ func (c *ZjuamClient) Login(ctx context.Context, payloadUrl, username, password 
 	encP := pk.encrypt(password)
 
 	// stage 3: fire target
-	lRes, err := c.HttpClient.PostForm(loginUrl, url.Values{
+	lRes, err := c.HttpClient.PostForm(payloadUrl, url.Values{
 		"username":  {username},
 		"password":  {encP},
 		"authcode":  {""},
@@ -159,6 +159,15 @@ func (c *ZjuamClient) Login(ctx context.Context, payloadUrl, username, password 
 	if strings.Contains(string(content), "用户名或密码错误") {
 		return errors.New("用户名或密码错误")
 	}
+
+	// a trick for pass zju dingtalk check
+	// I don't know why, but fuck zju
+
+	// this will set a "wisportalId" cookie
+	c.HttpClient.Get("http://appservice.zju.edu.cn/js/login/login.js")
+	// and this will redo it!
+	c.HttpClient.Get(payloadUrl)
+
 	// 不代表登录成功(大概率成功)
 	return nil
 }
