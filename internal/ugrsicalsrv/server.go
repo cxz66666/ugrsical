@@ -12,6 +12,7 @@ import (
 	"sync"
 	"text/template"
 	"time"
+	"ugrs-ical/pkg/zjuam"
 
 	"ugrs-ical/pkg/zjuservice"
 
@@ -41,6 +42,7 @@ type ServerConfig struct {
 	Host      string `json:"host"`
 	Port      int    `json:"port"`
 	CfgPath   string `json:"config"`
+	HttpProxy string `json:"http_proxy"`
 	IpHeader  string `json:"ip_header"`
 	RedisAddr string `json:"redis_addr"`
 	RedisPass string `json:"redis_pass"`
@@ -132,6 +134,9 @@ func ListenAndServe() error {
 	}
 	log.Info().Msgf("cache ttl: %f", cacheTTL.Hours())
 
+	if len(_serverConfig.HttpProxy) > 0 {
+		go zjuam.UpdateProxyUrl(time.Minute*10, _serverConfig.HttpProxy)
+	}
 	// read template
 	f, err := os.Open("./web/template/setup.html")
 	if err != nil {

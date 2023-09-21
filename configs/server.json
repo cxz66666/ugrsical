@@ -3,6 +3,7 @@
   "host": "localhost:5678",
   "port": 5678,
   "config": "",
+  "http_proxy": "",
   "ip_header": "",
   "redis_addr": "",
   "redis_pass": "",
