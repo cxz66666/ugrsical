@@ -10,6 +10,8 @@ services:
       #environment:
     ports:
       - "5678:5678"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     volumes:
       - ./configs/server.json:/app/configs/server.json
       - ./configs/config.json:/app/configs/config.json
