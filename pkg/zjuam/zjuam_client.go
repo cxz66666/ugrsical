@@ -42,7 +42,8 @@ func testProxyUrl(httpProxyStr string) error {
 		return err
 	}
 	client := &http.Client{Transport: &http.Transport{Proxy: http.ProxyURL(proxyUrl)}}
-	_, err = client.Get("https://baidu.com")
+	resp, err := client.Get("https://baidu.com")
+	resp.Body.Close()
 	return err
 }
 

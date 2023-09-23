@@ -164,9 +164,11 @@ func (c *ZjuamClient) Login(ctx context.Context, payloadUrl, username, password 
 	// I don't know why, but fuck zju
 
 	// this will set a "wisportalId" cookie
-	c.HttpClient.Get("http://appservice.zju.edu.cn/js/login/login.js")
+	tmpRes, err := c.HttpClient.Get("http://appservice.zju.edu.cn/js/login/login.js")
+	tmpRes.Body.Close()
 	// and this will redo it!
-	c.HttpClient.Get(payloadUrl)
+	tmpRes, err = c.HttpClient.Get(payloadUrl)
+	tmpRes.Body.Close()
 
 	// 不代表登录成功(大概率成功)
 	return nil
