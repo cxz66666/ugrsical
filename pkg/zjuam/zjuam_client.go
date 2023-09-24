@@ -12,6 +12,7 @@ import (
 
 var httpProxyUrl, _ = url.Parse("")
 var proxyUrlMutex sync.RWMutex
+var proxyTransport http.Transport
 
 type ZjuLogin interface {
 	Login(ctx context.Context, payloadUrl, username, password string) error
@@ -26,13 +27,8 @@ func NewClient() *ZjuamClient {
 	jar, _ := cookiejar.New(nil)
 	proxyUrlMutex.RLock()
 	defer proxyUrlMutex.RUnlock()
-	if len(httpProxyUrl.String()) == 0 {
-		return &ZjuamClient{
-			HttpClient: &http.Client{Jar: jar, Transport: &http.Transport{Proxy: nil}},
-		}
-	}
 	return &ZjuamClient{
-		HttpClient: &http.Client{Jar: jar, Transport: &http.Transport{Proxy: http.ProxyURL(httpProxyUrl)}},
+		HttpClient: &http.Client{Jar: jar, Transport: &proxyTransport},
 	}
 }
 
@@ -41,7 +37,7 @@ func testProxyUrl(httpProxyStr string) error {
 	if err != nil {
 		return err
 	}
-	client := &http.Client{Transport: &http.Transport{Proxy: http.ProxyURL(proxyUrl)}}
+	client := &http.Client{Transport: &http.Transport{Proxy: http.ProxyURL(proxyUrl), DisableKeepAlives: true}}
 	if resp, err := client.Get("https://baidu.com"); err != nil {
 		return err
 	} else {
@@ -55,9 +51,14 @@ func UpdateProxyUrl(interval time.Duration, httpProxyStr string) {
 		log.Info().Msgf("[server] use http proxy %s", httpProxyStr)
 		proxyUrlMutex.Lock()
 		httpProxyUrl, _ = url.Parse(httpProxyStr)
+		proxyTransport = http.Transport{Proxy: http.ProxyURL(httpProxyUrl)}
 		proxyUrlMutex.Unlock()
 	} else {
 		log.Info().Msgf("[server] test http proxy fail %s, %s", time.Now().Format("2006.01.02 15:04:05"), err)
+		proxyUrlMutex.Lock()
+		proxyTransport = http.Transport{Proxy: nil}
+		proxyUrlMutex.Unlock()
+
 	}
 
 	log.Info().Msgf("[server] update http proxy every %s", interval.String())
@@ -66,12 +67,18 @@ func UpdateProxyUrl(interval time.Duration, httpProxyStr string) {
 	for {
 		select {
 		case <-ticker.C:
-			proxyUrlMutex.Lock()
 			if err := testProxyUrl(httpProxyStr); err != nil {
+				proxyUrlMutex.Lock()
 				log.Info().Msgf("[server] test http proxy fail %s, %s", time.Now().Format("2006.01.02 15:04:05"), err)
 				httpProxyUrl, _ = url.Parse("")
+				proxyTransport.CloseIdleConnections()
+				proxyTransport = http.Transport{Proxy: nil}
 			} else {
+				proxyUrlMutex.Lock()
 				httpProxyUrl, _ = url.Parse(httpProxyStr)
+				if proxyTransport.Proxy == nil {
+					proxyTransport = http.Transport{Proxy: http.ProxyURL(httpProxyUrl)}
+				}
 			}
 			proxyUrlMutex.Unlock()
 		}
