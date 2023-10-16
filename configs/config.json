@@ -1,5 +1,5 @@
 {
-  "lastUpdated": 20230905,
+  "lastUpdated": 20231016,
   "tweaks": [
     {
       "TweakType": 2,
@@ -21,9 +21,9 @@
     },
     {
       "TweakType": 2,
-      "Description": "[秋季运动会] 调休27日的课",
-      "From": 20231027,
-      "To": 20231021
+      "Description": "[秋季运动会] 调休20日的课",
+      "From": 20231020,
+      "To": 20231028
     },
     {
       "TweakType": 0,
