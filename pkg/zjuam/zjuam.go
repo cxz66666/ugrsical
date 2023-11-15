@@ -134,7 +134,7 @@ func (c *ZjuamClient) Login(ctx context.Context, payloadUrl, username, password 
 	encP := pk.encrypt(password)
 
 	// stage 3: fire target
-	lRes, err := c.HttpClient.PostForm(payloadUrl, url.Values{
+	lRes, err := c.HttpClient.PostForm(loginUrl, url.Values{
 		"username":  {username},
 		"password":  {encP},
 		"authcode":  {""},
@@ -164,21 +164,21 @@ func (c *ZjuamClient) Login(ctx context.Context, payloadUrl, username, password 
 	// I don't know why, but fuck zju
 
 	// this will set a "wisportalId" cookie
-	if tmpRes, err := c.HttpClient.Get("http://appservice.zju.edu.cn/js/login/login.js"); err != nil {
-		e := fmt.Sprintf("can not get login.js: %s", err)
-		log.Ctx(ctx).Error().Msg(e)
-		return errors.New(e)
-	} else {
-		tmpRes.Body.Close()
-	}
-	// and this will redo it!
-	if tmpRes, err := c.HttpClient.Get(payloadUrl); err != nil {
-		e := fmt.Sprintf("can not redo login in: %s", err)
-		log.Ctx(ctx).Error().Msg(e)
-		return errors.New("无法向zjuam二次提交表单，怀疑是限制内网访问，请过段时间再来")
-	} else {
-		tmpRes.Body.Close()
-	}
+	//if tmpRes, err := c.HttpClient.Get("http://appservice.zju.edu.cn/js/login/login.js"); err != nil {
+	//	e := fmt.Sprintf("can not get login.js: %s", err)
+	//	log.Ctx(ctx).Error().Msg(e)
+	//	return errors.New(e)
+	//} else {
+	//	tmpRes.Body.Close()
+	//}
+	//// and this will redo it!
+	//if tmpRes, err := c.HttpClient.Get(payloadUrl); err != nil {
+	//	e := fmt.Sprintf("can not redo login in: %s", err)
+	//	log.Ctx(ctx).Error().Msg(e)
+	//	return errors.New("无法向zjuam二次提交表单，怀疑是限制内网访问，请过段时间再来")
+	//} else {
+	//	tmpRes.Body.Close()
+	//}
 
 	// 不代表登录成功(大概率成功)
 	return nil

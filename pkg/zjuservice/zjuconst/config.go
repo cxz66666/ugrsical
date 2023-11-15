@@ -10,11 +10,10 @@ import (
 	"strings"
 	"sync"
 	"time"
-	"ugrs-ical/pkg/zjuservice/ugrsical"
 )
 
 const ConfigDefaultPath = "configs/config.json"
-const OnlineConfigPath = "https://ghproxy.com/https://raw.githubusercontent.com/cxz66666/ugrsical/master/configs/config.json"
+const OnlineConfigPath = "https://mirror.ghproxy.com/https://raw.githubusercontent.com/cxz66666/ugrsical/master/configs/config.json"
 
 var UseOnlineConfig = false
 
@@ -29,7 +28,7 @@ type ClassYearAndTerm struct {
 
 type ExamYearAndTerm struct {
 	Year string
-	Term ugrsical.ExamTerm
+	Term ExamTerm
 }
 
 type YearAndSemester struct {
@@ -66,7 +65,7 @@ func (config *ZjuScheduleConfig) GetExamYearAndTerms() []ExamYearAndTerm {
 		term, _ := strconv.ParseInt(p[1], 10, 64)
 		res = append(res, ExamYearAndTerm{
 			Year: p[0],
-			Term: ugrsical.ExamTerm(term),
+			Term: ExamTerm(term),
 		})
 	}
 	return res

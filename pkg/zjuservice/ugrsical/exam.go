@@ -4,13 +4,6 @@ import (
 	"ugrs-ical/pkg/zjuservice/zjuconst"
 )
 
-type ExamTerm int
-
-const (
-	AutumnWinter ExamTerm = iota
-	SpringSummer
-)
-
 type ZjuExamOutline struct {
 	ClassIdWithStuId    string `json:"kcid"`
 	ClassName           string `json:"kcmc"`
@@ -26,7 +19,7 @@ type ZjuExamOutline struct {
 }
 
 func (zjuexo *ZjuExamOutline) ToZJUExam() zjuconst.ZJUExam {
-	return zjuconst.ZJUExam{
+	return &zjuconst.ZJUUgrsExam{
 		ClassName:           zjuexo.ClassName,
 		FinalExamAgenda:     zjuexo.FinalExamAgenda,
 		FinalExamLocation:   zjuexo.FinalExamLocation,

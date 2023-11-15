@@ -2,6 +2,7 @@ package grsical
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/rs/zerolog/log"
@@ -13,7 +14,6 @@ import (
 	"strconv"
 	"strings"
 	"time"
-	"unicode"
 )
 
 const GrsTableRowNum = 16
@@ -74,39 +74,41 @@ func parseClass(ctx context.Context, a *html.Node) (zjuconst.ZJUClass, error) {
 	case "冬":
 		class.TermArrangements = append(class.TermArrangements, zjuconst.Winter)
 	case "秋冬":
-		class.Semester = AutumnWinter
+		class.TermArrangements = append(class.TermArrangements, zjuconst.Autumn, zjuconst.Winter)
 	case "春":
-		class.Semester = Spring
+		class.TermArrangements = append(class.TermArrangements, zjuconst.Spring)
 	case "夏":
-		class.Semester = Summer
+		class.TermArrangements = append(class.TermArrangements, zjuconst.Summer)
 	case "春夏":
-		class.Semester = SpringSummer
+		class.TermArrangements = append(class.TermArrangements, zjuconst.Spring, zjuconst.Summer)
 	default:
 		return class, fmt.Errorf("invalid semester: %s", children[1].Data)
 	}
 	switch strings.TrimSpace(tr[1]) {
 	case "每周":
-		class.Repeat = EveryWeek
+		class.WeekArrangement = zjuconst.Normal
 	case "单周":
-		class.Repeat = SingleWeek
+		class.WeekArrangement = zjuconst.OddOnly
 	case "双周":
-		class.Repeat = DoubleWeek
+		class.WeekArrangement = zjuconst.EvenOnly
 	default:
 		// 不是严重错误
-		class.Repeat = EveryWeek
+		class.WeekArrangement = zjuconst.Normal
 		log.Ctx(ctx).Warn().Msgf("unsupported repeat pattern: %s", strings.TrimSpace(tr[1]))
 	}
 	// RawDuration
-	var b strings.Builder
-	b.Grow(len(children[2].Data))
-	for _, ch := range children[2].Data {
-		if !unicode.IsSpace(ch) {
-			b.WriteRune(ch)
-		}
-	}
-	class.RawDuration = b.String()
-	class.Teacher = strings.TrimSpace(children[3].Data)
-	class.Location = strings.TrimSpace(children[4].Data)
+	//var b strings.Builder
+	//b.Grow(len(children[2].Data))
+	//for _, ch := range children[2].Data {
+	//	if !unicode.IsSpace(ch) {
+	//		b.WriteRune(ch)
+	//	}
+	//}
+	//class.RawDuration = b.String()
+	class.TeacherName = strings.TrimSpace(children[3].Data)
+	class.ClassLocation = strings.TrimSpace(children[4].Data)
+	//TODO
+	class.ClassCode = "未知"
 	return class, nil
 }
 
@@ -152,7 +154,7 @@ func getValidChildren(node *html.Node) []*html.Node {
 	return c
 }
 
-func ParseTable(ctx context.Context, node *html.Node, isUGRS bool) (*[]Class, error) {
+func ParseTable(ctx context.Context, node *html.Node, isUGRS bool) ([]zjuconst.ZJUClass, error) {
 	var rowNum int
 	if isUGRS {
 		rowNum = UgrsTableRowNum
@@ -167,7 +169,7 @@ func ParseTable(ctx context.Context, node *html.Node, isUGRS bool) (*[]Class, er
 		return nil, fmt.Errorf("insufficient tr element")
 	}
 
-	var classes []Class
+	var classes []zjuconst.ZJUClass
 	mask := [7][15]bool{}
 	for i := 1; i < rowNum; i++ {
 		tr := trs.Nodes[i]
@@ -210,15 +212,15 @@ func ParseTable(ctx context.Context, node *html.Node, isUGRS bool) (*[]Class, er
 					log.Ctx(ctx).Warn().Msgf("failed to parse class: %s", err.Error())
 					continue
 				}
-				class.Duration.Starts = i
-				class.Duration.Ends = i + span - 1
-				class.DayOfWeek = j
+				class.StartPeriod = i
+				class.EndPeriod = i + span - 1
+				class.DayNumber = j
 				classes = append(classes, class)
 			}
 		}
 	}
 
-	return &classes, nil
+	return classes, nil
 }
 
 func getFirstChildData(node *html.Node, def string) string {
@@ -229,10 +231,10 @@ func getFirstChildData(node *html.Node, def string) string {
 	}
 }
 
-func ParseExamTable(ctx context.Context, node *html.Node) (*[]Exam, error) {
+func ParseExamTable(ctx context.Context, node *html.Node) ([]zjuconst.ZJUExam, error) {
 	var err error
 	trs := goquery.NewDocumentFromNode(node).Find("tr").Nodes
-	var exams []Exam
+	var exams []zjuconst.ZJUExam
 	for _, tr := range trs {
 		tds := goquery.NewDocumentFromNode(tr).Find("td").Nodes
 		l := len(tds)
@@ -244,7 +246,7 @@ func ParseExamTable(ctx context.Context, node *html.Node) (*[]Exam, error) {
 			continue
 		}
 
-		exam := Exam{}
+		exam := zjuconst.ZJUGrsExam{}
 		valid := true
 	FOR:
 		for i := 0; i < l; i++ {
@@ -254,7 +256,7 @@ func ParseExamTable(ctx context.Context, node *html.Node) (*[]Exam, error) {
 			case 1:
 				exam.ID = getFirstChildData(tds[i], "未知课号")
 			case 2:
-				exam.Name = getFirstChildData(tds[i], "未知课程")
+				exam.ClassName = getFirstChildData(tds[i], "未知课程")
 			case 3:
 				exam.Region = getFirstChildData(tds[i], "")
 			case 4:
@@ -267,27 +269,27 @@ func ParseExamTable(ctx context.Context, node *html.Node) (*[]Exam, error) {
 				d := getFirstChildData(tds[4], "")
 				t0 := fmt.Sprintf("%s %s", d, t2[0])
 				t1 := fmt.Sprintf("%s %s", d, t2[1])
-				exam.StartTime, err = time.ParseInLocation("2006-01-02 15:04", t0, CSTLocation)
+				exam.StartTime, err = time.Parse("2006-01-02 15:04", t0)
 				if err != nil {
 					valid = false
 					break FOR
 				}
-				exam.EndTime, err = time.ParseInLocation("2006-01-02 15:04", t1, CSTLocation)
+				exam.EndTime, err = time.Parse("2006-01-02 15:04", t1)
 				if err != nil {
 					valid = false
 					break FOR
 				}
 			case 6:
-				exam.Location = getFirstChildData(tds[i], "未知地点")
+				exam.ExamLocation = getFirstChildData(tds[i], "未知地点")
 			case 7:
-				exam.SeatNo = getFirstChildData(tds[i], "")
+				exam.ExamSeatNum = getFirstChildData(tds[i], "")
 			case 8:
-				exam.Remark = getFirstChildData(tds[i], "")
+				exam.ExamRemark = getFirstChildData(tds[i], "")
 			}
 		}
 		if valid {
-			exams = append(exams, exam)
+			exams = append(exams, &exam)
 		}
 	}
-	return &exams, err
+	return exams, err
 }

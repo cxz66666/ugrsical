@@ -3,11 +3,23 @@ package zjuconst
 import (
 	"fmt"
 	"strings"
+	"time"
 	"ugrs-ical/pkg/date"
 	"ugrs-ical/pkg/ical"
 )
 
-type ZJUExam struct {
+type ExamTerm int
+
+const (
+	AutumnWinter ExamTerm = iota
+	SpringSummer
+)
+
+type ZJUExam interface {
+	ToVEventList() []ical.VEvent
+}
+
+type ZJUUgrsExam struct {
 	ClassName           string
 	FinalExamAgenda     string
 	FinalExamLocation   string
@@ -17,7 +29,19 @@ type ZJUExam struct {
 	MidtermExamSeatNum  string
 }
 
-func (zjuexam *ZJUExam) ToVEventList() []ical.VEvent {
+type ZJUGrsExam struct {
+	Semester     string
+	ID           string // 课号
+	ClassName    string
+	Region       string //区域，类似：玉泉
+	StartTime    time.Time
+	EndTime      time.Time
+	ExamLocation string
+	ExamSeatNum  string
+	ExamRemark   string
+}
+
+func (zjuexam *ZJUUgrsExam) ToVEventList() []ical.VEvent {
 	var vEvents []ical.VEvent
 	if len(strings.TrimSpace(zjuexam.FinalExamAgenda)) != 0 {
 		//TODO WIP
@@ -60,6 +84,32 @@ func (zjuexam *ZJUExam) ToVEventList() []ical.VEvent {
 		},
 		)
 	}
+	return vEvents
+
+}
+
+func (zjuexam *ZJUGrsExam) ToVEventList() []ical.VEvent {
+	var vEvents []ical.VEvent
+
+	//TODO WIP
+
+	var b strings.Builder
+	b.WriteString(fmt.Sprintf("%s %s学期 ", zjuexam.ClassName, zjuexam.Semester))
+	b.WriteString(fmt.Sprintf("课程号：%s\\n", zjuexam.ID))
+	if zjuexam.ExamSeatNum != "" {
+		b.WriteString(fmt.Sprintf("座位号: %s\\n", zjuexam.ExamSeatNum))
+	}
+	if zjuexam.ExamRemark != "" {
+		b.WriteString(fmt.Sprintf("备注: %s\\n", zjuexam.ExamRemark))
+	}
+	vEvents = append(vEvents, ical.VEvent{
+		Summary:     fmt.Sprintf("[务必核对!]%s %s学期考试", zjuexam.ClassName, zjuexam.Semester),
+		Location:    zjuexam.ExamLocation,
+		Description: b.String(),
+		StartTime:   zjuexam.StartTime,
+		EndTime:     zjuexam.EndTime,
+	},
+	)
 	return vEvents
 
 }

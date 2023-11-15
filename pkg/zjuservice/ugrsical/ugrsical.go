@@ -74,7 +74,7 @@ func (zs *UgrsService) GetClassTimeTable(academicYear string, term zjuconst.Clas
 	return res, nil
 }
 
-func (zs *UgrsService) GetExamInfo(academicYear string, term ExamTerm, stuId string) ([]zjuconst.ZJUExam, error) {
+func (zs *UgrsService) GetExamInfo(academicYear string, term zjuconst.ExamTerm, stuId string) ([]zjuconst.ZJUExam, error) {
 	data := url.Values{}
 	data.Set("xn", academicYear)
 	data.Set("xq", zjuconst.UgrsExamTermToQueryString(term))
