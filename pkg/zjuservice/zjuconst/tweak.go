@@ -1,4 +1,4 @@
-package zjuservice
+package zjuconst
 
 import (
 	"time"

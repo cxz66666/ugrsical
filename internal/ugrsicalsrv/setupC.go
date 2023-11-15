@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"ugrs-ical/pkg/zjuservice"
+	"ugrs-ical/pkg/zjuservice/zjuconst"
 
 	"github.com/gin-gonic/gin"
 )
@@ -48,10 +48,10 @@ func SetupPage(ctx *gin.Context) {
 	sdMutex.RLock()
 	d := sd
 	sdMutex.RUnlock()
-	d.Classes = zjuservice.GetConfig().GetClassYearAndSemester()
-	d.Exams = zjuservice.GetConfig().GetExamYearAndSemester()
-	d.LastUpdated = zjuservice.GetConfig().GetLastUpdated()
-	d.LastUpdatedTime = zjuservice.GetConfig().GetLastUpdatedTime()
+	d.Classes = zjuconst.GetConfig().GetClassYearAndSemester()
+	d.Exams = zjuconst.GetConfig().GetExamYearAndSemester()
+	d.LastUpdated = zjuconst.GetConfig().GetLastUpdated()
+	d.LastUpdatedTime = zjuconst.GetConfig().GetLastUpdatedTime()
 	d.Link = fmt.Sprintf("%s/ical?p=%s", _serverConfig.Host, en)
 	d.SubLink = fmt.Sprintf("%s/sub?p=%s", _serverConfig.Host, en)
 	d.ScoreSubLink = fmt.Sprintf("%s/subScore?p=%s", _serverConfig.Host, en)

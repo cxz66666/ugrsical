@@ -13,8 +13,7 @@ import (
 	"text/template"
 	"time"
 	"ugrs-ical/pkg/zjuam"
-
-	"ugrs-ical/pkg/zjuservice"
+	"ugrs-ical/pkg/zjuservice/zjuconst"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis/v8"
@@ -26,8 +25,8 @@ const defaultServerConfigPath = "configs/server.json"
 var _serverConfig ServerConfig
 
 type SetupData struct {
-	Classes          []zjuservice.YearAndSemester
-	Exams            []zjuservice.YearAndSemester
+	Classes          []zjuconst.YearAndSemester
+	Exams            []zjuconst.YearAndSemester
 	LastUpdated      int
 	LastUpdatedTime  string
 	LastSuccessIcal  string
@@ -52,8 +51,8 @@ type ServerConfig struct {
 var setupTpl *template.Template
 
 var sd = SetupData{
-	Classes:          []zjuservice.YearAndSemester{},
-	Exams:            []zjuservice.YearAndSemester{},
+	Classes:          []zjuconst.YearAndSemester{},
+	Exams:            []zjuconst.YearAndSemester{},
 	Link:             "",
 	SubLink:          "",
 	ScoreSubLink:     "",
@@ -151,12 +150,12 @@ func ListenAndServe() error {
 		return err
 	}
 	// read config
-	if err = zjuservice.LoadConfig(_serverConfig.CfgPath); err != nil {
+	if err = zjuconst.LoadConfig(_serverConfig.CfgPath); err != nil {
 		return err
 	}
 
-	if zjuservice.UseOnlineConfig {
-		go zjuservice.UpdateConfig(time.Hour * 1)
+	if zjuconst.UseOnlineConfig {
+		go zjuconst.UpdateConfig(time.Hour * 1)
 	}
 
 	//TODO check config

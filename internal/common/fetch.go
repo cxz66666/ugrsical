@@ -3,6 +3,8 @@ package common
 import (
 	"context"
 	"errors"
+	"ugrs-ical/pkg/zjuservice/ugrsical"
+	"ugrs-ical/pkg/zjuservice/zjuconst"
 
 	"ugrs-ical/pkg/ical"
 	"ugrs-ical/pkg/zjuservice"
@@ -10,7 +12,7 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-func firstMatchTerm(configs []zjuservice.TermConfig, target zjuservice.ClassYearAndTerm) int {
+func firstMatchTerm(configs []zjuconst.TermConfig, target zjuconst.ClassYearAndTerm) int {
 	for index, item := range configs {
 		if item.Term == target.Term && item.Year == target.Year {
 			return index
@@ -20,10 +22,10 @@ func firstMatchTerm(configs []zjuservice.TermConfig, target zjuservice.ClassYear
 }
 
 func GetClassCalendar(ctx context.Context, username, password string) (ical.VCalendar, error) {
-	var zs zjuservice.IZjuService
+	var zs zjuservice.IZJUService
 
-	ctx = context.WithValue(ctx, zjuservice.ScheduleCtxKey, zjuservice.GetConfig())
-	zs = zjuservice.NewZjuService(ctx)
+	ctx = context.WithValue(ctx, zjuconst.ScheduleCtxKey, zjuconst.GetConfig())
+	zs = ugrsical.NewUgrsService(ctx)
 
 	if err := zs.Login(username, password); err != nil {
 		return ical.VCalendar{}, err
@@ -43,11 +45,11 @@ func GetClassCalendar(ctx context.Context, username, password string) (ical.VCal
 		if err != nil {
 			return ical.VCalendar{}, err
 		}
-		log.Ctx(ctx).Info().Msgf("generating class vevents %s-%s", item.Year, zjuservice.ClassTermToDescriptionString(item.Term))
+		log.Ctx(ctx).Info().Msgf("generating class vevents %s-%s", item.Year, zjuconst.ClassTermToDescriptionString(item.Term))
 		// classes to events
-		list := zjuservice.ClassToVEvents(classOutline, termConfigs[index], tweaks)
+		list := zjuconst.ClassToVEvents(classOutline, termConfigs[index], tweaks)
 		vCal.VEvents = append(vCal.VEvents, list...)
-		log.Ctx(ctx).Info().Msgf("generated class vevents %s-%s", item.Year, zjuservice.ClassTermToDescriptionString(item.Term))
+		log.Ctx(ctx).Info().Msgf("generated class vevents %s-%s", item.Year, zjuconst.ClassTermToDescriptionString(item.Term))
 	}
 	log.Ctx(ctx).Info().Msgf("get class vCal success ")
 
@@ -56,10 +58,10 @@ func GetClassCalendar(ctx context.Context, username, password string) (ical.VCal
 }
 
 func GetExamCalendar(ctx context.Context, username, password string) (ical.VCalendar, error) {
-	var zs zjuservice.IZjuService
+	var zs zjuservice.IZJUService
 
-	ctx = context.WithValue(ctx, zjuservice.ScheduleCtxKey, zjuservice.GetConfig())
-	zs = zjuservice.NewZjuService(ctx)
+	ctx = context.WithValue(ctx, zjuconst.ScheduleCtxKey, zjuconst.GetConfig())
+	zs = ugrsical.NewUgrsService(ctx)
 
 	if err := zs.Login(username, password); err != nil {
 		return ical.VCalendar{}, err
@@ -72,12 +74,12 @@ func GetExamCalendar(ctx context.Context, username, password string) (ical.VCale
 		if err != nil {
 			return ical.VCalendar{}, err
 		}
-		log.Ctx(ctx).Info().Msgf("generating exam vevents %s-%s", item.Year, zjuservice.ExamTermToDescriptionString(item.Term))
+		log.Ctx(ctx).Info().Msgf("generating exam vevents %s-%s", item.Year, zjuconst.ExamTermToDescriptionString(item.Term))
 		// exam to events
 		for _, exam := range examOutline {
 			vCal.VEvents = append(vCal.VEvents, exam.ToVEventList()...)
 		}
-		log.Ctx(ctx).Info().Msgf("generated exam vevents %s-%s", item.Year, zjuservice.ExamTermToDescriptionString(item.Term))
+		log.Ctx(ctx).Info().Msgf("generated exam vevents %s-%s", item.Year, zjuconst.ExamTermToDescriptionString(item.Term))
 	}
 	log.Ctx(ctx).Info().Msgf("get exam vCal success")
 
@@ -86,10 +88,10 @@ func GetExamCalendar(ctx context.Context, username, password string) (ical.VCale
 }
 
 func GetBothCalendar(ctx context.Context, username, password string) (ical.VCalendar, error) {
-	var zs zjuservice.IZjuService
+	var zs zjuservice.IZJUService
 
-	ctx = context.WithValue(ctx, zjuservice.ScheduleCtxKey, zjuservice.GetConfig())
-	zs = zjuservice.NewZjuService(ctx)
+	ctx = context.WithValue(ctx, zjuconst.ScheduleCtxKey, zjuconst.GetConfig())
+	zs = ugrsical.NewUgrsService(ctx)
 
 	if err := zs.Login(username, password); err != nil {
 		log.Ctx(ctx).Error().Err(err).Msg("login failed")
@@ -108,29 +110,29 @@ func GetBothCalendar(ctx context.Context, username, password string) (ical.VCale
 		}
 		classOutline, err := zs.GetClassTimeTable(item.Year, item.Term, username)
 		if err != nil {
-			log.Ctx(ctx).Error().Err(err).Msgf("get class vevents failed %s-%s", item.Year, zjuservice.ClassTermToDescriptionString(item.Term))
+			log.Ctx(ctx).Error().Err(err).Msgf("get class vevents failed %s-%s", item.Year, zjuconst.ClassTermToDescriptionString(item.Term))
 			return ical.VCalendar{}, err
 		}
-		log.Ctx(ctx).Info().Msgf("generating class vevents %s-%s", item.Year, zjuservice.ClassTermToDescriptionString(item.Term))
+		log.Ctx(ctx).Info().Msgf("generating class vevents %s-%s", item.Year, zjuconst.ClassTermToDescriptionString(item.Term))
 		// classes to events
-		list := zjuservice.ClassToVEvents(classOutline, termConfigs[index], tweaks)
+		list := zjuconst.ClassToVEvents(classOutline, termConfigs[index], tweaks)
 		vCal.VEvents = append(vCal.VEvents, list...)
-		log.Ctx(ctx).Info().Msgf("generated class vevents %s-%s", item.Year, zjuservice.ClassTermToDescriptionString(item.Term))
+		log.Ctx(ctx).Info().Msgf("generated class vevents %s-%s", item.Year, zjuconst.ClassTermToDescriptionString(item.Term))
 	}
 	log.Ctx(ctx).Info().Msgf("get class vCal success ")
 
 	for _, item := range zs.GetExamTerms() {
 		examOutline, err := zs.GetExamInfo(item.Year, item.Term, username)
 		if err != nil {
-			log.Ctx(ctx).Error().Err(err).Msgf("get exam vevents %s-%s failed", item.Year, zjuservice.ExamTermToDescriptionString(item.Term))
+			log.Ctx(ctx).Error().Err(err).Msgf("get exam vevents %s-%s failed", item.Year, zjuconst.ExamTermToDescriptionString(item.Term))
 			return ical.VCalendar{}, err
 		}
-		log.Ctx(ctx).Info().Msgf("generating exam vevents %s-%s", item.Year, zjuservice.ExamTermToDescriptionString(item.Term))
+		log.Ctx(ctx).Info().Msgf("generating exam vevents %s-%s", item.Year, zjuconst.ExamTermToDescriptionString(item.Term))
 		// exam to events
 		for _, exam := range examOutline {
 			vCal.VEvents = append(vCal.VEvents, exam.ToVEventList()...)
 		}
-		log.Ctx(ctx).Info().Msgf("generated exam vevents %s-%s", item.Year, zjuservice.ExamTermToDescriptionString(item.Term))
+		log.Ctx(ctx).Info().Msgf("generated exam vevents %s-%s", item.Year, zjuconst.ExamTermToDescriptionString(item.Term))
 	}
 	log.Ctx(ctx).Info().Msgf("get exam vCal success")
 
@@ -140,8 +142,8 @@ func GetBothCalendar(ctx context.Context, username, password string) (ical.VCale
 }
 
 func GetScoreCalendar(ctx context.Context, username, password string) (ical.VCalendar, error) {
-	var zs zjuservice.IZjuService
-	zs = zjuservice.NewZjuService(ctx)
+	var zs zjuservice.IZJUService
+	zs = ugrsical.NewUgrsService(ctx)
 
 	if err := zs.Login(username, password); err != nil {
 		return ical.VCalendar{}, err
@@ -153,11 +155,11 @@ func GetScoreCalendar(ctx context.Context, username, password string) (ical.VCal
 		return ical.VCalendar{}, err
 	}
 	// cleanup 1. remove “弃修” and "缓考" and "缺考" 2. use best score for same className
-	scores = zjuservice.ScoresCleanUp(scores)
+	scores = zjuconst.ScoresCleanUp(scores)
 
 	log.Ctx(ctx).Info().Msgf("generating score vevents")
 	// score to events
-	vevent, err := zjuservice.ScoresToVEventList(scores)
+	vevent, err := zjuconst.ScoresToVEventList(scores)
 	if err != nil {
 		return ical.VCalendar{}, err
 	}

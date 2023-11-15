@@ -1,4 +1,4 @@
-package zjuservice
+package zjuconst
 
 import (
 	"errors"
@@ -16,30 +16,30 @@ import (
 const BlankSpace = 25
 
 var scoreMap = map[string]float64{
-	"A+":     95,
-	"A":      90,
-	"A-":     87,
-	"B+":     83,
-	"B":      80,
-	"B-":     77,
-	"C+":     73,
-	"C":      70,
-	"C-":     67,
-	"D":      60,
-	"F":      0,
-	"优":     90,
-	"优秀":   90,
-	"良":     80,
-	"良好":   80,
-	"中":     70,
-	"中等":   70,
-	"及格":   60,
+	"A+":  95,
+	"A":   90,
+	"A-":  87,
+	"B+":  83,
+	"B":   80,
+	"B-":  77,
+	"C+":  73,
+	"C":   70,
+	"C-":  67,
+	"D":   60,
+	"F":   0,
+	"优":   90,
+	"优秀":  90,
+	"良":   80,
+	"良好":  80,
+	"中":   70,
+	"中等":  70,
+	"及格":  60,
 	"不及格": 0,
-	"合格":   75,
+	"合格":  75,
 	"不合格": 0,
 }
 
-type ZjuClassScore struct {
+type ZJUClassScore struct {
 	Score     string  `json:"cj"`
 	Gpa       float64 `json:"jd"`
 	ClassName string  `json:"kcmc"`
@@ -50,7 +50,7 @@ type ZjuClassScore struct {
 	ClassTerm   string `json:"xq"`
 }
 
-func (zcs *ZjuClassScore) GetScore() float64 {
+func (zcs *ZJUClassScore) GetScore() float64 {
 	if score, ok := scoreMap[zcs.Score]; ok {
 		return score
 	} else {
@@ -63,13 +63,13 @@ func (zcs *ZjuClassScore) GetScore() float64 {
 	}
 }
 
-func (zcs *ZjuClassScore) GetDescription() string {
+func (zcs *ZJUClassScore) GetDescription() string {
 	runewidth.EastAsianWidth = true
 	className := runewidth.Truncate(zcs.ClassName, BlankSpace, "..")
 	return fmt.Sprintf("%s(%s):  %s/%.1f\\n", className, zcs.ClassCredit, zcs.Score, zcs.Gpa)
 }
 
-func (zcs *ZjuClassScore) GetScoreTermDescription() string {
+func (zcs *ZJUClassScore) GetScoreTermDescription() string {
 	term := ""
 	switch zcs.PX {
 	case 1:
@@ -82,7 +82,7 @@ func (zcs *ZjuClassScore) GetScoreTermDescription() string {
 	return fmt.Sprintf("%s %s", zcs.ClassYear, term)
 }
 
-func GetAverageGPA(scores []ZjuClassScore) (float64, error) {
+func GetAverageGPA(scores []ZJUClassScore) (float64, error) {
 	var sumGpa float64
 	var sumCredits float64
 	for _, score := range scores {
@@ -96,7 +96,7 @@ func GetAverageGPA(scores []ZjuClassScore) (float64, error) {
 	return sumGpa / sumCredits, nil
 }
 
-func GetAverageScore(scores []ZjuClassScore) (float64, error) {
+func GetAverageScore(scores []ZJUClassScore) (float64, error) {
 	var sumScore float64
 	var sumCredits float64
 	for _, score := range scores {
@@ -110,7 +110,7 @@ func GetAverageScore(scores []ZjuClassScore) (float64, error) {
 	return sumScore / sumCredits, nil
 }
 
-func GetTotalCredit(scores []ZjuClassScore) float64 {
+func GetTotalCredit(scores []ZJUClassScore) float64 {
 	var sumCredits float64
 	for _, score := range scores {
 		credit, _ := strconv.ParseFloat(score.ClassCredit, 64)
@@ -119,7 +119,7 @@ func GetTotalCredit(scores []ZjuClassScore) float64 {
 	return sumCredits
 }
 
-func ScoresCleanUp(scores []ZjuClassScore) []ZjuClassScore {
+func ScoresCleanUp(scores []ZJUClassScore) []ZJUClassScore {
 	bestScores := make(map[string]float64)
 	for _, score := range scores {
 		if score.Score == "弃修" || score.Score == "缓考" || score.Score == "缺考" {
@@ -131,7 +131,7 @@ func ScoresCleanUp(scores []ZjuClassScore) []ZjuClassScore {
 			bestScores[score.ClassName] = math.Max(val, score.GetScore())
 		}
 	}
-	var newScores []ZjuClassScore
+	var newScores []ZJUClassScore
 	for _, score := range scores {
 		if val, exist := bestScores[score.ClassName]; exist && val == score.GetScore() {
 			newScores = append(newScores, score)
@@ -140,8 +140,8 @@ func ScoresCleanUp(scores []ZjuClassScore) []ZjuClassScore {
 	return newScores
 }
 
-func ScoresToVEventList(scores []ZjuClassScore) ([]ical.VEvent, error) {
-	scoresMap := make(map[int][]ZjuClassScore)
+func ScoresToVEventList(scores []ZJUClassScore) ([]ical.VEvent, error) {
+	scoresMap := make(map[int][]ZJUClassScore)
 
 	termsCount := 0
 	termsMap := make(map[string]int)
@@ -182,7 +182,7 @@ func ScoresToVEventList(scores []ZjuClassScore) ([]ical.VEvent, error) {
 	return vEvents, nil
 }
 
-func ScoresToVEvent(scores []ZjuClassScore, summary string, index int) (ical.VEvent, error) {
+func ScoresToVEvent(scores []ZJUClassScore, summary string, index int) (ical.VEvent, error) {
 	if summary == "" {
 		summary = "GPA Helper"
 	}

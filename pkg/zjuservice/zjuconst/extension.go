@@ -1,6 +1,10 @@
-package zjuservice
+package zjuconst
 
-func ClassTermToQueryString(t ClassTerm) string {
+import (
+	"ugrs-ical/pkg/zjuservice/ugrsical"
+)
+
+func UgrsClassTermToQueryString(t ClassTerm) string {
 	switch t {
 	case Autumn:
 		return "1|秋"
@@ -18,6 +22,27 @@ func ClassTermToQueryString(t ClassTerm) string {
 		return "2|短"
 	default:
 		return ""
+	}
+}
+
+func GrsClassTermToQueryInt(t ClassTerm) int {
+	switch t {
+	case Autumn:
+		return 13
+	case Winter:
+		return 14
+	case ShortA:
+		return 0
+	case SummerVacation:
+		return 0
+	case Spring:
+		return 11
+	case Summer:
+		return 12
+	case ShortB:
+		return 0
+	default:
+		return 0
 	}
 }
 
@@ -42,22 +67,22 @@ func ClassTermToDescriptionString(t ClassTerm) string {
 	}
 }
 
-func ExamTermToDescriptionString(t ExamTerm) string {
+func ExamTermToDescriptionString(t ugrsical.ExamTerm) string {
 	switch t {
-	case AutumnWinter:
+	case ugrsical.AutumnWinter:
 		return "秋冬"
-	case SpringSummer:
+	case ugrsical.SpringSummer:
 		return "春夏"
 	default:
 		return ""
 	}
 }
 
-func ExamTermToQueryString(t ExamTerm) string {
+func UgrsExamTermToQueryString(t ugrsical.ExamTerm) string {
 	switch t {
-	case AutumnWinter:
+	case ugrsical.AutumnWinter:
 		return "1"
-	case SpringSummer:
+	case ugrsical.SpringSummer:
 		return "2"
 	default:
 		return ""

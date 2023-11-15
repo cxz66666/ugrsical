@@ -16,6 +16,8 @@ var proxyTransport http.Transport
 
 type ZjuLogin interface {
 	Login(ctx context.Context, payloadUrl, username, password string) error
+	// UgrsExtraLogin used for ugrs students select grs course
+	UgrsExtraLogin(ctx context.Context, payloadUrl string) error
 	Client() *http.Client
 }
 

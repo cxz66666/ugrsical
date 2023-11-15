@@ -6,15 +6,14 @@ import (
 	"errors"
 	"io"
 	"os"
-
-	common2 "ugrs-ical/internal/common"
-	"ugrs-ical/pkg/ical"
-	"ugrs-ical/pkg/zjuservice"
+	"ugrs-ical/pkg/zjuservice/zjuconst"
 
 	"github.com/google/uuid"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
+	common2 "ugrs-ical/internal/common"
+	"ugrs-ical/pkg/ical"
 )
 
 type pwFile struct {
@@ -44,7 +43,7 @@ func init() {
 	rootCmd.PersistentFlags().StringVarP(&userName, "username", "u", "", "ZJUAM username")
 	rootCmd.PersistentFlags().StringVarP(&password, "password", "p", "", "ZJUAM password")
 	rootCmd.PersistentFlags().StringVarP(&userPassFile, "upfile", "i", "", "username and password json")
-	rootCmd.PersistentFlags().StringVarP(&configFile, "config", "c", zjuservice.ConfigDefaultPath, "config file")
+	rootCmd.PersistentFlags().StringVarP(&configFile, "config", "c", zjuconst.ConfigDefaultPath, "config file")
 	rootCmd.PersistentFlags().IntVarP(&icalType, "type", "t", 0, "0(default) for both class and exam, 1 for only class, 2 for only exam, 3 for only scores")
 	rootCmd.PersistentFlags().StringVarP(&outputFile, "output", "o", "ugrsical.ics", "output file")
 	rootCmd.PersistentFlags().BoolVarP(&forceWrite, "force", "f", false, "force write to target file")
@@ -78,7 +77,7 @@ func CliMain(cmd *cobra.Command, args []string) error {
 		return errors.New("invalid ical type")
 	}
 	// Load config before fetch !
-	if err := zjuservice.LoadConfig(configFile); err != nil {
+	if err := zjuconst.LoadConfig(configFile); err != nil {
 		return err
 	}
 

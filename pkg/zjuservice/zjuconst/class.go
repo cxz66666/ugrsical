@@ -1,11 +1,10 @@
-package zjuservice
+package zjuconst
 
 import (
 	"fmt"
 	"sort"
 	"strings"
 	"time"
-
 	"ugrs-ical/pkg/ical"
 )
 
@@ -29,7 +28,7 @@ const (
 	ShortB                          //短学期B
 )
 
-type ZjuClass struct {
+type ZJUClass struct {
 	WeekArrangement  WeekArrangement
 	StartPeriod      int
 	EndPeriod        int
@@ -42,23 +41,23 @@ type ZjuClass struct {
 	ClassYear        int
 }
 
-func NewZjuClass() ZjuClass {
-	return ZjuClass{
+func NewZjuClass() ZJUClass {
+	return ZJUClass{
 		TermArrangements: make([]ClassTerm, 0),
 	}
 }
 
-func (zc *ZjuClass) GetStartDateTime(day time.Time) time.Time {
+func (zc *ZJUClass) GetStartDateTime(day time.Time) time.Time {
 	period := NewClassPeriod(zc.StartPeriod)
 	return period.ToStartDateTime(day)
 }
 
-func (zc *ZjuClass) GetEndDateTime(day time.Time) time.Time {
+func (zc *ZJUClass) GetEndDateTime(day time.Time) time.Time {
 	period := NewClassPeriod(zc.EndPeriod)
 	return period.ToEndDateTime(day)
 }
 
-func (zc *ZjuClass) ArrangementDescription() string {
+func (zc *ZJUClass) ArrangementDescription() string {
 	var b strings.Builder
 	sort.Ints(zc.TermArrangements)
 	for _, term := range zc.TermArrangements {
@@ -121,6 +120,13 @@ func NewClassPeriod(periodNumber int) ClassPeriod {
 	case 13:
 		Hour = 20
 		Minute = 30
+	case 14:
+		Hour = 21
+		Minute = 20
+	case 15:
+		Hour = 22
+		Minute = 10
+	// 	ugrs student default only have 13 classes(21:20)
 	default:
 		Hour = 21
 		Minute = 20
@@ -139,8 +145,8 @@ func (cp *ClassPeriod) ToEndDateTime(day time.Time) time.Time {
 	return cp.ToStartDateTime(day).Add(time.Minute * 45)
 }
 
-func GetClassOfDay(classes []ZjuClass, day int) []ZjuClass {
-	var res []ZjuClass
+func GetClassOfDay(classes []ZJUClass, day int) []ZJUClass {
+	var res []ZJUClass
 	for _, item := range classes {
 		if item.DayNumber == day {
 			res = append(res, item)
@@ -154,7 +160,7 @@ func isEvenWeek(mondayOfTermBegin, target time.Time) bool {
 	return (days/7)%2 == 1
 }
 
-func ClassToVEvents(classes []ZjuClass, termConfig TermConfig, tweaks []Tweak) []ical.VEvent {
+func ClassToVEvents(classes []ZJUClass, termConfig TermConfig, tweaks []Tweak) []ical.VEvent {
 
 	dataLength := int(termConfig.End.Sub(termConfig.Begin).Hours()/24) + 2
 	shadowDates := make(map[time.Time]time.Time, dataLength)
@@ -181,7 +187,7 @@ func ClassToVEvents(classes []ZjuClass, termConfig TermConfig, tweaks []Tweak) [
 			modDescriptions[tweak.From] = tweak.Description
 		}
 	}
-	classOfDay := make(map[time.Weekday][]ZjuClass, 7)
+	classOfDay := make(map[time.Weekday][]ZJUClass, 7)
 	classOfDay[time.Monday] = GetClassOfDay(classes, 1)
 	classOfDay[time.Tuesday] = GetClassOfDay(classes, 2)
 	classOfDay[time.Wednesday] = GetClassOfDay(classes, 3)

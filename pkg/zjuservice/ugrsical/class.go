@@ -1,30 +1,11 @@
-package zjuservice
+package ugrsical
 
 import (
 	"sort"
 	"strconv"
 	"strings"
+	"ugrs-ical/pkg/zjuservice/zjuconst"
 )
-
-type ZjuResWrapperStr[T ZjuWeeklyScheduleRes | ZjuExamOutlineRes | ZjuClassScoreRes] struct {
-	Data      T      `json:"data"`
-	ErrorCode string `json:"error_code"`
-	Message   string `json:"message"`
-}
-
-type ZjuWeeklyScheduleRes struct {
-	ClassList []ZjuWeeklyScheduleClass `json:"kblist"`
-}
-
-type ZjuExamOutlineRes struct {
-	ExamOutlineList []ZjuExamOutline `json:"list"`
-	Zt              string           `json:"zt"`
-}
-
-type ZjuClassScoreRes struct {
-	ClassScoreList []ZjuClassScore `json:"list"`
-	Zt             string          `json:"zt"`
-}
 
 type ZjuWeeklyScheduleClass struct {
 	WeekArrangement string   `json:"dsz"`
@@ -39,22 +20,22 @@ type ZjuWeeklyScheduleClass struct {
 	IsConfirmed     int      `json:"sfqd"`
 }
 
-func (zwsc ZjuWeeklyScheduleClass) ToZjuClass() *ZjuClass {
+func (zwsc ZjuWeeklyScheduleClass) ToZJUClass() *zjuconst.ZJUClass {
 	if zwsc.IsConfirmed == 0 {
 		return nil
 	}
-	var res ZjuClass
+	var res zjuconst.ZJUClass
 	if strings.Contains(zwsc.TermArrangement, "秋") {
-		res.TermArrangements = append(res.TermArrangements, Autumn)
+		res.TermArrangements = append(res.TermArrangements, zjuconst.Autumn)
 	}
 	if strings.Contains(zwsc.TermArrangement, "冬") {
-		res.TermArrangements = append(res.TermArrangements, Winter)
+		res.TermArrangements = append(res.TermArrangements, zjuconst.Winter)
 	}
 	if strings.Contains(zwsc.TermArrangement, "春") {
-		res.TermArrangements = append(res.TermArrangements, Spring)
+		res.TermArrangements = append(res.TermArrangements, zjuconst.Spring)
 	}
 	if strings.Contains(zwsc.TermArrangement, "夏") {
-		res.TermArrangements = append(res.TermArrangements, Summer)
+		res.TermArrangements = append(res.TermArrangements, zjuconst.Summer)
 	}
 	if len(res.TermArrangements) == 0 {
 		return nil
@@ -67,11 +48,11 @@ func (zwsc ZjuWeeklyScheduleClass) ToZjuClass() *ZjuClass {
 
 	switch zwsc.WeekArrangement {
 	case "0":
-		res.WeekArrangement = OddOnly
+		res.WeekArrangement = zjuconst.OddOnly
 	case "1":
-		res.WeekArrangement = EvenOnly
+		res.WeekArrangement = zjuconst.EvenOnly
 	default:
-		res.WeekArrangement = Normal
+		res.WeekArrangement = zjuconst.Normal
 	}
 
 	periods := make([]int, 0)

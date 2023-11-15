@@ -1,4 +1,4 @@
-package zjuservice
+package zjuconst
 
 import (
 	"encoding/json"
@@ -10,6 +10,7 @@ import (
 	"strings"
 	"sync"
 	"time"
+	"ugrs-ical/pkg/zjuservice/ugrsical"
 )
 
 const ConfigDefaultPath = "configs/config.json"
@@ -28,7 +29,7 @@ type ClassYearAndTerm struct {
 
 type ExamYearAndTerm struct {
 	Year string
-	Term ExamTerm
+	Term ugrsical.ExamTerm
 }
 
 type YearAndSemester struct {
@@ -65,7 +66,7 @@ func (config *ZjuScheduleConfig) GetExamYearAndTerms() []ExamYearAndTerm {
 		term, _ := strconv.ParseInt(p[1], 10, 64)
 		res = append(res, ExamYearAndTerm{
 			Year: p[0],
-			Term: ExamTerm(term),
+			Term: ugrsical.ExamTerm(term),
 		})
 	}
 	return res

@@ -1,8 +1,7 @@
-package zjuservice
+package zjuconst
 
 import (
 	"time"
-
 	"ugrs-ical/pkg/date"
 )
 
