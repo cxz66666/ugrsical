@@ -1,4 +1,4 @@
-module ugrs-ical
+module zju-ical
 
 go 1.21
 

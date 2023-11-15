@@ -1,11 +1,11 @@
-# you need put this file in your drone exec machine, and edit .drone.yml which command is `cd /app/ugrsicalsrv`,
-# so you need `mkdir /app/ugrsicalsrv` in this machine, and put this file in this directory.
+# you need put this file in your drone exec machine, and edit .drone.yml which command is `cd /app/zjuicalsrv`,
+# so you need `mkdir /app/zjuicalsrv` in this machine, and put this file in this directory.
 # don't forget to `mkdir configs` in this dir, and put your server.json and config.json in here, which will bind mount to docker container.
 version: '3'
 
 services:
   app:
-    image: ugrsicalsrv:latest
+    image: zjuicalsrv:latest
     restart: always
       #environment:
     ports:

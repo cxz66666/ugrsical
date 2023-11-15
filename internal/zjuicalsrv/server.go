@@ -1,4 +1,4 @@
-package ugrsicalsrv
+package zjuicalsrv
 
 import (
 	"context"
@@ -12,8 +12,8 @@ import (
 	"sync"
 	"text/template"
 	"time"
-	"ugrs-ical/pkg/zjuam"
-	"ugrs-ical/pkg/zjuservice/zjuconst"
+	"zju-ical/pkg/zjuam"
+	"zju-ical/pkg/zjuservice/zjuconst"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis/v8"
@@ -105,7 +105,7 @@ func ListenAndServe() error {
 	}
 
 	if _serverConfig.IpHeader != "" {
-		log.Info().Msgf("ugrsicalsrv will get header from %s", _serverConfig.IpHeader)
+		log.Info().Msgf("zjuicalsrv will get header from %s", _serverConfig.IpHeader)
 	}
 
 	if _serverConfig.RedisAddr == "" {

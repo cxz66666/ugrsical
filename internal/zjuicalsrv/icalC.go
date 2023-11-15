@@ -1,4 +1,4 @@
-package ugrsicalsrv
+package zjuicalsrv
 
 import (
 	"bytes"
@@ -9,8 +9,8 @@ import (
 	"net/http"
 	"time"
 
-	common2 "ugrs-ical/internal/common"
-	"ugrs-ical/pkg/ical"
+	common2 "zju-ical/internal/common"
+	"zju-ical/pkg/ical"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis/v8"

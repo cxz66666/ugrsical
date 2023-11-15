@@ -1,21 +1,21 @@
-# ugrsical
+# ZJU-ICAL
 
-Parse ZJU ugrs class timetable and generate iCalender file for you. If you are grs student or selected grs courses, please use [this](https://github.com/determ1ne/grsical) repo.
+Parse ZJU ugrs/grs class timetable and generate iCalender file for you. If you are grs student or selected grs courses, please use [this](https://github.com/determ1ne/grsical) repo.
 
 
 
 ### How to use
 
-we provide two binary file, ugrsical and ugrsicalsrv, both of them are same function, but one is running on your machine but the other is running on server and expose web page.
+we provide two binary file, zjuical and zjuicalsrv, both of them are same function, but one is running on your machine but the other is running on server and expose web page.
 
-#### use ugrsical(local)
+#### use zjuical(local)
 
 - download from release page
 - don't need to edit configs
-- use ` ./ugrsical -u [userId] -p [password]` to generate
-- also can use `./ugrsical --help` to find advanced usage
+- use ` ./zjuical -u [userId] -p [password]` to generate
+- also can use `./zjuical --help` to find advanced usage
 
-#### use ugrsicalsrv(server)
+#### use zjuicalsrv(server)
 
 - download from release page
 
@@ -37,13 +37,13 @@ we provide two binary file, ugrsical and ugrsicalsrv, both of them are same func
   
   ~~~
 
-- use `./ugrsicalsrv` and open `host::port` to use!
+- use `./zjuicalsrv` and open `host::port` to use!
 
 ### More configs
 
 - we provide three config file under /configs: `upfile.json`, `config.json`, `server.json`
-- `upfile.json` is used for ugrsical to get username and password from file
-- `config.json` is used for ugrsical and ugrsicalsrv to get generated config, which is highly recommended not to modify, but if you are not satisfied with the generated config, you can modify it with follow rules:
+- `upfile.json` is used for zjuical to get username and password from file
+- `config.json` is used for zjuical and zjuicalsrv to get generated config, which is highly recommended not to modify, but if you are not satisfied with the generated config, you can modify it with follow rules:
   ~~~js
   {
   "lastUpdated": 20220913, //just a flag
@@ -81,14 +81,14 @@ we provide two binary file, ugrsical and ugrsicalsrv, both of them are same func
   }
   ~~~
 
-- server.json is used for ugrsicalsrv to get server config, which is must modified for yourown server
+- server.json is used for zjuicalsrv to get server config, which is must modified for yourown server
 - anyway, please don't move config file to another path(which is hard code!)
 
 ### Q&A
 
-- **Q: I generate a ics file by ugrsical, but can't import it on my iphone?**
+- **Q: I generate a ics file by zjuical, but can't import it on my iphone?**
 - A: ical file can be directly import on Mac, Windows, Linux and Android, but can't be opened on iphone directly, you need send it to your email(or others email) and open it on `mail` APP`, or you can use our online playground!
-- **Q: I can't generate ics file by ugrsical, even I can't run it!**
+- **Q: I can't generate ics file by zjuical, even I can't run it!**
 - A: please check your download file from release page, you need download the binary file which is suitable for your machine, if you are fresh man and not sure, please download the `X86_64` version, and if you are using `arm`, please download the `Arm64` version, if you are using M1/M2 mac, please download the `Darwin_arm64` version.
 - **Q: I am worried about the security of online services, what should I do if my account number and password are stolen**
 - **A: The author pledges his reputation not to conduct private collections, you also can build your own server by manual**

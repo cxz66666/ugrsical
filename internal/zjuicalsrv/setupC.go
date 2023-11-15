@@ -1,4 +1,4 @@
-package ugrsicalsrv
+package zjuicalsrv
 
 import (
 	"bytes"
@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"ugrs-ical/pkg/zjuservice/zjuconst"
+	"zju-ical/pkg/zjuservice/zjuconst"
 
 	"github.com/gin-gonic/gin"
 )

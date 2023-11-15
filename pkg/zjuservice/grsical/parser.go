@@ -8,7 +8,7 @@ import (
 	"github.com/rs/zerolog/log"
 	"golang.org/x/net/html"
 	"golang.org/x/net/html/atom"
-	"ugrs-ical/pkg/zjuservice/zjuconst"
+	"zju-ical/pkg/zjuservice/zjuconst"
 
 	"io"
 	"strconv"

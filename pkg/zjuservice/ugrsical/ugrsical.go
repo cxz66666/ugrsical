@@ -11,8 +11,8 @@ import (
 	"net/url"
 	"strconv"
 	"strings"
-	"ugrs-ical/pkg/zjuam"
-	"ugrs-ical/pkg/zjuservice/zjuconst"
+	"zju-ical/pkg/zjuam"
+	"zju-ical/pkg/zjuservice/zjuconst"
 )
 
 const (

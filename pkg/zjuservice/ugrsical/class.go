@@ -4,7 +4,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
-	"ugrs-ical/pkg/zjuservice/zjuconst"
+	"zju-ical/pkg/zjuservice/zjuconst"
 )
 
 type ZjuWeeklyScheduleClass struct {

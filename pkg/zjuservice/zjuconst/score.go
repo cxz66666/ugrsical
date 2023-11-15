@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"ugrs-ical/pkg/ical"
+	"zju-ical/pkg/ical"
 
 	"github.com/mattn/go-runewidth"
 )

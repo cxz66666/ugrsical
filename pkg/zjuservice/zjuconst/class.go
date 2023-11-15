@@ -5,7 +5,7 @@ import (
 	"sort"
 	"strings"
 	"time"
-	"ugrs-ical/pkg/ical"
+	"zju-ical/pkg/ical"
 )
 
 type WeekArrangement int

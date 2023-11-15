@@ -9,8 +9,8 @@ import (
 	"github.com/rs/zerolog/log"
 	"io"
 	"net/url"
-	"ugrs-ical/pkg/zjuam"
-	"ugrs-ical/pkg/zjuservice/zjuconst"
+	"zju-ical/pkg/zjuam"
+	"zju-ical/pkg/zjuservice/zjuconst"
 )
 
 const (

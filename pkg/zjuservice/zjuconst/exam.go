@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 	"time"
-	"ugrs-ical/pkg/date"
-	"ugrs-ical/pkg/ical"
+	"zju-ical/pkg/date"
+	"zju-ical/pkg/ical"
 )
 
 type ExamTerm int

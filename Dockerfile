@@ -17,11 +17,11 @@ RUN go mod download
 RUN go mod tidy
 # src code
 COPY . .
-RUN make ugrsicalsrv-linux-amd64
-RUN mv build/ugrsicalsrv-linux-amd64 ./ugrsicalsrv
-RUN chmod +x ./ugrsicalsrv
+RUN make zjuicalsrv-linux-amd64
+RUN mv build/zjuicalsrv-linux-amd64 ./zjuicalsrv
+RUN chmod +x ./zjuicalsrv
 
 ENV TZ=Asia/Shanghai
 RUN ln -fs /usr/share/zoneinfo/${TZ} /etc/localtime \
         && echo ${TZ} > /etc/timezone
-ENTRYPOINT ["./ugrsicalsrv"]
+ENTRYPOINT ["./zjuicalsrv"]

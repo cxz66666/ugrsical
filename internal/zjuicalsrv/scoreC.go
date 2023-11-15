@@ -1,4 +1,4 @@
-package ugrsicalsrv
+package zjuicalsrv
 
 import (
 	"bytes"
@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"time"
 
-	common2 "ugrs-ical/internal/common"
+	common2 "zju-ical/internal/common"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis/v8"
@@ -89,7 +89,7 @@ func FetchScore(ctx *gin.Context) {
 	sdMutex.Unlock()
 
 	if rc != nil {
-		err = rc.Set(c, genScoreKey(string(un), string(pw)), []byte(vCal.GetICS("UGRSICAL GPA表")), DurationScoreCache).Err()
+		err = rc.Set(c, genScoreKey(string(un), string(pw)), []byte(vCal.GetICS("ZJU-ICAL GPA表")), DurationScoreCache).Err()
 		if err != nil {
 			log.Ctx(c).Error().Err(err).Msgf("set score cache failed, url = %s", "/score?p="+p)
 		} else {
@@ -97,6 +97,6 @@ func FetchScore(ctx *gin.Context) {
 		}
 	}
 	ctx.Header("Content-Type", "text/calendar")
-	ctx.Data(http.StatusOK, "text/calendar", []byte(vCal.GetICS("UGRSICAL GPA表")))
+	ctx.Data(http.StatusOK, "text/calendar", []byte(vCal.GetICS("ZJU-ICAL GPA表")))
 	return
 }

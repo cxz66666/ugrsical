@@ -4,12 +4,12 @@ import (
 	"context"
 	"errors"
 	"strings"
-	"ugrs-ical/pkg/zjuservice/grsical"
-	"ugrs-ical/pkg/zjuservice/ugrsical"
-	"ugrs-ical/pkg/zjuservice/zjuconst"
+	"zju-ical/pkg/zjuservice/grsical"
+	"zju-ical/pkg/zjuservice/ugrsical"
+	"zju-ical/pkg/zjuservice/zjuconst"
 
-	"ugrs-ical/pkg/ical"
-	"ugrs-ical/pkg/zjuservice"
+	"zju-ical/pkg/ical"
+	"zju-ical/pkg/zjuservice"
 
 	"github.com/rs/zerolog/log"
 )

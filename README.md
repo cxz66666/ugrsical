@@ -1,24 +1,22 @@
-# ugrsical
+# ZJU-ICAL
 English README [click here](README_en.md)
 
-将zju本科生课程表转换为iCal日历格式，方便的导入到Windows/macOS/Linux/Android/Harmony OS/iOS/iPadOS/watchOS/Wear OS 上。
-
-如果您是**研究生**/**选了研究生的课程的本科生**，请使用[这个](https://github.com/determ1ne/grsical)
+将zju本科生/研究生课程表转换为iCal日历格式，方便的导入到Windows/macOS/Linux/Android/Harmony OS/iOS/iPadOS/watchOS/Wear OS 上。
 
  
 
 ### 开始使用 
 
-我们提供了两种可执行文件，`ugrsical`和`ugrsicalsrv`，两者功能相同，但是`ugrsical`是在本地运行，而`ugrsicalsrv`是在服务器上运行并提供web前端页面。
+我们提供了两种可执行文件，`zjuical`和`zjuicalsrv`，两者功能相同，但是`zjuical`是在本地运行，而`zjuicalsrv`是在服务器上运行并提供web前端页面。
 
-#### 使用 ugrsical(local)
+#### 使用 zjuical(local)
 
 - 从release页面下载 
 - 一般不需要修改配置文件
-- 使用 `./ugrsical -u [userId] -p [password]` 来生成
-- 也可以使用 `./ugrsical --help` 来查看更多用法
+- 使用 `./zjuical -u [userId] -p [password]` 来生成
+- 也可以使用 `./zjuical --help` 来查看更多用法
 
-#### 使用 ugrsicalsrv(server)
+#### 使用 zjuicalsrv(server)
 
 - 从release页面下载
 - 修改配置文件`configs/server.json`
@@ -29,6 +27,7 @@ English README [click here](README_en.md)
     "host": "ical.zjueva.net", //你的服务器域名，会被用于生成ics文件的订阅链接
     "port": 3000, //前端的web端口，必须是数字
     "config": "configs/config.json", //配置文件路径，可以为空（默认是这个值）
+    "http_proxy": "http://127.0.0.1:1081", //配置使用的代理，可以使用zju-connect
     "ip_header": "", //如果你的服务器是反向代理，需要填写这个字段，否则可以为空（默认是这个值）
     "redis_addr": "",// redis地址，用来缓存文件和限制ip，可以为空（默认不使用redis）
     "redis_pass": "" // redis密码，可以为空（默认无密码或不使用redis）
@@ -37,7 +36,7 @@ English README [click here](README_en.md)
   
   ~~~
 
-- 使用 `./ugrsicalsrv`，打开`host::port`就能看到前端页面了!
+- 使用 `./zjuicalsrv`，打开`host::port`就能看到前端页面了!
 
 ### 配置文件（进阶）
  

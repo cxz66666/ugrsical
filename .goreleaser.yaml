@@ -6,48 +6,48 @@ before:
     - go mod tidy
 dist: ./build
 builds:
-  - id: "ugrsical"
+  - id: "zjuical"
     env:
       - CGO_ENABLED=0
-    main: ./cmd/ugrsical
-    binary: ugrsical
+    main: ./cmd/zjuical
+    binary: zjuical
 
     ldflags:
-      - -s -w -X ugrs-ical/internal/ugrsical.version={{.Commit}}
+      - -s -w -X zju-ical/internal/zjuical.version={{.Commit}}
     goos:
       - linux
       - windows
       - darwin
 
-  - id: "ugrsicalsrv"
+  - id: "zjuicalsrv"
     env:
       - CGO_ENABLED=0
-    main: ./cmd/ugrsicalsrv
-    binary: ugrsicalsrv
+    main: ./cmd/zjuicalsrv
+    binary: zjuicalsrv
 
     ldflags:
       - -s -w
-#      - -X ugrs-ical/internal/ugrsicalsrv/cli.version={{.Commit}}
+#      - -X zju-ical/internal/zjuicalsrv/cli.version={{.Commit}}
     goos:
       - linux
       - windows
       - darwin
 archives:
   -
-    id: ugrsical-arch
+    id: zjuical-arch
     builds:
-      - ugrsical
-    name_template: "ugrsical_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+      - zjuical
+    name_template: "zjuical_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
     files:
       - LICENSE
       - README.md
       - configs/*
 
   -
-    id: ugrsicalsrv-arch
+    id: zjuicalsrv-arch
     builds:
-      - ugrsicalsrv
-    name_template: "ugrsicalsrv_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+      - zjuicalsrv
+    name_template: "zjuicalsrv_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
     files:
       - LICENSE
       - README.md

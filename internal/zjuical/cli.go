@@ -1,4 +1,4 @@
-package ugrsical
+package zjuical
 
 import (
 	"context"
@@ -6,14 +6,14 @@ import (
 	"errors"
 	"io"
 	"os"
-	"ugrs-ical/pkg/zjuservice/zjuconst"
+	"zju-ical/pkg/zjuservice/zjuconst"
 
 	"github.com/google/uuid"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
-	common2 "ugrs-ical/internal/common"
-	"ugrs-ical/pkg/ical"
+	common2 "zju-ical/internal/common"
+	"zju-ical/pkg/ical"
 )
 
 type pwFile struct {
@@ -30,8 +30,8 @@ var (
 	outputFile   string
 	forceWrite   bool
 	rootCmd      = &cobra.Command{
-		Use:           "ugrsical -u username -p password [-c config] [-t 0] [-o output] [-f]",
-		Short:         "ugrsical is a tool for generating class schedules iCalendar file",
+		Use:           "zjuical -u username -p password [-c config] [-t 0] [-o output] [-f]",
+		Short:         "zjuical is a tool for generating class schedules iCalendar file",
 		Long:          `A command-line utility for generating class schedule iCalender file from extracting data from ZJU DingDing API.`,
 		SilenceErrors: true,
 		RunE:          CliMain,
@@ -45,10 +45,10 @@ func init() {
 	rootCmd.PersistentFlags().StringVarP(&userPassFile, "upfile", "i", "", "username and password json")
 	rootCmd.PersistentFlags().StringVarP(&configFile, "config", "c", zjuconst.ConfigDefaultPath, "config file")
 	rootCmd.PersistentFlags().IntVarP(&icalType, "type", "t", 0, "0(default) for both class and exam, 1 for only class, 2 for only exam, 3 for only scores")
-	rootCmd.PersistentFlags().StringVarP(&outputFile, "output", "o", "ugrsical.ics", "output file")
+	rootCmd.PersistentFlags().StringVarP(&outputFile, "output", "o", "zjuical.ics", "output file")
 	rootCmd.PersistentFlags().BoolVarP(&forceWrite, "force", "f", false, "force write to target file")
 	rootCmd.Version = version
-	rootCmd.SetVersionTemplate("ugrsical build {{.Version}}\n")
+	rootCmd.SetVersionTemplate("zjuical build {{.Version}}\n")
 }
 
 func CliMain(cmd *cobra.Command, args []string) error {
@@ -103,19 +103,19 @@ func CliMain(cmd *cobra.Command, args []string) error {
 		if err != nil {
 			return err
 		}
-		icalName = "UGRSICAL 课程表"
+		icalName = "ZJU-ICAL 课程表"
 	case 2:
 		vCal, err = common2.GetExamCalendar(ctx, userName, password)
 		if err != nil {
 			return err
 		}
-		icalName = "UGRSICAL 考试表"
+		icalName = "ZJU-ICAL 考试表"
 	case 3:
 		vCal, err = common2.GetScoreCalendar(ctx, userName, password)
 		if err != nil {
 			return err
 		}
-		icalName = "UGRSICAL GPA表"
+		icalName = "ZJU-ICAL GPA表"
 	}
 
 	_, err = f.WriteString(vCal.GetICS(icalName))

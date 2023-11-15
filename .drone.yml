@@ -8,7 +8,7 @@ steps:
   - name: build
     image: docker
     commands:
-      - docker build -t ugrsicalsrv .
+      - docker build -t zjuicalsrv .
     volumes:
       - name: cache
         path: /var/run/docker.sock
@@ -34,7 +34,7 @@ clone:
 steps:
   - name: deploy
     commands:
-      - cd /app/ugrsicalsrv
+      - cd /app/zjuicalsrv
       - docker-compose up -d
       - docker image prune -f
 

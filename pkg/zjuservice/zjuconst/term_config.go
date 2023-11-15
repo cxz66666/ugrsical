@@ -2,7 +2,7 @@ package zjuconst
 
 import (
 	"time"
-	"ugrs-ical/pkg/date"
+	"zju-ical/pkg/date"
 )
 
 type TermConfig struct {
