@@ -9,6 +9,7 @@ import (
 	"github.com/cxz66666/zju-ical/pkg/zjuservice/grsical"
 	"github.com/cxz66666/zju-ical/pkg/zjuservice/ugrsical"
 	"github.com/cxz66666/zju-ical/pkg/zjuservice/zjuconst"
+	"strings"
 
 	"github.com/rs/zerolog/log"
 )
@@ -31,8 +32,11 @@ func GetClassCalendar(ctx context.Context, username, password string, isGRS bool
 		zs = ugrsical.NewUgrsService(ctx)
 		log.Ctx(ctx).Info().Msgf("%s is using UGRS", username)
 	} else {
-		zs = grsical.NewGrsService(ctx, false)
-		log.Ctx(ctx).Info().Msgf("%s is using GRS", username)
+		if strings.HasPrefix(username, "3") {
+			zs = grsical.NewGrsService(ctx, true)
+		} else {
+			zs = grsical.NewGrsService(ctx, false)
+		}
 	}
 
 	if err := zs.Login(username, password); err != nil {
@@ -74,8 +78,11 @@ func GetExamCalendar(ctx context.Context, username, password string, isGRS bool)
 		zs = ugrsical.NewUgrsService(ctx)
 		log.Ctx(ctx).Info().Msgf("%s is using UGRS", username)
 	} else {
-		zs = grsical.NewGrsService(ctx, false)
-		log.Ctx(ctx).Info().Msgf("%s is using GRS", username)
+		if strings.HasPrefix(username, "3") {
+			zs = grsical.NewGrsService(ctx, true)
+		} else {
+			zs = grsical.NewGrsService(ctx, false)
+		}
 	}
 
 	if err := zs.Login(username, password); err != nil {
@@ -111,7 +118,11 @@ func GetBothCalendar(ctx context.Context, username, password string, isGRS bool)
 		zs = ugrsical.NewUgrsService(ctx)
 		log.Ctx(ctx).Info().Msgf("%s is using UGRS", username)
 	} else {
-		zs = grsical.NewGrsService(ctx, false)
+		if strings.HasPrefix(username, "3") {
+			zs = grsical.NewGrsService(ctx, true)
+		} else {
+			zs = grsical.NewGrsService(ctx, false)
+		}
 		log.Ctx(ctx).Info().Msgf("%s is using GRS", username)
 	}
 	if err := zs.Login(username, password); err != nil {
@@ -132,8 +143,7 @@ func GetBothCalendar(ctx context.Context, username, password string, isGRS bool)
 		classOutline, err := zs.GetClassTimeTable(item.Year, item.Term, username)
 		if err != nil {
 			log.Ctx(ctx).Error().Err(err).Msgf("get class vevents failed %s-%s", item.Year, zjuconst.ClassTermToDescriptionString(item.Term))
-			//don't return error, just continue
-			continue
+			return ical.VCalendar{}, err
 		}
 		log.Ctx(ctx).Info().Msgf("generating class vevents %s-%s", item.Year, zjuconst.ClassTermToDescriptionString(item.Term))
 		// classes to events
@@ -147,8 +157,7 @@ func GetBothCalendar(ctx context.Context, username, password string, isGRS bool)
 		examOutline, err := zs.GetExamInfo(item.Year, item.Term, username)
 		if err != nil {
 			log.Ctx(ctx).Error().Err(err).Msgf("get exam vevents %s-%s failed", item.Year, zjuconst.ExamTermToDescriptionString(item.Term))
-			//don't return error, just continue
-			continue
+			return ical.VCalendar{}, err
 		}
 		log.Ctx(ctx).Info().Msgf("generating exam vevents %s-%s", item.Year, zjuconst.ExamTermToDescriptionString(item.Term))
 		// exam to events
@@ -180,8 +189,11 @@ func GetScoreCalendar(ctx context.Context, username, password string, isGRS bool
 		zs = ugrsical.NewUgrsService(ctx)
 		log.Ctx(ctx).Info().Msgf("%s is using UGRS", username)
 	} else {
-		zs = grsical.NewGrsService(ctx, false)
-		log.Ctx(ctx).Info().Msgf("%s is using GRS", username)
+		if strings.HasPrefix(username, "3") {
+			zs = grsical.NewGrsService(ctx, true)
+		} else {
+			zs = grsical.NewGrsService(ctx, false)
+		}
 	}
 
 	if err := zs.Login(username, password); err != nil {

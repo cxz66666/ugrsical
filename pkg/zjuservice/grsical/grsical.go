@@ -32,13 +32,13 @@ func (zs *GrsService) Login(username, password string) error {
 		zs.ZJUClient = zjuam.NewClient()
 	}
 	if zs.isUGRS {
-		err := zs.ZJUClient.Login(context.Background(), ugrsLoginUrl, username, password)
+		err := zs.ZJUClient.Login(zs.ctx, ugrsLoginUrl, username, password)
 		if err != nil {
 			return err
 		}
-		return zs.ZJUClient.UgrsExtraLogin(context.Background(), fmt.Sprintf("%s?gnmkdm=N253530&su=%s", ugrsLoginUrl2, username))
+		return zs.ZJUClient.UgrsExtraLogin(zs.ctx, fmt.Sprintf("%s?gnmkdm=N253530&su=%s", ugrsLoginUrl2, username))
 	}
-	return zs.ZJUClient.Login(context.Background(), grsLoginUrl, username, password)
+	return zs.ZJUClient.Login(zs.ctx, grsLoginUrl, username, password)
 }
 
 func (zs *GrsService) fetchTimetable(academicYear string, term zjuconst.ClassTerm) (io.Reader, error) {
@@ -104,7 +104,8 @@ func (zs *GrsService) GetClassTimeTable(academicYear string, term zjuconst.Class
 	}
 	table, err := GetTable(r)
 	if err != nil {
-		return nil, err
+		log.Ctx(zs.ctx).Error().Err(err).Msg("get class failed")
+		return nil, nil
 	}
 
 	return ParseTable(zs.ctx, table, zs.isUGRS)
@@ -117,7 +118,8 @@ func (zs *GrsService) GetExamInfo(academicYear string, term zjuconst.ExamTerm, s
 	}
 	table, err := GetExamTable(r)
 	if err != nil {
-		return nil, err
+		log.Ctx(zs.ctx).Error().Err(err).Msg("get exam table failed")
+		return nil, nil
 	}
 	return ParseExamTable(zs.ctx, table)
 }

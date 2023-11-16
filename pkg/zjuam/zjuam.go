@@ -207,7 +207,7 @@ func (c *ZjuamClient) UgrsExtraLogin(ctx context.Context, payloadUrl string) err
 		log.Ctx(ctx).Error().Msg(e)
 		return errors.New(e)
 	}
-	log.Ctx(ctx).Info().Msgf("new login url: %s", newUrl.String())
+	//log.Ctx(ctx).Info().Msgf("new login url: %s", newUrl.String())
 
 	newQuery := newUrl.Query()
 	newUrl.RawQuery = newQuery.Encode()

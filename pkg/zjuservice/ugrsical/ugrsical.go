@@ -32,7 +32,7 @@ func (zs *UgrsService) Login(username, password string) error {
 		zs.ZJUClient = zjuam.NewClient()
 	}
 
-	return zs.ZJUClient.Login(context.Background(), kAppServiceLoginUrl, username, password)
+	return zs.ZJUClient.Login(zs.ctx, kAppServiceLoginUrl, username, password)
 }
 
 func (zs *UgrsService) GetClassTimeTable(academicYear string, term zjuconst.ClassTerm, stuId string) ([]zjuconst.ZJUClass, error) {
