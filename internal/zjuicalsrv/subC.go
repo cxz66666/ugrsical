@@ -44,7 +44,7 @@ func SubCal(ctx *gin.Context) {
 
 	c := log.With().Str("u", string(un)).Str("r", uuid.NewString()).Logger().WithContext(context.Background())
 	if rc != nil {
-		val, err := rc.Exists(c, genIcalKey(string(un), string(pw))).Result()
+		val, err := rc.Exists(c, genIcalKey(string(un), string(pw), change)).Result()
 		if val == 0 {
 			log.Ctx(c).Info().Msgf("don't find ical cache")
 		} else if err != nil {
@@ -80,7 +80,7 @@ func SubCal(ctx *gin.Context) {
 	sdMutex.Unlock()
 
 	if rc != nil {
-		err = rc.Set(c, genIcalKey(string(un), string(pw)), []byte(vCal.GetICS("")), cacheTTL).Err()
+		err = rc.Set(c, genIcalKey(string(un), string(pw), change), []byte(vCal.GetICS("")), cacheTTL).Err()
 		if err != nil {
 			log.Ctx(c).Error().Err(err).Msgf("set ical cache failed, url = %s", "/ical?p="+p)
 		} else {

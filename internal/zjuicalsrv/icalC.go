@@ -34,8 +34,8 @@ func decrypt(b []byte) ([]byte, error) {
 	return p, nil
 }
 
-// genIcalKey return key for redis ical data, format "319010xxxx" + "###" + sha256(passwd)[0:16]
-func genIcalKey(username, passwd string) string {
+// genIcalKey return key for redis ical data, format "319010xxxx" + "###" + sha256(passwd)[0:16] + "change"
+func genIcalKey(username, passwd, change string) string {
 	uP := bytes.Repeat([]byte("#"), 12)
 	l := 12
 	if len(username) < 12 {
@@ -47,7 +47,9 @@ func genIcalKey(username, passwd string) string {
 
 	hashPasswd := sha256.Sum256([]byte(passwd))
 	b := append(uP, hashPasswd[0:16]...)
-
+	if change != "" {
+		b = append(b, []byte("change"+change)...)
+	}
 	return string(b)
 }
 
@@ -81,7 +83,7 @@ func FetchCal(ctx *gin.Context) {
 
 	c := log.With().Str("u", string(un)).Str("r", uuid.NewString()).Logger().WithContext(context.Background())
 	if rc != nil {
-		data, err := rc.Get(c, genIcalKey(string(un), string(pw)+exam)).Bytes()
+		data, err := rc.Get(c, genIcalKey(string(un), string(pw)+exam, change)).Bytes()
 		if err == redis.Nil {
 			log.Ctx(c).Info().Msgf("don't find ical cache")
 		} else if err != nil {
@@ -121,7 +123,7 @@ func FetchCal(ctx *gin.Context) {
 	sdMutex.Unlock()
 
 	if rc != nil {
-		err = rc.Set(c, genIcalKey(string(un), string(pw)+exam), []byte(vCal.GetICS("")), cacheTTL).Err()
+		err = rc.Set(c, genIcalKey(string(un), string(pw)+exam, change), []byte(vCal.GetICS("")), cacheTTL).Err()
 		if err != nil {
 			log.Ctx(c).Error().Err(err).Msgf("set ical cache failed, url = %s", "/ical?p="+p)
 		} else {

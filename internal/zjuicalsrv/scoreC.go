@@ -19,8 +19,8 @@ import (
 
 const DurationScoreCache = time.Hour * 6
 
-// genScoreKey return key for redis score data, format "319010xxxx" + "***" + sha256(passwd)[0:16]
-func genScoreKey(username, passwd string) string {
+// genScoreKey return key for redis score data, format "319010xxxx" + "***" + sha256(passwd)[0:16] + "change"
+func genScoreKey(username, passwd, change string) string {
 	uP := bytes.Repeat([]byte("*"), 12)
 	l := 12
 	if len(username) < 12 {
@@ -32,7 +32,9 @@ func genScoreKey(username, passwd string) string {
 
 	hashPasswd := sha256.Sum256([]byte(passwd))
 	b := append(uP, hashPasswd[0:16]...)
-
+	if change != "" {
+		b = append(b, []byte("change"+change)...)
+	}
 	return string(b)
 }
 
@@ -64,7 +66,7 @@ func FetchScore(ctx *gin.Context) {
 
 	c := log.With().Str("u", string(un)).Str("type", "score").Str("r", uuid.NewString()).Logger().WithContext(context.Background())
 	if rc != nil {
-		data, err := rc.Get(c, genScoreKey(string(un), string(pw))).Bytes()
+		data, err := rc.Get(c, genScoreKey(string(un), string(pw), change)).Bytes()
 		if err == redis.Nil {
 			log.Ctx(c).Info().Msgf("don't find score cache")
 		} else if err != nil {
@@ -100,7 +102,7 @@ func FetchScore(ctx *gin.Context) {
 	sdMutex.Unlock()
 
 	if rc != nil {
-		err = rc.Set(c, genScoreKey(string(un), string(pw)), []byte(vCal.GetICS("ZJU-ICAL GPA表")), DurationScoreCache).Err()
+		err = rc.Set(c, genScoreKey(string(un), string(pw), change), []byte(vCal.GetICS("ZJU-ICAL GPA表")), DurationScoreCache).Err()
 		if err != nil {
 			log.Ctx(c).Error().Err(err).Msgf("set score cache failed, url = %s", "/score?p="+p)
 		} else {
