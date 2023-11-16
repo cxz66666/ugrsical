@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"zju-ical/internal/zjuicalsrv"
+	"github.com/cxz66666/zju-ical/internal/zjuicalsrv"
 
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"

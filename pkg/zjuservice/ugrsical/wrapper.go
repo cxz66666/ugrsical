@@ -1,7 +1,7 @@
 package ugrsical
 
 import (
-	"zju-ical/pkg/zjuservice/zjuconst"
+	"github.com/cxz66666/zju-ical/pkg/zjuservice/zjuconst"
 )
 
 type ZjuResWrapperStr[T ZjuWeeklyScheduleRes | ZjuExamOutlineRes | ZjuClassScoreRes] struct {

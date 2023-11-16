@@ -3,13 +3,12 @@ package common
 import (
 	"context"
 	"errors"
-	"strings"
-	"zju-ical/pkg/zjuservice/grsical"
-	"zju-ical/pkg/zjuservice/ugrsical"
-	"zju-ical/pkg/zjuservice/zjuconst"
-
-	"zju-ical/pkg/ical"
-	"zju-ical/pkg/zjuservice"
+	"fmt"
+	"github.com/cxz66666/zju-ical/pkg/ical"
+	"github.com/cxz66666/zju-ical/pkg/zjuservice"
+	"github.com/cxz66666/zju-ical/pkg/zjuservice/grsical"
+	"github.com/cxz66666/zju-ical/pkg/zjuservice/ugrsical"
+	"github.com/cxz66666/zju-ical/pkg/zjuservice/zjuconst"
 
 	"github.com/rs/zerolog/log"
 )
@@ -23,12 +22,12 @@ func firstMatchTerm(configs []zjuconst.TermConfig, target zjuconst.ClassYearAndT
 	return -1
 }
 
-func GetClassCalendar(ctx context.Context, username, password string) (ical.VCalendar, error) {
+func GetClassCalendar(ctx context.Context, username, password string, isGRS bool) (ical.VCalendar, error) {
 	var zs zjuservice.IZJUService
 
 	ctx = context.WithValue(ctx, zjuconst.ScheduleCtxKey, zjuconst.GetConfig())
 
-	if strings.HasPrefix(username, "3") {
+	if !isGRS {
 		zs = ugrsical.NewUgrsService(ctx)
 		log.Ctx(ctx).Info().Msgf("%s is using UGRS", username)
 	} else {
@@ -66,12 +65,12 @@ func GetClassCalendar(ctx context.Context, username, password string) (ical.VCal
 	return vCal, nil
 }
 
-func GetExamCalendar(ctx context.Context, username, password string) (ical.VCalendar, error) {
+func GetExamCalendar(ctx context.Context, username, password string, isGRS bool) (ical.VCalendar, error) {
 	var zs zjuservice.IZJUService
 
 	ctx = context.WithValue(ctx, zjuconst.ScheduleCtxKey, zjuconst.GetConfig())
 
-	if strings.HasPrefix(username, "3") {
+	if !isGRS {
 		zs = ugrsical.NewUgrsService(ctx)
 		log.Ctx(ctx).Info().Msgf("%s is using UGRS", username)
 	} else {
@@ -103,12 +102,12 @@ func GetExamCalendar(ctx context.Context, username, password string) (ical.VCale
 	return vCal, nil
 }
 
-func GetBothCalendar(ctx context.Context, username, password string) (ical.VCalendar, error) {
+func GetBothCalendar(ctx context.Context, username, password string, isGRS bool) (ical.VCalendar, error) {
 	var zs zjuservice.IZJUService
 
 	ctx = context.WithValue(ctx, zjuconst.ScheduleCtxKey, zjuconst.GetConfig())
 
-	if strings.HasPrefix(username, "3") {
+	if !isGRS {
 		zs = ugrsical.NewUgrsService(ctx)
 		log.Ctx(ctx).Info().Msgf("%s is using UGRS", username)
 	} else {
@@ -133,7 +132,8 @@ func GetBothCalendar(ctx context.Context, username, password string) (ical.VCale
 		classOutline, err := zs.GetClassTimeTable(item.Year, item.Term, username)
 		if err != nil {
 			log.Ctx(ctx).Error().Err(err).Msgf("get class vevents failed %s-%s", item.Year, zjuconst.ClassTermToDescriptionString(item.Term))
-			return ical.VCalendar{}, err
+			//don't return error, just continue
+			continue
 		}
 		log.Ctx(ctx).Info().Msgf("generating class vevents %s-%s", item.Year, zjuconst.ClassTermToDescriptionString(item.Term))
 		// classes to events
@@ -147,7 +147,8 @@ func GetBothCalendar(ctx context.Context, username, password string) (ical.VCale
 		examOutline, err := zs.GetExamInfo(item.Year, item.Term, username)
 		if err != nil {
 			log.Ctx(ctx).Error().Err(err).Msgf("get exam vevents %s-%s failed", item.Year, zjuconst.ExamTermToDescriptionString(item.Term))
-			return ical.VCalendar{}, err
+			//don't return error, just continue
+			continue
 		}
 		log.Ctx(ctx).Info().Msgf("generating exam vevents %s-%s", item.Year, zjuconst.ExamTermToDescriptionString(item.Term))
 		// exam to events
@@ -157,16 +158,25 @@ func GetBothCalendar(ctx context.Context, username, password string) (ical.VCale
 		log.Ctx(ctx).Info().Msgf("generated exam vevents %s-%s", item.Year, zjuconst.ExamTermToDescriptionString(item.Term))
 	}
 	log.Ctx(ctx).Info().Msgf("get exam vCal success")
-
+	if len(vCal.VEvents) == 0 {
+		log.Ctx(ctx).Error().Msg("no events created, return error")
+		var tmpStr string
+		if isGRS {
+			tmpStr = "研究生"
+		} else {
+			tmpStr = "本科生"
+		}
+		return vCal, errors.New(fmt.Sprintf("未能生成任何日程，请确认您正在使用的账号 %s 选择了 %s 的课程，如果以上信息确认无误，请稍后重试", username, tmpStr))
+	}
 	// TODO cache
 	return vCal, nil
 
 }
 
-func GetScoreCalendar(ctx context.Context, username, password string) (ical.VCalendar, error) {
+func GetScoreCalendar(ctx context.Context, username, password string, isGRS bool) (ical.VCalendar, error) {
 	var zs zjuservice.IZJUService
 
-	if strings.HasPrefix(username, "3") {
+	if !isGRS {
 		zs = ugrsical.NewUgrsService(ctx)
 		log.Ctx(ctx).Info().Msgf("%s is using UGRS", username)
 	} else {

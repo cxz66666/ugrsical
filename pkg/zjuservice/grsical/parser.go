@@ -5,10 +5,10 @@ import (
 	"errors"
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
+	"github.com/cxz66666/zju-ical/pkg/zjuservice/zjuconst"
 	"github.com/rs/zerolog/log"
 	"golang.org/x/net/html"
 	"golang.org/x/net/html/atom"
-	"zju-ical/pkg/zjuservice/zjuconst"
 
 	"io"
 	"strconv"

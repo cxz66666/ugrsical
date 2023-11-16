@@ -1,7 +1,7 @@
 package main
 
 import (
-	"zju-ical/internal/zjuical"
+	"github.com/cxz66666/zju-ical/internal/zjuical"
 )
 
 func main() {

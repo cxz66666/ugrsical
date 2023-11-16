@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"zju-ical/pkg/ical"
+	"github.com/cxz66666/zju-ical/pkg/ical"
 
 	"github.com/mattn/go-runewidth"
 )

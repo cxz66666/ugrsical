@@ -7,13 +7,13 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/cxz66666/zju-ical/pkg/zjuam"
+	"github.com/cxz66666/zju-ical/pkg/zjuservice/zjuconst"
 	"io"
 	"os"
 	"sync"
 	"text/template"
 	"time"
-	"zju-ical/pkg/zjuam"
-	"zju-ical/pkg/zjuservice/zjuconst"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis/v8"
@@ -31,6 +31,7 @@ type SetupData struct {
 	LastUpdatedTime  string
 	LastSuccessIcal  string
 	LastSuccessScore string
+	CurrentVersion   string
 	Link             string
 	SubLink          string
 	ScoreSubLink     string
@@ -53,6 +54,7 @@ var setupTpl *template.Template
 var sd = SetupData{
 	Classes:          []zjuconst.YearAndSemester{},
 	Exams:            []zjuconst.YearAndSemester{},
+	CurrentVersion:   "",
 	Link:             "",
 	SubLink:          "",
 	ScoreSubLink:     "",
@@ -64,6 +66,8 @@ var sdMutex sync.RWMutex
 var gcm cipher.AEAD
 var rc *redis.Client
 var cacheTTL time.Duration
+
+var version = "dirty"
 
 func loadServerConfig() error {
 	var r io.Reader

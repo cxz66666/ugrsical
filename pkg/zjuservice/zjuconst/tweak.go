@@ -3,7 +3,7 @@ package zjuconst
 import (
 	"time"
 
-	"zju-ical/pkg/date"
+	"github.com/cxz66666/zju-ical/pkg/date"
 )
 
 type TweakType int

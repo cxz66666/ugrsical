@@ -2,10 +2,10 @@ package zjuconst
 
 import (
 	"fmt"
+	"github.com/cxz66666/zju-ical/pkg/date"
+	"github.com/cxz66666/zju-ical/pkg/ical"
 	"strings"
 	"time"
-	"zju-ical/pkg/date"
-	"zju-ical/pkg/ical"
 )
 
 type ExamTerm int
@@ -94,7 +94,7 @@ func (zjuexam *ZJUGrsExam) ToVEventList() []ical.VEvent {
 	//TODO WIP
 
 	var b strings.Builder
-	b.WriteString(fmt.Sprintf("%s %s学期 ", zjuexam.ClassName, zjuexam.Semester))
+	b.WriteString(fmt.Sprintf("%s %s学期\\n", zjuexam.ClassName, zjuexam.Semester))
 	b.WriteString(fmt.Sprintf("课程号：%s\\n", zjuexam.ID))
 	if zjuexam.ExamSeatNum != "" {
 		b.WriteString(fmt.Sprintf("座位号: %s\\n", zjuexam.ExamSeatNum))

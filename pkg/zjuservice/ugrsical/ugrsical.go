@@ -4,6 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"github.com/cxz66666/zju-ical/pkg/zjuam"
+	"github.com/cxz66666/zju-ical/pkg/zjuservice/zjuconst"
 	"github.com/google/uuid"
 	"github.com/rs/zerolog/log"
 	"io"
@@ -11,8 +13,6 @@ import (
 	"net/url"
 	"strconv"
 	"strings"
-	"zju-ical/pkg/zjuam"
-	"zju-ical/pkg/zjuservice/zjuconst"
 )
 
 const (

@@ -5,9 +5,10 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 	"fmt"
+	"github.com/cxz66666/zju-ical/pkg/zjuservice/zjuconst"
 	"io"
 	"net/http"
-	"zju-ical/pkg/zjuservice/zjuconst"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -55,6 +56,11 @@ func SetupPage(ctx *gin.Context) {
 	d.Link = fmt.Sprintf("%s/ical?p=%s", _serverConfig.Host, en)
 	d.SubLink = fmt.Sprintf("%s/sub?p=%s", _serverConfig.Host, en)
 	d.ScoreSubLink = fmt.Sprintf("%s/subScore?p=%s", _serverConfig.Host, en)
+	if strings.HasPrefix(u, "3") {
+		d.CurrentVersion = "本科生版"
+	} else {
+		d.CurrentVersion = "研究生版"
+	}
 
 	ctx.Header("Content-Type", "text/html")
 	buffer := bytes.NewBuffer([]byte(""))

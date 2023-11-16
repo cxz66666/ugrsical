@@ -4,16 +4,17 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"github.com/cxz66666/zju-ical/pkg/zjuservice/zjuconst"
 	"io"
 	"os"
-	"zju-ical/pkg/zjuservice/zjuconst"
+	"strings"
 
+	common2 "github.com/cxz66666/zju-ical/internal/common"
+	"github.com/cxz66666/zju-ical/pkg/ical"
 	"github.com/google/uuid"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
-	common2 "zju-ical/internal/common"
-	"zju-ical/pkg/ical"
 )
 
 type pwFile struct {
@@ -91,27 +92,35 @@ func CliMain(cmd *cobra.Command, args []string) error {
 	}
 	var vCal ical.VCalendar
 	var icalName string
+
+	var isGRS bool
+	if strings.HasPrefix(userName, "3") {
+		isGRS = false
+	} else {
+		isGRS = true
+	}
+
 	switch icalType {
 	case 0:
-		vCal, err = common2.GetBothCalendar(ctx, userName, password)
+		vCal, err = common2.GetBothCalendar(ctx, userName, password, isGRS)
 		if err != nil {
 			return err
 		}
 		icalName = ""
 	case 1:
-		vCal, err = common2.GetClassCalendar(ctx, userName, password)
+		vCal, err = common2.GetClassCalendar(ctx, userName, password, isGRS)
 		if err != nil {
 			return err
 		}
 		icalName = "ZJU-ICAL 课程表"
 	case 2:
-		vCal, err = common2.GetExamCalendar(ctx, userName, password)
+		vCal, err = common2.GetExamCalendar(ctx, userName, password, isGRS)
 		if err != nil {
 			return err
 		}
 		icalName = "ZJU-ICAL 考试表"
 	case 3:
-		vCal, err = common2.GetScoreCalendar(ctx, userName, password)
+		vCal, err = common2.GetScoreCalendar(ctx, userName, password, isGRS)
 		if err != nil {
 			return err
 		}

@@ -7,10 +7,11 @@ import (
 	"encoding/base64"
 	"errors"
 	"net/http"
+	"strings"
 	"time"
 
-	common2 "zju-ical/internal/common"
-	"zju-ical/pkg/ical"
+	common2 "github.com/cxz66666/zju-ical/internal/common"
+	"github.com/cxz66666/zju-ical/pkg/ical"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis/v8"
@@ -58,7 +59,7 @@ func FetchCal(ctx *gin.Context) {
 	}
 
 	exam := ctx.Query("exam")
-
+	change := ctx.Query("change")
 	b, err := base64.URLEncoding.DecodeString(p)
 	if err != nil {
 		ctx.String(http.StatusOK, "invalid p2")
@@ -95,11 +96,20 @@ func FetchCal(ctx *gin.Context) {
 			return
 		}
 	}
+	var isGRS bool
+	if strings.HasPrefix(string(un), "3") {
+		isGRS = false
+	} else {
+		isGRS = true
+	}
+	if change == "1" {
+		isGRS = !isGRS
+	}
 	var vCal ical.VCalendar
 	if exam == "0" {
-		vCal, err = common2.GetClassCalendar(c, string(un), string(pw))
+		vCal, err = common2.GetClassCalendar(c, string(un), string(pw), isGRS)
 	} else {
-		vCal, err = common2.GetBothCalendar(c, string(un), string(pw))
+		vCal, err = common2.GetBothCalendar(c, string(un), string(pw), isGRS)
 	}
 	if err != nil {
 		ctx.String(http.StatusOK, err.Error())

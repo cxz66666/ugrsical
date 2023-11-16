@@ -5,9 +5,10 @@ import (
 	"encoding/base64"
 	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
-	common2 "zju-ical/internal/common"
+	common2 "github.com/cxz66666/zju-ical/internal/common"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -20,6 +21,7 @@ func SubCal(ctx *gin.Context) {
 		ctx.String(http.StatusOK, "invalid p")
 		return
 	}
+	change := ctx.Query("change")
 	b, err := base64.URLEncoding.DecodeString(p)
 	if err != nil {
 		ctx.String(http.StatusOK, "invalid p2")
@@ -56,7 +58,17 @@ func SubCal(ctx *gin.Context) {
 			return
 		}
 	}
-	vCal, err := common2.GetBothCalendar(c, string(un), string(pw))
+	var isGRS bool
+	if strings.HasPrefix(string(un), "3") {
+		isGRS = false
+	} else {
+		isGRS = true
+	}
+	if change == "1" {
+		isGRS = !isGRS
+	}
+
+	vCal, err := common2.GetBothCalendar(c, string(un), string(pw), isGRS)
 
 	if err != nil {
 		ctx.String(http.StatusOK, err.Error())
@@ -85,6 +97,7 @@ func SubScore(ctx *gin.Context) {
 		ctx.String(http.StatusOK, "invalid p")
 		return
 	}
+	change := ctx.Query("change")
 	b, err := base64.URLEncoding.DecodeString(p)
 	if err != nil {
 		ctx.String(http.StatusOK, "invalid p2")
@@ -121,7 +134,17 @@ func SubScore(ctx *gin.Context) {
 			return
 		}
 	}
-	vCal, err := common2.GetScoreCalendar(c, string(un), string(pw))
+	var isGRS bool
+	if strings.HasPrefix(string(un), "3") {
+		isGRS = false
+	} else {
+		isGRS = true
+	}
+	if change == "1" {
+		isGRS = !isGRS
+	}
+
+	vCal, err := common2.GetScoreCalendar(c, string(un), string(pw), isGRS)
 
 	if err != nil {
 		ctx.String(http.StatusOK, err.Error())

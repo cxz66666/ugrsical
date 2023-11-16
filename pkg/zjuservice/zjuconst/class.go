@@ -2,10 +2,10 @@ package zjuconst
 
 import (
 	"fmt"
+	"github.com/cxz66666/zju-ical/pkg/ical"
 	"sort"
 	"strings"
 	"time"
-	"zju-ical/pkg/ical"
 )
 
 type WeekArrangement int

@@ -1,7 +1,7 @@
 package zjuservice
 
 import (
-	"zju-ical/pkg/zjuservice/zjuconst"
+	"github.com/cxz66666/zju-ical/pkg/zjuservice/zjuconst"
 )
 
 type IZJUService interface {

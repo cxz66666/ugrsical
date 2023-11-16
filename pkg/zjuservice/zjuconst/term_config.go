@@ -1,8 +1,8 @@
 package zjuconst
 
 import (
+	"github.com/cxz66666/zju-ical/pkg/date"
 	"time"
-	"zju-ical/pkg/date"
 )
 
 type TermConfig struct {

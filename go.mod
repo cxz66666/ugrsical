@@ -1,4 +1,4 @@
-module zju-ical
+module github.com/cxz66666/zju-ical
 
 go 1.21
 

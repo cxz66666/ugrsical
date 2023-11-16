@@ -5,12 +5,12 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/cxz66666/zju-ical/pkg/zjuam"
+	"github.com/cxz66666/zju-ical/pkg/zjuservice/zjuconst"
 	"github.com/google/uuid"
 	"github.com/rs/zerolog/log"
 	"io"
 	"net/url"
-	"zju-ical/pkg/zjuam"
-	"zju-ical/pkg/zjuservice/zjuconst"
 )
 
 const (
@@ -124,7 +124,7 @@ func (zs *GrsService) GetExamInfo(academicYear string, term zjuconst.ExamTerm, s
 
 func (zs *GrsService) GetScoreInfo(stuId string) ([]zjuconst.ZJUClassScore, error) {
 	// TODO
-	return nil, errors.New("正在开发中，敬请期待QAQ")
+	return nil, errors.New("研究生版成绩解析模块正在开发中，敬请期待QAQ")
 }
 
 func (zs *GrsService) GetTermConfigs() []zjuconst.TermConfig {

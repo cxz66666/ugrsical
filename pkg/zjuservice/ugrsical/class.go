@@ -1,10 +1,10 @@
 package ugrsical
 
 import (
+	"github.com/cxz66666/zju-ical/pkg/zjuservice/zjuconst"
 	"sort"
 	"strconv"
 	"strings"
-	"zju-ical/pkg/zjuservice/zjuconst"
 )
 
 type ZjuWeeklyScheduleClass struct {
