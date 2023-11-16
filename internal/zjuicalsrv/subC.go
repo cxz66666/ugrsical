@@ -120,7 +120,7 @@ func SubScore(ctx *gin.Context) {
 
 	c := log.With().Str("u", string(un)).Str("type", "score").Str("r", uuid.NewString()).Logger().WithContext(context.Background())
 	if rc != nil {
-		val, err := rc.Exists(c, genScoreKey(string(un), string(pw))).Result()
+		val, err := rc.Exists(c, genScoreKey(string(un), string(pw), change)).Result()
 		if val == 0 {
 			log.Ctx(c).Info().Msgf("don't find score cache")
 		} else if err != nil {
@@ -156,7 +156,7 @@ func SubScore(ctx *gin.Context) {
 	sdMutex.Unlock()
 
 	if rc != nil {
-		err = rc.Set(c, genScoreKey(string(un), string(pw)), []byte(vCal.GetICS("ZJU-ICAL GPA表")), DurationScoreCache).Err()
+		err = rc.Set(c, genScoreKey(string(un), string(pw), change), []byte(vCal.GetICS("ZJU-ICAL GPA表")), DurationScoreCache).Err()
 		if err != nil {
 			log.Ctx(c).Error().Err(err).Msgf("set score cache failed, url = %s", "/score?p="+p)
 		} else {
