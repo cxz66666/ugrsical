@@ -22,19 +22,19 @@ zjuical-darwin-arm64:
 	GOOS=darwin GOARCH=arm64 go build -ldflags "$(LDFLAGS_COMMON) -X github.com/cxz66666/zju-ical/internal/zjuical.version=$(ICAL_VERSION)" -o build/zjuical-darwin-arm64 github.com/cxz66666/zju-ical/cmd/zjuical
 
 zjuicalsrv-windows-amd64:
-	GOOS=windows GOARCH=amd64 go build -ldflags "$(LDFLAGS_COMMON)" -X github.com/cxz66666/zju-ical/internal/zjuicalsrv.version=$(ICAL_VERSION)" -o build/zjuicalsrv-windows-amd64.exe github.com/cxz66666/zju-ical/cmd/zjuicalsrv
+	GOOS=windows GOARCH=amd64 go build -ldflags "$(LDFLAGS_COMMON) -X github.com/cxz66666/zju-ical/internal/zjuicalsrv.version=$(ICAL_VERSION)" -o build/zjuicalsrv-windows-amd64.exe github.com/cxz66666/zju-ical/cmd/zjuicalsrv
 
 zjuicalsrv-linux-amd64:
-	GOOS=linux GOARCH=amd64 go build -ldflags "$(LDFLAGS_COMMON)" -X github.com/cxz66666/zju-ical/internal/zjuicalsrv.version=$(ICAL_VERSION)" -o build/zjuicalsrv-linux-amd64 github.com/cxz66666/zju-ical/cmd/zjuicalsrv
+	GOOS=linux GOARCH=amd64 go build -ldflags "$(LDFLAGS_COMMON) -X github.com/cxz66666/zju-ical/internal/zjuicalsrv.version=$(ICAL_VERSION)" -o build/zjuicalsrv-linux-amd64 github.com/cxz66666/zju-ical/cmd/zjuicalsrv
 
 zjuicalsrv-linux-arm64:
-	GOOS=linux GOARCH=arm64 go build -ldflags "$(LDFLAGS_COMMON)" -X github.com/cxz66666/zju-ical/internal/zjuicalsrv.version=$(ICAL_VERSION)" -o build/zjuicalsrv-linux-arm64 github.com/cxz66666/zju-ical/cmd/zjuicalsrv
+	GOOS=linux GOARCH=arm64 go build -ldflags "$(LDFLAGS_COMMON) -X github.com/cxz66666/zju-ical/internal/zjuicalsrv.version=$(ICAL_VERSION)" -o build/zjuicalsrv-linux-arm64 github.com/cxz66666/zju-ical/cmd/zjuicalsrv
 
 zjuicalsrv-darwin-amd64:
-	GOOS=darwin GOARCH=amd64 go build -ldflags "$(LDFLAGS_COMMON)" -X github.com/cxz66666/zju-ical/internal/zjuicalsrv.version=$(ICAL_VERSION)" -o build/zjuicalsrv-darwin-amd64 github.com/cxz66666/zju-ical/cmd/zjuicalsrv
+	GOOS=darwin GOARCH=amd64 go build -ldflags "$(LDFLAGS_COMMON) -X github.com/cxz66666/zju-ical/internal/zjuicalsrv.version=$(ICAL_VERSION)" -o build/zjuicalsrv-darwin-amd64 github.com/cxz66666/zju-ical/cmd/zjuicalsrv
 
 zjuicalsrv-darwin-arm64:
-	GOOS=darwin GOARCH=arm64 go build -ldflags "$(LDFLAGS_COMMON)" -X github.com/cxz66666/zju-ical/internal/zjuicalsrv.version=$(ICAL_VERSION)" -o build/zjuicalsrv-darwin-arm64 github.com/cxz66666/zju-ical/cmd/zjuicalsrv
+	GOOS=darwin GOARCH=arm64 go build -ldflags "$(LDFLAGS_COMMON) -X github.com/cxz66666/zju-ical/internal/zjuicalsrv.version=$(ICAL_VERSION)" -o build/zjuicalsrv-darwin-arm64 github.com/cxz66666/zju-ical/cmd/zjuicalsrv
 
 merge-macos-binary:
 	$(LIPO) -create build/zjuical-darwin-amd64 build/zjuical-darwin-arm64 -o build/zjuical-darwin-universal
