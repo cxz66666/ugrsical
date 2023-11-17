@@ -57,6 +57,15 @@ func (zc *ZJUClass) GetEndDateTime(day time.Time) time.Time {
 	return period.ToEndDateTime(day)
 }
 
+func (zc *ZJUClass) IsContainTerm(term ClassTerm) bool {
+	for _, item := range zc.TermArrangements {
+		if item == term {
+			return true
+		}
+	}
+	return false
+}
+
 func (zc *ZJUClass) ArrangementDescription() string {
 	var b strings.Builder
 	sort.Ints(zc.TermArrangements)
@@ -145,10 +154,10 @@ func (cp *ClassPeriod) ToEndDateTime(day time.Time) time.Time {
 	return cp.ToStartDateTime(day).Add(time.Minute * 45)
 }
 
-func GetClassOfDay(classes []ZJUClass, day int) []ZJUClass {
+func GetClassOfDay(classes []ZJUClass, day int, term ClassTerm) []ZJUClass {
 	var res []ZJUClass
 	for _, item := range classes {
-		if item.DayNumber == day {
+		if item.DayNumber == day && item.IsContainTerm(term) {
 			res = append(res, item)
 		}
 	}
@@ -188,13 +197,13 @@ func ClassToVEvents(classes []ZJUClass, termConfig TermConfig, tweaks []Tweak) [
 		}
 	}
 	classOfDay := make(map[time.Weekday][]ZJUClass, 7)
-	classOfDay[time.Monday] = GetClassOfDay(classes, 1)
-	classOfDay[time.Tuesday] = GetClassOfDay(classes, 2)
-	classOfDay[time.Wednesday] = GetClassOfDay(classes, 3)
-	classOfDay[time.Thursday] = GetClassOfDay(classes, 4)
-	classOfDay[time.Friday] = GetClassOfDay(classes, 5)
-	classOfDay[time.Saturday] = GetClassOfDay(classes, 6)
-	classOfDay[time.Sunday] = GetClassOfDay(classes, 7)
+	classOfDay[time.Monday] = GetClassOfDay(classes, 1, termConfig.Term)
+	classOfDay[time.Tuesday] = GetClassOfDay(classes, 2, termConfig.Term)
+	classOfDay[time.Wednesday] = GetClassOfDay(classes, 3, termConfig.Term)
+	classOfDay[time.Thursday] = GetClassOfDay(classes, 4, termConfig.Term)
+	classOfDay[time.Friday] = GetClassOfDay(classes, 5, termConfig.Term)
+	classOfDay[time.Saturday] = GetClassOfDay(classes, 6, termConfig.Term)
+	classOfDay[time.Sunday] = GetClassOfDay(classes, 7, termConfig.Term)
 
 	termBeginDayOfWeek := int(termConfig.Begin.Weekday())
 	if termBeginDayOfWeek == 0 {
