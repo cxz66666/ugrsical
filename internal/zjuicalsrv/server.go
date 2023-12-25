@@ -39,6 +39,7 @@ type SetupData struct {
 
 type ServerConfig struct {
 	Enckey    string `json:"enckey"`
+	Enckey2   string `json:"enckey2"`
 	Host      string `json:"host"`
 	Port      int    `json:"port"`
 	CfgPath   string `json:"config"`
@@ -64,6 +65,7 @@ var sd = SetupData{
 var sdMutex sync.RWMutex
 
 var gcm cipher.AEAD
+var gcm2 cipher.AEAD
 var rc *redis.Client
 var cacheTTL time.Duration
 
@@ -106,6 +108,13 @@ func ListenAndServe() error {
 	gcm, err = cipher.NewGCM(c)
 	if err != nil {
 		return err
+	}
+
+	if c2, err := aes.NewCipher([]byte(_serverConfig.Enckey2)); err == nil {
+		gcm2, err = cipher.NewGCM(c2)
+		if err == nil {
+			log.Info().Msg("using enckey2 for backup")
+		}
 	}
 
 	if _serverConfig.IpHeader != "" {

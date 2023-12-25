@@ -3,6 +3,7 @@ package zjuicalsrv
 import (
 	"bytes"
 	"context"
+	"crypto/cipher"
 	"crypto/sha256"
 	"encoding/base64"
 	"errors"
@@ -21,17 +22,31 @@ import (
 
 const DurationIcalCache = time.Hour * 48
 
-func decrypt(b []byte) ([]byte, error) {
-	ns := gcm.NonceSize()
+func decryptWithGCM(b []byte, usedGCM cipher.AEAD) ([]byte, error) {
+	ns := usedGCM.NonceSize()
 	if len(b) < ns {
 		return []byte(""), errors.New("invalid data")
 	}
 	nonce, ct := b[:ns], b[ns:]
-	p, err := gcm.Open(nil, nonce, ct, nil)
+	p, err := usedGCM.Open(nil, nonce, ct, nil)
 	if err != nil {
 		return []byte(""), err
 	}
 	return p, nil
+}
+
+func decrypt(b []byte) ([]byte, error) {
+	p, err := decryptWithGCM(b, gcm)
+	if err == nil {
+		return p, nil
+	}
+	if gcm2 != nil {
+		p, err = decryptWithGCM(b, gcm2)
+		if err == nil {
+			return p, nil
+		}
+	}
+	return []byte(""), err
 }
 
 // genIcalKey return key for redis ical data, format "319010xxxx" + "###" + sha256(passwd)[0:16] + "change"
