@@ -11,6 +11,7 @@ import (
 	"github.com/rs/zerolog/log"
 	"io"
 	"net/url"
+	"strconv"
 )
 
 const (
@@ -46,12 +47,13 @@ func (zs *GrsService) fetchTimetable(academicYear string, term zjuconst.ClassTer
 	var fetchUrl string
 
 	semester := zjuconst.GrsClassTermToClassQueryInt(term)
+	academicYearNum, _ := strconv.Atoi(academicYear[:4])
 	if zs.isUGRS {
 		changeLocaleUrl = ugrsChangeLocaleUrl
-		fetchUrl = fmt.Sprintf("http://grs.zju.edu.cn/py/undergraduate/grkcb.htm?xj=%d&xn=%d", semester, academicYear)
+		fetchUrl = fmt.Sprintf("http://grs.zju.edu.cn/py/undergraduate/grkcb.htm?xj=%d&xn=%d", semester, academicYearNum)
 	} else {
 		changeLocaleUrl = grcChangeLocaleUrl
-		fetchUrl = fmt.Sprintf("http://grs.zju.edu.cn/py/page/student/grkcb.htm?xj=%d&xn=%d", semester, academicYear)
+		fetchUrl = fmt.Sprintf("http://grs.zju.edu.cn/py/page/student/grkcb.htm?xj=%d&xn=%d", semester, academicYearNum)
 	}
 
 	_, err := zs.ZJUClient.Client().PostForm(changeLocaleUrl, url.Values{
@@ -76,10 +78,11 @@ func (zs *GrsService) fetchTimetable(academicYear string, term zjuconst.ClassTer
 func (zs *GrsService) fetchExamtable(academicYear string, term zjuconst.ExamTerm) (io.Reader, error) {
 	var fetchUrl string
 	semester := zjuconst.GrsExamTermToQueryInt(term)
+	academicYearNum, _ := strconv.Atoi(academicYear[:4])
 	if zs.isUGRS {
-		fetchUrl = fmt.Sprintf("http://grs.zju.edu.cn/py/undergraduate/grksap.htm?xj=%d&xn=%d", semester, academicYear)
+		fetchUrl = fmt.Sprintf("http://grs.zju.edu.cn/py/undergraduate/grksap.htm?xj=%d&xn=%d", semester, academicYearNum)
 	} else {
-		fetchUrl = fmt.Sprintf("http://grs.zju.edu.cn/py/page/student/grksap.htm?xj=%d&xn=%d", semester, academicYear)
+		fetchUrl = fmt.Sprintf("http://grs.zju.edu.cn/py/page/student/grksap.htm?xj=%d&xn=%d", semester, academicYearNum)
 	}
 	r, err := zs.ZJUClient.Client().Get(fetchUrl)
 	if err != nil {

@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/cxz66666/zju-ical/internal/common"
 	"github.com/cxz66666/zju-ical/pkg/zjuam"
 	"github.com/cxz66666/zju-ical/pkg/zjuservice/zjuconst"
 	"io"
@@ -38,16 +39,18 @@ type SetupData struct {
 }
 
 type ServerConfig struct {
-	Enckey    string `json:"enckey"`
-	Enckey2   string `json:"enckey2"`
-	Host      string `json:"host"`
-	Port      int    `json:"port"`
-	CfgPath   string `json:"config"`
-	HttpProxy string `json:"http_proxy"`
-	IpHeader  string `json:"ip_header"`
-	RedisAddr string `json:"redis_addr"`
-	RedisPass string `json:"redis_pass"`
-	CacheTTL  int    `json:"cache_ttl"`
+	Enckey     string `json:"enckey"`
+	Enckey2    string `json:"enckey2"`
+	Host       string `json:"host"`
+	Port       int    `json:"port"`
+	CfgPath    string `json:"config"`
+	HttpProxy  string `json:"http_proxy"`
+	NewGrsAPI  bool   `json:"new_grs_api"`
+	NewUgrsAPI bool   `json:"new_ugrs_api"`
+	IpHeader   string `json:"ip_header"`
+	RedisAddr  string `json:"redis_addr"`
+	RedisPass  string `json:"redis_pass"`
+	CacheTTL   int    `json:"cache_ttl"`
 }
 
 var setupTpl *template.Template
@@ -116,6 +119,8 @@ func ListenAndServe() error {
 			log.Info().Msg("using enckey2 for backup")
 		}
 	}
+
+	common.SetServiceAPI(_serverConfig.NewGrsAPI, _serverConfig.NewUgrsAPI)
 
 	if _serverConfig.IpHeader != "" {
 		log.Info().Msgf("zjuicalsrv will get header from %s", _serverConfig.IpHeader)

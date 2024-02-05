@@ -5,6 +5,8 @@
   "port": 5678,
   "config": "",
   "http_proxy": "",
+  "new_grs_api": false,
+  "new_ugrs_api": false,
   "ip_header": "",
   "redis_addr": "",
   "redis_pass": "",

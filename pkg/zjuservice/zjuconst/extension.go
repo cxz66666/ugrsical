@@ -42,6 +42,26 @@ func GrsClassTermToClassQueryInt(t ClassTerm) int {
 	}
 }
 
+// GrsClassQueryStringToClassTerm used for newgrs system
+func GrsClassQueryStringToClassTerm(str string) []ClassTerm {
+	switch str {
+	case "11":
+		return []ClassTerm{Spring}
+	case "12":
+		return []ClassTerm{Summer}
+	case "13":
+		return []ClassTerm{Autumn}
+	case "14":
+		return []ClassTerm{Winter}
+	case "15":
+		return []ClassTerm{Spring, Summer}
+	case "16":
+		return []ClassTerm{Autumn, Winter}
+	default:
+		return []ClassTerm{}
+	}
+}
+
 func ClassTermToDescriptionString(t ClassTerm) string {
 	switch t {
 	case Autumn:
@@ -96,7 +116,18 @@ func GrsExamTermToQueryInt(t ExamTerm) int {
 	}
 }
 
-// ClassTermStrToStr converts a string like "1" to "冬学期"
+func NewGrsExamTermToQueryInt(t ExamTerm) int {
+	switch t {
+	case AutumnWinter:
+		return 12
+	case SpringSummer:
+		return 11
+	default:
+		return -1
+	}
+}
+
+// ClassTermStrToStr converts a string like "1" to "冬学期", used for config
 func ClassTermStrToStr(str string) string {
 	switch str {
 	case "0":
@@ -118,7 +149,7 @@ func ClassTermStrToStr(str string) string {
 	}
 }
 
-// ExamStrToStr converts a string like "1" to "春夏学期"
+// ExamStrToStr converts a string like "1" to "春夏学期", used for config
 func ExamStrToStr(str string) string {
 	switch str {
 	case "0":

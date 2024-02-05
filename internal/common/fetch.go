@@ -6,8 +6,6 @@ import (
 	"fmt"
 	"github.com/cxz66666/zju-ical/pkg/ical"
 	"github.com/cxz66666/zju-ical/pkg/zjuservice"
-	"github.com/cxz66666/zju-ical/pkg/zjuservice/grsical"
-	"github.com/cxz66666/zju-ical/pkg/zjuservice/ugrsical"
 	"github.com/cxz66666/zju-ical/pkg/zjuservice/zjuconst"
 	"strings"
 
@@ -29,13 +27,13 @@ func GetClassCalendar(ctx context.Context, username, password string, isGRS bool
 	ctx = context.WithValue(ctx, zjuconst.ScheduleCtxKey, zjuconst.GetConfig())
 
 	if !isGRS {
-		zs = ugrsical.NewUgrsService(ctx)
+		zs = newUgrsService(ctx)
 		log.Ctx(ctx).Info().Msgf("%s is using UGRS", username)
 	} else {
 		if strings.HasPrefix(username, "3") {
-			zs = grsical.NewGrsService(ctx, true)
+			zs = newGrsService(ctx, true)
 		} else {
-			zs = grsical.NewGrsService(ctx, false)
+			zs = newGrsService(ctx, false)
 		}
 	}
 
@@ -75,13 +73,13 @@ func GetExamCalendar(ctx context.Context, username, password string, isGRS bool)
 	ctx = context.WithValue(ctx, zjuconst.ScheduleCtxKey, zjuconst.GetConfig())
 
 	if !isGRS {
-		zs = ugrsical.NewUgrsService(ctx)
+		zs = newUgrsService(ctx)
 		log.Ctx(ctx).Info().Msgf("%s is using UGRS", username)
 	} else {
 		if strings.HasPrefix(username, "3") {
-			zs = grsical.NewGrsService(ctx, true)
+			zs = newGrsService(ctx, true)
 		} else {
-			zs = grsical.NewGrsService(ctx, false)
+			zs = newGrsService(ctx, false)
 		}
 	}
 
@@ -115,13 +113,13 @@ func GetBothCalendar(ctx context.Context, username, password string, isGRS bool)
 	ctx = context.WithValue(ctx, zjuconst.ScheduleCtxKey, zjuconst.GetConfig())
 
 	if !isGRS {
-		zs = ugrsical.NewUgrsService(ctx)
+		zs = newUgrsService(ctx)
 		log.Ctx(ctx).Info().Msgf("%s is using UGRS", username)
 	} else {
 		if strings.HasPrefix(username, "3") {
-			zs = grsical.NewGrsService(ctx, true)
+			zs = newGrsService(ctx, true)
 		} else {
-			zs = grsical.NewGrsService(ctx, false)
+			zs = newGrsService(ctx, false)
 		}
 		log.Ctx(ctx).Info().Msgf("%s is using GRS", username)
 	}
@@ -186,13 +184,13 @@ func GetScoreCalendar(ctx context.Context, username, password string, isGRS bool
 	var zs zjuservice.IZJUService
 
 	if !isGRS {
-		zs = ugrsical.NewUgrsService(ctx)
+		zs = newUgrsService(ctx)
 		log.Ctx(ctx).Info().Msgf("%s is using UGRS", username)
 	} else {
 		if strings.HasPrefix(username, "3") {
-			zs = grsical.NewGrsService(ctx, true)
+			zs = newGrsService(ctx, true)
 		} else {
-			zs = grsical.NewGrsService(ctx, false)
+			zs = newGrsService(ctx, false)
 		}
 	}
 
