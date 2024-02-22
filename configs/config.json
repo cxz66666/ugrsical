@@ -3,9 +3,15 @@
   "tweaks": [
     {
       "TweakType": 0,
-      "Description": "[清明节] 放假调休，调休时间另行通知",
+      "Description": "[清明节] 放假调休",
       "From": 20240404,
       "To": 20240404
+    },
+    {
+      "TweakType": 2,
+      "Description": "[清明节] 放假调休，课程对调",
+      "From": 20240405,
+      "To": 20240407
     },
     {
       "TweakType": 0,
@@ -14,8 +20,20 @@
       "To": 20240501
     },
     {
+      "TweakType": 2,
+      "Description": "[劳动节] 放假调休，课程对调",
+      "From": 20240502,
+      "To": 20240511
+    },
+    {
+      "TweakType": 2,
+      "Description": "[劳动节] 放假调休，课程对调",
+      "From": 20240503,
+      "To": 20240617
+    },
+    {
       "TweakType": 0,
-      "Description": "[端午节] 放假调休，调休时间另行通知",
+      "Description": "[端午节] 放假停课",
       "From": 202406010,
       "To": 202406010
     }
