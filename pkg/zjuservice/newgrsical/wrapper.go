@@ -9,7 +9,9 @@ type ZjuResWrapperStr[T ZjuWeeklyScheduleRes | ZjuExamOutlineRes | ZjuLoginToken
 	Data    T      `json:"result"`
 }
 
-type ZjuWeeklyScheduleRes map[string]json.RawMessage
+type ZjuWeeklyScheduleRes struct {
+	KCBMap map[string]json.RawMessage `json:"kcbMap"`
+}
 
 type ZjuWeeklyScheduleItem struct {
 	Classes []ZjuWeeklyScheduleClass `json:"pyKcbjSjddVOList"`

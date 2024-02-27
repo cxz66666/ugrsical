@@ -102,8 +102,8 @@ func (zs *NewGrsService) GetClassTimeTable(academicYear string, term zjuconst.Cl
 	}
 
 	res := make([]zjuconst.ZJUClass, 0)
-	class_set := make(map[string]bool)
-	for _, weekdayItemRaw := range classTimeTable.Data {
+	classSet := make(map[string]bool)
+	for _, weekdayItemRaw := range classTimeTable.Data.KCBMap {
 		var weekdayItem = make(map[string]json.RawMessage)
 		err = json.Unmarshal(weekdayItemRaw, &weekdayItem)
 		if err != nil {
@@ -117,9 +117,9 @@ func (zs *NewGrsService) GetClassTimeTable(academicYear string, term zjuconst.Cl
 			}
 			for _, item := range classItems.Classes {
 				tmp := item.ToZJUClass()
-				if tmp != nil && class_set[tmp.ClassCode] == false {
+				if tmp != nil && classSet[tmp.ClassCode] == false {
 					res = append(res, *tmp)
-					class_set[tmp.ClassCode] = true
+					classSet[tmp.ClassCode] = true
 				}
 			}
 		}
