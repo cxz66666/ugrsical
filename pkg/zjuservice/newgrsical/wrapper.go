@@ -17,9 +17,8 @@ type ZjuWeeklyScheduleItem struct {
 	Classes []ZjuWeeklyScheduleClass `json:"pyKcbjSjddVOList"`
 }
 
-type ZjuExamOutlineRes struct {
-	ExamOutlineList []ZjuExamOutline `json:"records"`
-}
+type ZjuExamOutlineRes []ZjuExamOutline
+
 type ZjuLoginToken struct {
 	Token string `json:"token"`
 }

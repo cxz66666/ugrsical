@@ -157,7 +157,7 @@ func (zs *NewGrsService) GetExamInfo(academicYear string, term zjuconst.ExamTerm
 	}
 
 	var res []zjuconst.ZJUExam
-	for _, item := range examOutlines.Data.ExamOutlineList {
+	for _, item := range examOutlines.Data {
 		tmp := item.ToZJUExam()
 		if tmp != nil {
 			res = append(res, tmp)
