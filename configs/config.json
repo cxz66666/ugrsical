@@ -1,65 +1,71 @@
 {
-  "lastUpdated": 20240205,
+  "lastUpdated": 20240822,
   "tweaks": [
     {
-      "TweakType": 0,
-      "Description": "[清明节] 放假调休",
-      "From": 20240404,
-      "To": 20240404
+      "TweakType": 2,
+      "Description": "[中秋节] 放假调休，课程对调",
+      "From": 20240916,
+      "To": 20240914
     },
     {
       "TweakType": 2,
-      "Description": "[清明节] 放假调休，课程对调",
-      "From": 20240405,
-      "To": 20240407
-    },
-    {
-      "TweakType": 0,
-      "Description": "[劳动节] 放假调休，调休时间另行通知",
-      "From": 20240501,
-      "To": 20240501
+      "Description": "[中秋节] 放假调休，课程对调",
+      "From": 20240917,
+      "To": 20240921
     },
     {
       "TweakType": 2,
-      "Description": "[劳动节] 放假调休，课程对调",
-      "From": 20240502,
-      "To": 20240511
+      "Description": "[国庆节] 放假调休，课程对调",
+      "From": 20241004,
+      "To": 20240929
     },
     {
       "TweakType": 2,
-      "Description": "[劳动节] 放假调休，课程对调",
-      "From": 20240503,
-      "To": 20240617
+      "Description": "[国庆节] 放假调休，课程对调",
+      "From": 20241007,
+      "To": 20241012
+    },
+    {
+      "TweakType": 2,
+      "Description": "[校运会] 放假调休，课程对调",
+      "From": 20241018,
+      "To": 20241026
     },
     {
       "TweakType": 0,
-      "Description": "[端午节] 放假停课",
-      "From": 202406010,
-      "To": 202406010
+      "Description": "[元旦] 放假，调休另行安排",
+      "From": 20250101,
+      "To": 20250101
+    },
+    {
+      "TweakType": 0,
+      "Description": "[国庆] 放假",
+      "From": 20241001,
+      "To": 20241003
     }
   ],
   "termConfigs": [
     {
-      "Year": "2023-2024",
-      "Term": 4,
-      "Begin": 20240226,
-      "End": 20240421,
+      "Year": "2024-2025",
+      "Term": 0,
+      "Begin": 20240909,
+      "End": 20241103,
       "FirstWeekNo": 1
     },
     {
       "Year": "2023-2024",
-      "Term": 5,
-      "Begin": 20240422,
-      "End": 20240617,
+      "Term": 1,
+      "Begin": 20241104,
+      "End": 20241231,
       "FirstWeekNo": 1
     }
   ],
   "classTerms": [
-    "2023-2024:4",
-    "2023-2024:5"
+    "2024-2025:0",
+    "2024-2025:1"
   ],
   "examTerms": [
-    "2023-2024:1"
+    "2024-2025:0"
   ]
 }
 
