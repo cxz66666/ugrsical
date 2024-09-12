@@ -13,7 +13,7 @@ import (
 )
 
 const ConfigDefaultPath = "configs/config.json"
-const OnlineConfigPath = "https://mirror.ghproxy.com/https://raw.githubusercontent.com/cxz66666/zju-ical/master/configs/config.json"
+const OnlineConfigPath = "https://gh-proxy.com/https://raw.githubusercontent.com/cxz66666/zju-ical/master/configs/config.json"
 
 var UseOnlineConfig = false
 
